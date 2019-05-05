@@ -27,7 +27,7 @@ object ScalaMC {
   case class ModID(id: String)
 
   implicit val showId: Show[ModID] = (t: ModID) => {
-    val name = ModList.get().getModObjectById(t.id).map(_.getClass.getName).orElse("None")
+    val name = ModList.get().getModObjectById[AnyRef](t.id).map(o => o.getClass.getName).orElse("None")
     s"ID: ${t.id}, Class: $name"
   }
 }

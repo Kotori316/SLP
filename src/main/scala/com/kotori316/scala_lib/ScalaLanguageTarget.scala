@@ -1,7 +1,7 @@
 package com.kotori316.scala_lib
 
 import com.kotori316.scala_lib.ScalaLanguageProvider.LOGGER
-import net.minecraftforge.fml.loading.LogMarkers.LOADING
+import net.minecraftforge.fml.Logging.LOADING
 import net.minecraftforge.forgespi.language.IModLanguageProvider.IModLanguageLoader
 import net.minecraftforge.forgespi.language.{IModInfo, ModFileScanData}
 

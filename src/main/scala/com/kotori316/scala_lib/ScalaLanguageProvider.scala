@@ -3,7 +3,7 @@ package com.kotori316.scala_lib
 import java.util.function.{Consumer, Supplier}
 
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLanguageProvider
-import net.minecraftforge.fml.loading.LogMarkers
+import net.minecraftforge.fml.Logging.SCAN
 import net.minecraftforge.forgespi.language.{ILifecycleEvent, IModLanguageProvider, ModFileScanData}
 import org.apache.logging.log4j.LogManager
 
@@ -33,7 +33,7 @@ class ScalaLanguageProvider extends IModLanguageProvider {
             }
         }
       }.map { case t@ScalaLanguageTarget(name, id) =>
-      LOGGER.debug(LogMarkers.SCAN, "Found @Mod class {} with id {}", name: Any, id: Any)
+      LOGGER.debug(SCAN, "Found @Mod class {} with id {}", name: Any, id: Any)
       id -> t
     }
       .toMap

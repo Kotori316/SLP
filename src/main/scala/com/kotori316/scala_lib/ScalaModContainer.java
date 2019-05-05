@@ -18,7 +18,7 @@ import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static net.minecraftforge.fml.loading.LogMarkers.LOADING;
+import static net.minecraftforge.fml.Logging.LOADING;
 
 public class ScalaModContainer extends ModContainer {
     private static final Logger LOGGER = LogManager.getLogger(ScalaModContainer.class);

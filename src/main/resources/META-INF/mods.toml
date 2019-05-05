@@ -1,11 +1,11 @@
 modLoader="kotori_scala"
 loaderVersion="[0,)"
-#issueTrackerURL="https://github.com/Kotori316/Dumper/issues"
+issueTrackerURL="https://github.com/Kotori316/SLP/issues"
 [[mods]] 
 modId="scala-library"
 version="2.12.8"
 displayName="Scala Library"
-#displayURL="https://github.com/Kotori316/Dumper"
+displayURL="https://github.com/Kotori316/SLP"
 credits="Kotori316" 
 authors="Kotori316" 
 description='''
