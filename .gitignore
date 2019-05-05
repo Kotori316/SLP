@@ -1,0 +1,16 @@
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea
+
+# gradle
+build
+.gradle
+Minecraft
+run-server
+
+gradle
+gradlew
+gradlew.bat
