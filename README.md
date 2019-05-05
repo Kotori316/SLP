@@ -4,8 +4,7 @@ This mod adds Scala library to Minecraft 1.13.2 with Forge.
 
 ### Usage
 
-* For Developer
-  In your `build.gradle`, add below code in top level.
+* For Developer - In your `build.gradle`, add below code in top level.
 
   ```groovy
   dependencies {
@@ -25,9 +24,8 @@ This mod adds Scala library to Minecraft 1.13.2 with Forge.
   If you want to write Mod entry class in Scala, add this jar to dependency.
   And.
   * Set `modloader` in your `mods.toml` file to "kotori_scala". (`modLoader="kotori_scala"`) Loader version is like `loaderVersion="[0,)"`.
-  * See `ScalaMC.scala` and `mods.toml` in this project.
+  * See [`ScalaMC.scala`](https://github.com/Kotori316/SLP/blob/master/src/main/scala/com/kotori316/scala_lib/ScalaMC.scala) and [`mods.toml`](https://github.com/Kotori316/SLP/blob/master/src/main/resources/META-INF/mods.toml) in this project.
   
   Then you can change mod entry class to Scala Object.
 
-* For Player
-  Download Jar file from GitHub Release or Curse Forge and move the file to your `mods` folder.
+* For Player - Download Jar file from GitHub Release or Curse Forge and move the file to your `mods` folder.
