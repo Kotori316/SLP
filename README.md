@@ -17,7 +17,7 @@ This mod adds Scala library to Minecraft 1.13.2 with Forge.
   }
   ```
 
-  * Properties are set in your `gradle.properties` file or just hardcoded.
+  * Properties are set in your `gradle.properties` file or just hardcoded like `def scala_version = "2.12.8"`.
   * `scala_version` should be 2.12.8 because this project contains binary of Scala 2.12.8. 
   * `scala_major` must be 2.12.
 
@@ -28,4 +28,4 @@ This mod adds Scala library to Minecraft 1.13.2 with Forge.
   
   Then you can change mod entry class to Scala Object.
 
-* For Player - Download Jar file from GitHub Release or Curse Forge and move the file to your `mods` folder.
+* For Player - Download Jar file from [Curse Forge](https://minecraft.curseforge.com/projects/scalable-cats-force) and move the file to your `mods` folder.
