@@ -16,7 +16,8 @@ apply plugin: 'net.minecraftforge.gradle'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 
-version = getProperty("scala_version")
+def scala_version = getProperty("scala_version")
+version = "${getProperty("mod_version")}-scala$scala_version"
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Scala-library"
 
@@ -64,7 +65,6 @@ minecraft {
 
 def mainClassName = "com.kotori316.scala_lib.Main"
 dependencies {
-    def scala_version = getProperty("scala_version")
     def scala_major = getProperty("scala_major")
     def java8_compat_version = getProperty("java8_compat_version")
 
@@ -75,6 +75,13 @@ dependencies {
     // https://mvnrepository.com/artifact/org.typelevel/cats-core
     implementation group: 'org.typelevel', name: "cats-core_${scala_major}", version: '1.6.0'
 
+    // Test Dependencies.
+    testCompile("org.junit.jupiter:junit-jupiter-api:5.4.2")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.4.2")
+}
+
+test {
+    useJUnitPlatform()
 }
 
 jar {
