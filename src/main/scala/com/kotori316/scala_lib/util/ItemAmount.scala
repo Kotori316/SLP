@@ -69,7 +69,7 @@ object ItemAmount {
 
   def apply(stack: ItemStack): ItemAmount = new ItemAmount(stack.getItem, stack.getCount, Option(stack.getTag).map(_.copy()))
 
-  implicit val save: NBTSave[ItemAmount] = new NBTSave[ItemAmount] {
+  implicit val saveItemAmount: NBTSave[ItemAmount] = new NBTSave[ItemAmount] {
     override def toNBT(a: ItemAmount) = {
       val nbt = a.item.toNBT
       nbt.put(Key_Amount, a.amount.toNBT)
