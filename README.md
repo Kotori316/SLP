@@ -32,4 +32,4 @@ This mod adds Scala library to Minecraft 1.13.2 or 1.14.3 with Forge. You can us
 
   Then you can change mod entry class to Scala Object.
 
-* For Player - Download Jar file from [Curse Forge](https://minecraft.curseforge.com/projects/scalable-cats-force) and move the file to your `mods` folder.
+* For Player - Download Jar file from [Curse Forge](https://www.curseforge.com/minecraft/mc-mods/scalable-cats-force) and move the file to your `mods` folder. This mod doesn't appear in mods list.
