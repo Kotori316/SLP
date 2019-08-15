@@ -17,7 +17,7 @@ case class FluidAmount private(fluid: Fluid, amount: Long) {
 
 object FluidAmount {
   final val Key_Amount = "amount"
-  final val AMOUNT_BUCKET = 1000l
+  final val AMOUNT_BUCKET = 1000L
 
   def apply(fluid: Fluid, amount: Long): FluidAmount = new FluidAmount(fluid, amount)
 

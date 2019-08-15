@@ -47,7 +47,7 @@ case class ItemAmount private(item: Item, amount: Long, tag: Option[NBTTagCompou
     copy(tag = Option(nbt).filterNot(_.isEmpty))
   }
 
-  def removeTag: ItemAmount = copy(tag = None)
+  def tagRemoved: ItemAmount = copy(tag = None)
 
   def addTag(key: String, value: INBTBase): ItemAmount = updateTag { nbt =>
     nbt.put(key, value)
