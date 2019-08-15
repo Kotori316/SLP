@@ -17,7 +17,7 @@ apply plugin: 'net.minecraftforge.gradle'
 
 
 def scala_version = getProperty("scala_version")
-version = "${getProperty("mod_version")}-scala$scala_version"
+version = "$scala_version"
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Scala-library"
 
@@ -67,13 +67,14 @@ def mainClassName = "com.kotori316.scala_lib.Main"
 dependencies {
     def scala_major = getProperty("scala_major")
     def java8_compat_version = getProperty("java8_compat_version")
+    def cats_version = getProperty("cats_version")
 
     minecraft 'net.minecraftforge:forge:1.13.2-25.0.219'
     implementation "org.scala-lang:scala-library:${scala_version}"
 //    implementation "org.scala-lang.modules:scala-java8-compat_${scala_major}:${java8_compat_version}"
 
     // https://mvnrepository.com/artifact/org.typelevel/cats-core
-    implementation group: 'org.typelevel', name: "cats-core_${scala_major}", version: '1.6.0'
+    implementation group: 'org.typelevel', name: "cats-core_${scala_major}", version: cats_version
 
     // Test Dependencies.
     testCompile("org.junit.jupiter:junit-jupiter-api:5.4.2")
