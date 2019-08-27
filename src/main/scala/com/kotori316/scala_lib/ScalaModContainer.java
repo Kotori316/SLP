@@ -58,6 +58,7 @@ public class ScalaModContainer extends ModContainer {
         this.contextExtension = () -> contextExtension;
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     private void fireEvent(LifecycleEventProvider.LifecycleEvent lifecycleEvent) {
         final Event event = lifecycleEvent.getOrBuildEvent(this);
         LOGGER.debug(LOADING, "Firing event for modid {} : {}", this.getModId(), event);
@@ -70,6 +71,7 @@ public class ScalaModContainer extends ModContainer {
         }
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     private void constructMod(LifecycleEventProvider.LifecycleEvent event) {
         if (isScalaObject) {
             try {
@@ -121,18 +123,19 @@ public class ScalaModContainer extends ModContainer {
     }
 
     private void completeLoading(LifecycleEventProvider.LifecycleEvent event) {
-        LOGGER.debug(LOADING, "Scala container for {}: Load completed {}.", className, event);
+//        LOGGER.debug(LOADING, "Scala container for {}: Load completed {}.", className, event);
     }
 
     private void beforeEvent(LifecycleEventProvider.LifecycleEvent event) {
-        LOGGER.debug(LOADING, "Scala container for {} starts {}.", className, event);
+//        LOGGER.debug(LOADING, "Scala container for {} starts {}.", className, event);
     }
 
     private void afterEvent(LifecycleEventProvider.LifecycleEvent event) {
         if (getCurrentState() == ModLoadingStage.ERROR) {
             LOGGER.error(LOADING, "An error occurred while dispatching event {} to {}", event.fromStage(), getModId());
         } else {
-            LOGGER.debug(LOADING, "Scala container for {} ends {}.", className, event);
+            assert true; // Dummy to avoid empty else block.
+//            LOGGER.debug(LOADING, "Scala container for {} ends {}.", className, event);
         }
     }
 
@@ -154,5 +157,10 @@ public class ScalaModContainer extends ModContainer {
     @Override
     public Object getMod() {
         return modInstance;
+    }
+
+    @Override
+    protected void acceptEvent(Event e) {
+        this.getEventBus().post(e);
     }
 }
