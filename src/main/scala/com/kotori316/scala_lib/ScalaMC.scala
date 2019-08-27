@@ -17,6 +17,7 @@ object ScalaMC {
 
   require(Class.forName("scala.Option").getMethod("empty").invoke(null) == None)
 
+  // The way to get mod event bus. You can't use Mod.EventBusSubscriber.
   ScalaLoadingContext.get().getModEventBus.addListener(this.init)
 
   def init(event: FMLCommonSetupEvent): Unit = {
@@ -26,6 +27,7 @@ object ScalaMC {
 
   case class ModID(id: String)
 
+  // Example of Cats instance.
   implicit val showId: Show[ModID] = (t: ModID) => {
     val name = ModList.get().getModObjectById[AnyRef](t.id).map(o => o.getClass.getName).orElse("None")
     s"ID: ${t.id}, Class: $name"
