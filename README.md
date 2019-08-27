@@ -1,8 +1,8 @@
-# Scala language provider for Minecraft 1.13.2 or newer.
+# Scala language provider for Minecraft 1.14.4.
 
-Branch master
+Branch 1.14.4
 
-This mod adds Scala library to Minecraft 1.13.2 or 1.14.3 with Forge. You can use the same jar file in 1.13.2 and 1.14.3.
+This mod adds Scala library to Minecraft 1.14.4 with Forge.
 
 ### Usage
 
@@ -14,14 +14,14 @@ This mod adds Scala library to Minecraft 1.13.2 or 1.14.3 with Forge. You can us
       def scala_major = getProperty("scala_major")
   
       // Change forge and minecraft version.
-      minecraft 'net.minecraftforge:forge:1.13.2-25.0.191'
+      minecraft 'net.minecraftforge:forge:1.14.4-28.0.55'
       implementation "org.scala-lang:scala-library:${scala_version}"
   
   }
   ```
 
-  * Properties are set in your `gradle.properties` file or just hardcoded like `def scala_version = "2.12.8"`.
-  * `scala_version` should be 2.12.8 because this project contains binary of Scala 2.12.8. 
+  * Properties are set in your `gradle.properties` file or just hardcoded like `def scala_version = "2.12.9"`.
+  * `scala_version` should be 2.12.9 because this project contains binary of Scala 2.12.9. 
   * `scala_major` must be 2.12.
 
   If you want to write Mod entry class in Scala, add this jar to dependency.
