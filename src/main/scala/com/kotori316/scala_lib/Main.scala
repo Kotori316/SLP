@@ -8,9 +8,9 @@ import cats.implicits._
 import scala.util.Properties
 
 /**
-  * Class to check scala library is included to jar file.
-  * This class have nothing with Minecraft.
-  */
+ * Class to check scala library is included to jar file.
+ * This class have nothing with Minecraft.
+ */
 object Main {
   def main(args: Array[String]): Unit = {
     println("-" * 10 + " Hello Scala! " + "-" * 10)
@@ -22,6 +22,7 @@ object Main {
     println(s"Now ${timeShow.show(ZonedDateTime.now())}")
     println()
     println(s"You are running Java ${Properties.javaVersion} and Scala ${Properties.versionString}")
+    println(s"On ${Properties.osName}, Working in ${Properties.userDir}")
     println("-" * 34)
   }
 
