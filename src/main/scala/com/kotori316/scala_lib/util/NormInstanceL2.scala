@@ -4,7 +4,7 @@ import cats._
 import cats.implicits._
 import com.kotori316.scala_lib.util.Norm._
 
-import scala.language.{higherKinds, implicitConversions}
+import scala.language.implicitConversions
 
 object NormInstanceL2 {
   implicit val numberNorm: Norm[Number] = (a: Number) => Math.abs(a.doubleValue())

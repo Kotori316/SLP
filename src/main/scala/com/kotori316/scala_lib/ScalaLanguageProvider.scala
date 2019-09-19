@@ -2,8 +2,8 @@ package com.kotori316.scala_lib
 
 import java.util.function.{Consumer, Supplier}
 
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLanguageProvider
 import net.minecraftforge.fml.Logging.SCAN
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLanguageProvider
 import net.minecraftforge.forgespi.language.{ILifecycleEvent, IModLanguageProvider, ModFileScanData}
 import org.apache.logging.log4j.LogManager
 
@@ -14,7 +14,7 @@ class ScalaLanguageProvider extends IModLanguageProvider {
   override def name() = "kotori_scala"
 
   override def getFileVisitor: Consumer[ModFileScanData] = scanData => {
-    import scala.collection.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val targets = scanData.getAnnotations.asScala
       .filter(_.getAnnotationType == MOD_ANNOTATION)
       .map { data =>
