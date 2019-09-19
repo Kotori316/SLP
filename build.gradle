@@ -101,6 +101,7 @@ jar {
                 'Main-Class'              : mainClassName
         ])
     }
+    classifier = 'no-library'
 }
 
 task srcJar(type: Jar) {
