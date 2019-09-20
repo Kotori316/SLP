@@ -19,7 +19,7 @@ apply plugin: 'net.minecraftforge.gradle'
 def scala_version = getProperty("scala_version")
 version = "$scala_version"
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "Scalable Cats Force"
+archivesBaseName = "ScalableCatsForce"
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileScala {
@@ -101,7 +101,7 @@ jar {
                 'Main-Class'              : mainClassName
         ])
     }
-    classifier = 'no-library'
+    classifier = 'dev'
 }
 
 task srcJar(type: Jar) {
