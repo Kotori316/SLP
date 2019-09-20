@@ -7,7 +7,7 @@ trait Norm[-A] extends Serializable {
 object Norm {
   def apply[A](implicit norm: Norm[A]): Norm[A] = norm
 
-  implicit class Ops[T](val t: T) extends AnyVal {
+  implicit class Ops[T](private val t: T) extends AnyVal {
     def norm(implicit norm: Norm[T]): Double = norm.norm(t)
   }
 
