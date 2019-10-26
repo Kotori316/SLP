@@ -20,9 +20,9 @@ This mod adds Scala library to Minecraft 1.14.4 with Forge.
   }
   ```
 
-  * Properties are set in your `gradle.properties` file or just hardcoded like `def scala_version = "2.12.9"`.
-  * `scala_version` should be 2.12.9 because this project contains binary of Scala 2.12.9. 
-  * `scala_major` must be 2.12.
+  * Properties are set in your `gradle.properties` file or just hardcoded like `def scala_version = "2.13.1"`.
+  * `scala_version` should be 2.13.1 because this project contains binary of Scala 2.13.1. Make sure your version matches the version this mod provides. See [this file](https://github.com/Kotori316/SLP/blob/1.14.4/gradle.properties)
+  * `scala_major` must be 2.13.
 
   If you want to write Mod entry class in Scala, add this jar to dependency.
   And.
