@@ -3,7 +3,7 @@ package com.kotori316.scala_lib;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 
-public class ScalaLoadingContext {
+public class ScalaLoadingContext extends net.minecraftforge.fml.javafmlmod.SubContextForScala {
 
     private final ScalaModContainer container;
 
@@ -14,6 +14,7 @@ public class ScalaLoadingContext {
     /**
      * @return The mod's event bus, to allow subscription to Mod specific events
      */
+    @Override
     public IEventBus getModEventBus() {
         return container.getEventBus();
     }

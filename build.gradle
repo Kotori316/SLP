@@ -17,7 +17,7 @@ apply plugin: 'net.minecraftforge.gradle'
 
 
 def scala_version = getProperty("scala_version")
-version = "$scala_version"
+version = "${scala_version}_1"
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ScalableCatsForce"
 
