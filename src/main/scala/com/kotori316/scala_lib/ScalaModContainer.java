@@ -34,6 +34,9 @@ public class ScalaModContainer extends ModContainer {
     private Class<?> modClass;
     private Object modInstance;
 
+    /**
+     * Instance created in {@link ScalaLanguageTarget#loadMod(IModInfo, ClassLoader, ModFileScanData)}
+     */
     public ScalaModContainer(IModInfo info, String className, ClassLoader modClassLoader, ModFileScanData modFileScanResults) {
         super(info);
         this.info = info;
