@@ -21,6 +21,8 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
+      - name: Wrapper
+        run: gradle wrapper
       - name: Compile and Test
         run: gradle compileScala test --continue --info
       

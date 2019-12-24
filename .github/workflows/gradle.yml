@@ -23,11 +23,13 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
+      - name: Wrapper
+        run: gradle wrapper
       - name: Precompile
-        run: gradle compileScala --continue --warning-mode all --info
+        run: chmod +x ./gradlew && ./gradlew compileScala --continue --warning-mode all
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
       - name: Test
-        run: gradle test --info
+        run: chmod +x ./gradlew && ./gradlew test
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
