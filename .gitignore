@@ -10,7 +10,3 @@ build
 .gradle
 Minecraft
 run-server
-
-gradle
-gradlew
-gradlew.bat

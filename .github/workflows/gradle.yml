@@ -23,8 +23,6 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-      - name: Wrapper
-        run: gradle wrapper
       - name: Precompile
         run: chmod +x ./gradlew && ./gradlew compileScala --continue --warning-mode all
         env:
