@@ -22,5 +22,5 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Compile and Test
-        run: gradle compileScala test --continue
+        run: gradle compileScala test --continue --info
       

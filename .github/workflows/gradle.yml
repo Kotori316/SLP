@@ -24,10 +24,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Precompile
-        run: gradle compileScala --continue --warning-mode all
+        run: gradle compileScala --continue --warning-mode all --info
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
       - name: Test
-        run: gradle test
+        run: gradle test --info
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
