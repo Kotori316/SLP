@@ -26,12 +26,14 @@ trait Neighbor[A] {
   }
 }
 
-object Neighbor extends cats.Invariant[Neighbor] {
+object Neighbor {
 
   def apply[A](implicit instance: Neighbor[A]): Neighbor[A] = instance
 
-  override def imap[U, V](fa: Neighbor[U])(f: U => V)(g: V => U): Neighbor[V] =
-    (origin: V) => (g andThen fa.next andThen (_.map(f))) (origin)
+  implicit val NeighborInvariant: cats.Invariant[Neighbor] = new cats.Invariant[Neighbor] {
+    override def imap[U, V](fa: Neighbor[U])(f: U => V)(g: V => U): Neighbor[V] =
+      (origin: V) => (g andThen fa.next andThen (_.map(f))) (origin)
+  }
 
   implicit class Ops[A: Neighbor](private val origin: A) {
     def next: Set[A] = Neighbor[A].next(origin)

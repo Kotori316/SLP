@@ -1,5 +1,6 @@
 package com.kotori316.scala_lib.util
 
+import cats.Invariant
 import cats.implicits._
 import org.junit.jupiter.api.Assertions._
 import org.junit.jupiter.api.Test
@@ -114,7 +115,7 @@ private[util] class NeighborTest {
   @Test
   def invariantNeighbor(): Unit = {
     case class Pos2D(x: Int, y: Int)
-    implicit val neighborPos: Neighbor[Pos2D] = Neighbor.imap(Neighbor[(Int, Int)])(Pos2D.tupled) {
+    implicit val neighborPos: Neighbor[Pos2D] = Invariant[Neighbor].imap(Neighbor[(Int, Int)])(Pos2D.tupled) {
       case Pos2D(x, y) => (x, y)
     }
     assertEquals(Set(
