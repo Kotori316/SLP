@@ -38,7 +38,7 @@ private[util] class ModClassDataTest {
     assertAll(
       () => assertTrue(instances.isInvalid, s"Duplicated, $data"),
       () => instances match {
-        case Invalid(e) => e.contains(Duplicated("quarryplus"))
+        case Invalid(e) => assertTrue(e.contains(Duplicated("quarryplus")), s"error in quarry, $e")
         case v => fail(s"What happened to $v")
       }
     )
@@ -53,7 +53,7 @@ private[util] class ModClassDataTest {
     assertAll(
       () => assertTrue(instances.isInvalid, s"Including 2 Objects, $data"),
       () => instances match {
-        case Invalid(e) => e.contains(Duplicated("quarryplus"))
+        case Invalid(e) => assertTrue(e.contains(Duplicated("quarryplus")), s"error in quarry, $e")
         case v => fail(s"What happened to $v")
       }
     )
