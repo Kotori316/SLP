@@ -5,8 +5,7 @@ import net.minecraftforge.fml.Logging.LOADING
 import net.minecraftforge.forgespi.language.IModLanguageProvider.IModLanguageLoader
 import net.minecraftforge.forgespi.language.{IModInfo, ModFileScanData}
 
-case class ScalaLanguageTarget(className: String, modID: String) extends IModLanguageLoader {
-  val isScalaObj = className.endsWith("$")
+case class ScalaLanguageTarget(override val className: String, override val modID: String) extends IModLanguageLoader with ModClassData {
 
   override def loadMod[T](info: IModInfo, modClassLoader: ClassLoader, modFileScanResults: ModFileScanData): T = {
     try {

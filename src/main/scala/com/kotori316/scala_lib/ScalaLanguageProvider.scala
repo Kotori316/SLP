@@ -2,6 +2,7 @@ package com.kotori316.scala_lib
 
 import java.util.function.{Consumer, Supplier}
 
+import cats.data.Validated
 import net.minecraftforge.fml.Logging.SCAN
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLanguageProvider
 import net.minecraftforge.forgespi.language.{ILifecycleEvent, IModLanguageProvider, ModFileScanData}
@@ -22,22 +23,16 @@ class ScalaLanguageProvider extends IModLanguageProvider {
         val id = data.getAnnotationData.get("value").asInstanceOf[String]
         ScalaLanguageTarget(className, id)
       }
-    val map = targets.collect { case ScalaLanguageTarget(_, id) => id }
-      .map { modId =>
-        targets.filter(_.modID == modId).reduce[ScalaLanguageTarget] {
-          case (a, b) =>
-            if (a.isScalaObj ^ b.isScalaObj) {
-              Option(a).filter(_.isScalaObj).getOrElse(b)
-            } else {
-              throw new RuntimeException(s"Duplicate mod id. for classes ${a.className} and ${b.className}.")
-            }
-        }
-      }.map { case t@ScalaLanguageTarget(name, id) =>
-      LOGGER.debug(SCAN, "Found @Mod class {} with id {}", name: Any, id: Any)
-      id -> t
+    ModClassData.findInstance(targets.toList) match {
+      case Validated.Valid(a) =>
+        val map = a.map { case t@ScalaLanguageTarget(name, id) =>
+          LOGGER.debug(SCAN, "Found @Mod class {} with id {}", name: Any, id: Any)
+          id -> t
+        }.toMap
+        scanData.addLanguageLoader(map.asJava)
+      case Validated.Invalid(e) =>
+        throw new RuntimeException(s"Exception in loading mods. ${e.mkString(""", """)}")
     }
-      .toMap
-    scanData.addLanguageLoader(map.asJava)
   }
 
   override def consumeLifecycleEvent[R <: ILifecycleEvent[R]](consumeEvent: Supplier[R]): Unit = ()
