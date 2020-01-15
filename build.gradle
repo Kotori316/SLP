@@ -133,6 +133,14 @@ publishing {
             // change to point to your repo.
             url = "$buildDir/repo"
         }
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Kotori316/SLP")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR") ?: ""
+                password = project.findProperty("githubToken") ?: System.getenv("REPO_TOKEN")
+            }
+        }
     }
     publications {
         mavenJava(MavenPublication) {
