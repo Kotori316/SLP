@@ -19,7 +19,7 @@ apply plugin: 'net.minecraftforge.gradle'
 
 def scala_version = getProperty("scala_version")
 def build_number = getProperty("build_number")
-version = "${scala_version}-${build_number}"
+version = "${scala_version}-build-${build_number}"
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ScalableCatsForce"
 
@@ -103,17 +103,17 @@ jar {
                 'Main-Class'              : mainClassName
         ])
     }
-    classifier = 'dev'
+    archiveClassifier.set('dev')
 }
 
 task srcJar(type: Jar) {
     from sourceSets.main.allSource
-    classifier = 'sources'
+    archiveClassifier.set('sources')
 }
 
 // Tell the artifact system about our extra jars
 artifacts {
-    archives shadowJar, srcJar
+    archives shadowJar as Object, srcJar
 }
 
 shadowJar {
