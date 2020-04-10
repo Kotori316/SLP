@@ -1,5 +1,6 @@
 package com.kotori316.scala_lib
 
+import cats.Monad
 import cats.data._
 import cats.implicits._
 
@@ -26,7 +27,9 @@ object ModClassData {
 
   private[this] object NotClass extends LoadingError("Not a class instance.")
 
-  case class Duplicated(id: String) extends LoadingError(s"Duplicated mod id. $id")
+  case class Duplicated(id: String) extends LoadingError(s"Duplicated mod id, $id.")
+
+  case class NotFound(id: String) extends LoadingError(s"Not Found $id")
 
   type VN[A] = ValidatedNec[LoadingError, A]
 
@@ -56,11 +59,22 @@ object ModClassData {
     (chooseObject(d1, d2) findValid chooseClass(d1, d2)).toEither
   }
 
-  def findInstance(data: List[ModClassData]): Validated[List[LoadingError], List[ModClassData]] = {
+  /**
+   * Checks if all mod classes in [[data]] are unique.
+   *
+   * @param data all mods data
+   * @return [[cats.data.Validated.Valid]] if all mods are unique.
+   *         [[cats.data.Validated.Invalid]] if loading error occurred.
+   */
+  def findInstance(data: Iterable[ModClassData]): Validated[List[LoadingError], List[ModClassData]] = {
     val a = data.groupBy(_.modID)
-      .map { case (_, value) =>
-        value.tail.foldLeft(value.head.asRight[NonEmptyChain[LoadingError]]) {
-          case (a, b) => a.flatMap(findInstanceBy2(_, b))
+      .map { case (key, value) =>
+        value match {
+          case head :: Nil => head.asRight
+          case head :: tail => tail.foldLeft(head.asRight[NonEmptyChain[LoadingError]]) {
+            case (a, b) => a >>= (findInstanceBy2(_, b))
+          }
+          case Nil => Monad[NonEmptyChain].pure(NotFound(key)).asLeft[ModClassData]
         }
       }
     if (a.exists(_.isLeft)) {

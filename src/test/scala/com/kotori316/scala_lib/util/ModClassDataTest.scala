@@ -1,5 +1,6 @@
 package com.kotori316.scala_lib.util
 
+import cats.data.Validated
 import cats.data.Validated.Invalid
 import com.kotori316.scala_lib.ModClassData
 import com.kotori316.scala_lib.ModClassData.Duplicated
@@ -63,6 +64,51 @@ private[util] class ModClassDataTest {
   def dummy(): Unit = {
     assertTrue(true)
     assertEquals(1, 3 - 2)
+  }
+
+  @Test
+  def easyGoodCase1(): Unit = {
+    val oneClass = Seq(
+      Data("com.kotori316.Mod", "my_mod")
+    )
+    val oneInstance = ModClassData.findInstance(oneClass)
+    assertEquals(Validated.valid(List(Data("com.kotori316.Mod", "my_mod"))), oneInstance)
+  }
+
+  @Test
+  def easyGoodCase1_1(): Unit = {
+    val fiveClasses = List(
+      Data("com.kotori316.Mod1", "my_mod1"),
+      Data("com.kotori316.Mod2", "my_mod2"),
+      Data("com.kotori316.Mod3", "my_mod3"),
+      Data("com.kotori316.Mod4", "my_mod4"),
+      Data("com.kotori316.Mod5", "my_mod5"),
+    )
+    val fiveInstances = ModClassData.findInstance(fiveClasses).map(_.sortBy(_.modID))
+    assertEquals(Validated.valid(fiveClasses), fiveInstances)
+  }
+
+  @Test
+  def easyGoodCase2(): Unit = {
+    val classAndObject = Seq(
+      Data("com.kotori316.Mod", "my_mod"), // Just a class
+      Data("com.kotori316.Mod$", "my_mod") // An Object
+    )
+    val validatedObject = ModClassData.findInstance(classAndObject)
+    assertEquals(Validated.valid(List(Data("com.kotori316.Mod$", "my_mod"))), validatedObject)
+  }
+
+  @Test
+  def easyErrorCase1(): Unit = {
+    val mods = List(
+      Data("com.kotori316.Mod1", "my_mod1"),
+      Data("com.kotori316.Mod_Extended", "my_mod1"),
+    )
+    val validiation = ModClassData.findInstance(mods)
+    assertAll(
+      () => assertTrue(validiation.isInvalid),
+      () => assertTrue(validiation.swap.exists(_.contains(Duplicated("my_mod1"))))
+    )
   }
 
   case class Data(override val className: String, override val modID: String) extends ModClassData
