@@ -5,11 +5,12 @@ import cats.implicits._
 import net.minecraftforge.fml.ModList
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 import org.apache.logging.log4j.LogManager
 
 /**
-  * Mod class representing `scala-library`.
-  */
+ * Mod class representing `scala-library`.
+ */
 @Mod(ScalaMC.modId)
 object ScalaMC {
   final val modId = "scala-library"
@@ -18,7 +19,7 @@ object ScalaMC {
   require(Class.forName("scala.Option").getMethod("empty").invoke(null) == None)
 
   // The way to get mod event bus. You can't use Mod.EventBusSubscriber.
-  ScalaLoadingContext.get().getModEventBus.addListener(this.init)
+  FMLJavaModLoadingContext.get().getModEventBus.addListener(this.init)
 
   def init(event: FMLCommonSetupEvent): Unit = {
     LOGGER.debug(s"Mod($modId) is loaded.")
@@ -35,9 +36,9 @@ object ScalaMC {
 }
 
 /**
-  * Dummy class.
-  * This class is never loaded by forge unless you call method or try to initialize.
-  */
+ * Dummy class.
+ * This class is never loaded by forge unless you call method or try to initialize.
+ */
 class ScalaMC {
   throw new java.lang.AssertionError("Mod class (not object) must not be loaded by forge. The companion object is mod instance.")
 }

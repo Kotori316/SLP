@@ -66,7 +66,7 @@ object ModClassData {
    * @return [[cats.data.Validated.Valid]] if all mods are unique.
    *         [[cats.data.Validated.Invalid]] if loading error occurred.
    */
-  def findInstance(data: Iterable[ModClassData]): Validated[List[LoadingError], List[ModClassData]] = {
+  def findInstance(data: List[ModClassData]): Validated[List[LoadingError], List[ModClassData]] = {
     val a = data.groupBy(_.modID)
       .map { case (key, value) =>
         value match {

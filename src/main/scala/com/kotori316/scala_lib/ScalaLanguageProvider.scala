@@ -23,7 +23,7 @@ class ScalaLanguageProvider extends IModLanguageProvider {
         val id = data.getAnnotationData.get("value").asInstanceOf[String]
         ScalaLanguageTarget(className, id)
       }
-    ModClassData.findInstance(targets) match {
+    ModClassData.findInstance(targets.toList) match {
       case Validated.Valid(a) =>
         val map = a.map { case t@ScalaLanguageTarget(name, id) =>
           LOGGER.debug(SCAN, "Found @Mod class {} with id {}", name: Any, id: Any)

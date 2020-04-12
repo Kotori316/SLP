@@ -68,7 +68,7 @@ private[util] class ModClassDataTest {
 
   @Test
   def easyGoodCase1(): Unit = {
-    val oneClass = Seq(
+    val oneClass = List(
       Data("com.kotori316.Mod", "my_mod")
     )
     val oneInstance = ModClassData.findInstance(oneClass)
@@ -90,7 +90,7 @@ private[util] class ModClassDataTest {
 
   @Test
   def easyGoodCase2(): Unit = {
-    val classAndObject = Seq(
+    val classAndObject = List(
       Data("com.kotori316.Mod", "my_mod"), // Just a class
       Data("com.kotori316.Mod$", "my_mod") // An Object
     )

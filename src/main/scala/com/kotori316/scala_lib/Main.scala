@@ -13,6 +13,7 @@ import scala.util.Properties
  */
 object Main {
   def main(args: Array[String]): Unit = {
+    println(s"Arg = $args")
     println("-" * 10 + " Hello Scala! " + "-" * 10)
     val comma = ", "
     val list = 1 :: 3 :: 4 :: 15 :: Nil

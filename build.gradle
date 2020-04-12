@@ -118,7 +118,7 @@ artifacts {
 
 shadowJar {
     def groupNames = ['org.scala-lang', 'org.scala-lang.modules', 'org.typelevel']
-    classifier = "with-library"
+    archiveClassifier.set("with-library")
     dependencies {
         include(dependency {
             groupNames.contains(it.moduleGroup)
