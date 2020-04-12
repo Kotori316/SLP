@@ -13,6 +13,9 @@ import net.minecraftforge.fml.LifecycleEventProvider;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModLoadingException;
 import net.minecraftforge.fml.ModLoadingStage;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.javafmlmod.FMLModContainer;
+import net.minecraftforge.fml.unsafe.UnsafeHacks;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.apache.logging.log4j.LogManager;
@@ -58,7 +61,7 @@ public class ScalaModContainer extends ModContainer {
 
         this.eventBus = BusBuilder.builder().setExceptionHandler(this::onEventFailed).setTrackPhases(false).build();
         this.configHandler = Optional.of(this.eventBus::post);
-        final ScalaLoadingContext contextExtension = new ScalaLoadingContext(this);
+        final FMLJavaModLoadingContext contextExtension = createContext(eventBus);
         this.contextExtension = () -> contextExtension;
     }
 
@@ -143,7 +146,6 @@ public class ScalaModContainer extends ModContainer {
         }
     }
 
-
     private static Consumer<LifecycleEventProvider.LifecycleEvent> dummy() {
         return lifecycleEvent -> {
         };
@@ -166,5 +168,24 @@ public class ScalaModContainer extends ModContainer {
     @Override
     protected void acceptEvent(Event e) {
         this.getEventBus().post(e);
+    }
+
+    public static FMLJavaModLoadingContext createContext(IEventBus bus) {
+        try {
+            FMLJavaModLoadingContext instance = UnsafeHacks.newInstance(FMLJavaModLoadingContext.class);
+            FMLModContainer container = UnsafeHacks.newInstance(FMLModContainer.class);
+            UnsafeHacks.setField(FMLModContainer.class.getDeclaredField("eventBus"), container, bus);
+            UnsafeHacks.setField(FMLJavaModLoadingContext.class.getDeclaredField("container"), instance, container);
+            return instance;
+        } catch (ReflectiveOperationException e) {
+            LOGGER.error("Error happened in creating dummy instance.", e);
+            try {
+                return (FMLJavaModLoadingContext) Class.forName("com.kotori316.scala_lib.ScalaLoadingContext")
+                    .getConstructor(IEventBus.class).newInstance(bus);
+            } catch (ReflectiveOperationException ex) {
+                LOGGER.error("Error happened in creating real instance.", ex);
+                return null;
+            }
+        }
     }
 }
