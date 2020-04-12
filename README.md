@@ -27,7 +27,7 @@ In fact, there are no binary changes between 1.14.4 branch and 1.15.2 branch.
 
   If you want to write Mod entry class in Scala, add this jar to dependency.
   And.
-  * Set `modloader` in your `mods.toml` file to "kotori_scala". (`modLoader="kotori_scala"`) Loader version is like `loaderVersion="[0,)"`.
+  * Set `modloader` in your `mods.toml` file to "kotori_scala". (`modLoader="kotori_scala"`) Loader version is like `loaderVersion="[2.13.1-build-6,2.14)"`.
   * See [`ScalaMC.scala`](https://github.com/Kotori316/SLP/blob/1.15.2/src/main/scala/com/kotori316/scala_lib/ScalaMC.scala) and [`mods.toml`](https://github.com/Kotori316/SLP/blob/1.15.2/src/main/resources/META-INF/mods.toml) in this project.
   * **IMPORTANT** - You can get Event Bus for each mod by calling `ScalaLoadingContext.get().getModEventBus` and `IEventBus#addListener(Consumer)`, `IEventBus#register(Object)` work fine. But you can't use `@Mod.EventBusSubscriber` for inner objects because they don't have static methods in byte code. As for outer objects,  `@Mod.EventBusSubscriber` may work if you pass FORGE as parameter but **crash** if you pass MOD due to the controlled access modifier.
 
