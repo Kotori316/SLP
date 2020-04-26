@@ -79,8 +79,8 @@ dependencies {
     implementation group: 'org.typelevel', name: "cats-core_${scala_major}", version: cats_version
 
     // Test Dependencies.
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.4.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.4.2")
+    testImplementation(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.6.2')
+    testRuntimeOnly(group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.6.2')
 }
 
 test {
