@@ -6,14 +6,16 @@ private[util] trait HighImplicit {
   implicit val IntNeighbor: Neighbor[Int] = new Neighbor[Int] {
     override def next(origin: Int): Set[Int] = Set(origin + 1, origin - 1)
 
-    override def nextRepeat(origin: Int, n: Int, includeOrigin: Boolean): Set[Int] =
+    override def nextRepeat(origin: Int, n: Int, includeOrigin: Boolean): Set[Int] = {
+      if (n < 0) return Set.empty
       if (includeOrigin)
         Range.inclusive(origin - n, origin + n).toSet
       else
-        Range.inclusive(origin - n, origin + n).filter(_ != origin).toSet
+        (Range(origin - n, origin) ++ Range.inclusive(origin + 1, origin + n)).toSet
+    }
 
     override def withInDistance(origin: Int, distance: Int, cond: Int => Boolean, includeOrigin: Boolean): Map[Int, Int] = {
-      if (distance <= -1) return Map.empty
+      if (distance < 0) return Map.empty
       val right = Range.inclusive(origin + (if (includeOrigin) 0 else 1), origin + distance)
         .takeWhile(cond)
       val left = Range.inclusive(origin - 1, origin - distance, step = -1)
