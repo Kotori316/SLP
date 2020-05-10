@@ -11,7 +11,7 @@ object NormInstanceL1 {
   implicit val byteNorm: Norm[Byte] = (a: Byte) => a.abs
   implicit val shortNorm: Norm[Short] = (a: Short) => a.abs
   implicit val intNorm: Norm[Int] = (a: Int) => a.abs
-  implicit val longNorm: Norm[Long] = (a: Long) => a.abs
+  implicit val longNorm: Norm[Long] = (a: Long) => a.abs.toDouble
   implicit val floatNorm: Norm[Float] = (a: Float) => a.abs
   implicit val doubleNorm: Norm[Double] = (a: Double) => a.abs
 

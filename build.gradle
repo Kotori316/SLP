@@ -130,6 +130,7 @@ shadowJar {
 publishing {
     repositories {
         maven {
+            name = "BuildDir"
             // change to point to your repo.
             url = "$buildDir/repo"
         }
