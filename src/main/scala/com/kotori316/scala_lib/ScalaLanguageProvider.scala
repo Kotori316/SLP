@@ -6,7 +6,8 @@ import cats.data.Validated
 import net.minecraftforge.fml.Logging.SCAN
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLanguageProvider
 import net.minecraftforge.forgespi.language.{ILifecycleEvent, IModLanguageProvider, ModFileScanData}
-import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.{LogManager, Logger}
+import org.objectweb.asm.Type
 
 class ScalaLanguageProvider extends IModLanguageProvider {
 
@@ -39,6 +40,6 @@ class ScalaLanguageProvider extends IModLanguageProvider {
 }
 
 object ScalaLanguageProvider {
-  val MOD_ANNOTATION = FMLJavaModLanguageProvider.MODANNOTATION
-  val LOGGER = LogManager.getLogger(getClass)
+  val MOD_ANNOTATION: Type = FMLJavaModLanguageProvider.MODANNOTATION
+  val LOGGER: Logger = LogManager.getLogger(getClass)
 }

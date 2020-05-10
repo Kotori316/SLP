@@ -147,9 +147,9 @@ private[util] class NeighborTest {
   def withInDistanceA(): Unit = {
     /*
       5******
-      4*    *
-      3*    *
-      2*    *
+      4*
+      3*
+      2*
       1*
       0*****@
        012345
@@ -186,6 +186,33 @@ private[util] class NeighborTest {
       () => assertEquals(6, distanceMap(7 -> 5)),
       () => assertTrue(distance8.contains((0, 0))),
       () => assertTrue(distance8.contains((5, 5))),
+    )
+  }
+
+  @Test
+  def withInDistanceC(): Unit = {
+    /*
+      5@*****
+      4*    *
+      3*    *
+      2*    *
+      1*
+      0*****@
+       012345
+     */
+    val validArea = (List(0, 5) >>= { y => List.range(0, 6).map(x => (x, y)) }).toSet ++
+      List.range(0, 6).map(y => (0, y)).toSet ++ List.range(2, 5).map(y => (5, y)).toSet
+    val pair1 = (0, 5).withInDistance(6, validArea, includeOrigin = true).toList.sortBy { case (_, i) => i }
+    val pair2 = (5, 0).withInDistance(validArea.size, validArea, includeOrigin = true).toList.sortBy { case (_, i) => i }
+    assertAll(
+      () => assertEquals(13, pair1.size),
+      () => assertEquals((1, 0), pair1.last._1),
+      () => assertEquals(6, pair1.last._2),
+      () => assertEquals((0, 5), pair1.head._1),
+      () => assertTrue(pair1.map(_._1).forall(validArea)),
+      () => assertTrue(pair2.map(_._1).forall(validArea)),
+      () => assertTrue(18 === pair2.last._2, "Last of pair2, 18 === pair2.last._2"),
+      () => assertTrue((0, 0) === pair2(5)._1, "(0, 0) === pair2(5)._1"),
     )
   }
 

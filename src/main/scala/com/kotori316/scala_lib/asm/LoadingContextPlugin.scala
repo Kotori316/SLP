@@ -3,7 +3,7 @@ package com.kotori316.scala_lib.asm
 import java.util
 
 import cpw.mods.modlauncher.serviceapi.ILaunchPluginService
-import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.{LogManager, Logger}
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.{Opcodes, Type}
 
@@ -32,7 +32,7 @@ class LoadingContextPlugin extends ILaunchPluginService {
 }
 
 object LoadingContextPlugin {
-  val LOGGER = LogManager.getLogger(classOf[LoadingContextPlugin])
+  val LOGGER: Logger = LogManager.getLogger(classOf[LoadingContextPlugin])
   private val YAY = util.EnumSet.of(ILaunchPluginService.Phase.AFTER)
   private val NAY = util.EnumSet.noneOf(classOf[ILaunchPluginService.Phase])
 }

@@ -6,7 +6,7 @@ import net.minecraftforge.fml.ModList
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
-import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.{LogManager, Logger}
 
 /**
  * Mod class representing `scala-library`.
@@ -14,7 +14,7 @@ import org.apache.logging.log4j.LogManager
 @Mod(ScalaMC.modId)
 object ScalaMC {
   final val modId = "scala-library"
-  val LOGGER = LogManager.getLogger(modId)
+  val LOGGER: Logger = LogManager.getLogger(modId)
 
   require(Class.forName("scala.Option").getMethod("empty").invoke(null) == None)
 

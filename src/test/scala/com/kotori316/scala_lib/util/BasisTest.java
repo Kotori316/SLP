@@ -14,6 +14,8 @@ import scala.jdk.javaapi.CollectionConverters;
 
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
+@SuppressWarnings("serial")
+    // Just a test class
 class BasisTest {
 
     Basis<Integer> integerBasis;

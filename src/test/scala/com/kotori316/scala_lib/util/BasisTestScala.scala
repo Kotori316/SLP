@@ -19,9 +19,9 @@ class BasisTestScala {
   def withInDistanceA(): Unit = {
     /*
       5******
-      4*    *
-      3*    *
-      2*    *
+      4*
+      3*
+      2*
       1*
       0*****@
        012345
