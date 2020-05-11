@@ -7,7 +7,7 @@ trait ModClassData {
   val className: String
   val modID: String
 
-  def isScalaObj = className.endsWith("$")
+  def isScalaObj: Boolean = className.endsWith("$")
 }
 
 object ModClassData {
@@ -19,7 +19,7 @@ object ModClassData {
   }
 
   sealed class LoadingError(message: String) {
-    override def toString = message
+    override def toString: String = message
   }
 
   private[this] object NotObject extends LoadingError("Not an Object.")
