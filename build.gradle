@@ -29,7 +29,7 @@ compileScala {
 }
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200225-1.15.1'
+    mappings channel: 'snapshot', version: '20200514-1.15.1'
     runs {
         client {
             workingDirectory project.file('Minecraft')
@@ -71,7 +71,7 @@ dependencies {
     def java8_compat_version = getProperty("java8_compat_version")
     def cats_version = getProperty("cats_version")
 
-    minecraft 'net.minecraftforge:forge:1.15.2-31.1.77'
+    minecraft 'net.minecraftforge:forge:1.15.2-31.2.0'
     implementation "org.scala-lang:scala-library:${scala_version}"
 //    implementation "org.scala-lang.modules:scala-java8-compat_${scala_major}:${java8_compat_version}"
 
