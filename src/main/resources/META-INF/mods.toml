@@ -1,0 +1,27 @@
+modLoader="kotori_scala" # The name of laugage provider
+loaderVersion="[2.13.2,2.14.0),[31]" # Version filter.In this case, scala 2.13.2 and newer but under 2.14
+
+[[mods]]
+modId="scala-library-object"
+version="${file.jarVersion}"
+displayName="Scala Lib"
+credits="Kotori316"
+authors="Kotori316"
+description='''
+A langulage provider for Scala mods.'''
+[[mods]]
+modId="scala-library-java"
+displayName="Java"
+
+[[dependencies.scala-library-object]]
+    modId="forge"
+    mandatory=true
+    versionRange="[31.0.0,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.scala-library-object]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.15.2,)"
+    ordering="NONE"
+    side="BOTH"

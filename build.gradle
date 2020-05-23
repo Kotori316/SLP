@@ -41,7 +41,7 @@ minecraft {
             property 'forge.logging.console.level', 'info'
 
             mods {
-                "scala-library" {
+                "scala-library-object" {
                     source sourceSets.main
                 }
             }
@@ -57,7 +57,7 @@ minecraft {
             property 'forge.logging.console.level', 'info'
 
             mods {
-                "scala-library" {
+                "scala-library-object" {
                     source sourceSets.main
                 }
             }
