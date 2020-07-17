@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
-    - name: Test
-      run: chmod +x ./gradlew && ./gradlew test --info --continue --warning-mode all
-      env:
-        REPO_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
+      - name: Test
+        run: chmod +x ./gradlew && ./gradlew test --info --continue --warning-mode all
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
