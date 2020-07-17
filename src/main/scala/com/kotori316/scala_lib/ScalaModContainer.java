@@ -179,13 +179,7 @@ public class ScalaModContainer extends ModContainer {
             return instance;
         } catch (ReflectiveOperationException e) {
             LOGGER.error("Error happened in creating dummy instance.", e);
-            try {
-                return (FMLJavaModLoadingContext) Class.forName("com.kotori316.scala_lib.ScalaLoadingContext")
-                    .getConstructor(IEventBus.class).newInstance(bus);
-            } catch (ReflectiveOperationException ex) {
-                LOGGER.error("Error happened in creating real instance.", ex);
-                return null;
-            }
+            return null;
         }
     }
 }
