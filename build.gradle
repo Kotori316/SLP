@@ -10,7 +10,7 @@ buildscript {
 }
 plugins {
     id 'scala'
-    id 'com.github.johnrengelman.shadow' version '4.0.4'
+    id "com.github.johnrengelman.shadow" version "5.2.0"
     id 'maven-publish'
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -29,7 +29,7 @@ compileScala {
 }
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200514-1.15.1'
+    mappings channel: 'snapshot', version: '20200514-1.16'
     runs {
         client {
             workingDirectory project.file('Minecraft')
@@ -71,7 +71,7 @@ dependencies {
     def java8_compat_version = getProperty("java8_compat_version")
     def cats_version = getProperty("cats_version")
 
-    minecraft 'net.minecraftforge:forge:1.15.2-31.2.0'
+    minecraft 'net.minecraftforge:forge:1.16.1-32.0.66'
     implementation "org.scala-lang:scala-library:${scala_version}"
 //    implementation "org.scala-lang.modules:scala-java8-compat_${scala_major}:${java8_compat_version}"
 
