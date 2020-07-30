@@ -7,7 +7,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 
 /**
  * Yo can use EventBusSubscriber annotation to register top object.
- * Both FORGE and MOD event bus are available.
+ * Both [[Bus.FORGE]] and [[Bus.MOD]] event bus are available.
  */
 @Mod.EventBusSubscriber(modid = ScalaModObject.modId, bus = Bus.MOD)
 object EventHandlers {
