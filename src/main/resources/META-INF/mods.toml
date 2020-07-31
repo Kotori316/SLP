@@ -1,5 +1,6 @@
 modLoader="kotori_scala" # The name of laugage provider
 loaderVersion="[2.13.2,2.14.0),[31]" # Version filter. In this case, scala 2.13.2 and newer but under 2.14
+license="APACHE LICENSE, VERSION 2.0"
 
 [[mods]]
 modId="scala-library-object"

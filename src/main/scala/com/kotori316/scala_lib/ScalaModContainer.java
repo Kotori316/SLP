@@ -166,7 +166,9 @@ public class ScalaModContainer extends ModContainer {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     protected void acceptEvent(Event e) {
+        if (this.shutdown) return; // Remove in 1.16.2
         this.getEventBus().post(e);
     }
 
