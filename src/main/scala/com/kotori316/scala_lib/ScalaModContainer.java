@@ -1,7 +1,6 @@
 package com.kotori316.scala_lib;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import net.minecraftforge.eventbus.EventBusErrorMessage;
 import net.minecraftforge.eventbus.api.BusBuilder;
@@ -13,6 +12,7 @@ import net.minecraftforge.fml.LifecycleEventProvider;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModLoadingException;
 import net.minecraftforge.fml.ModLoadingStage;
+import net.minecraftforge.fml.event.lifecycle.IModBusEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.fml.unsafe.UnsafeHacks;
@@ -49,17 +49,18 @@ public class ScalaModContainer extends ModContainer {
         this.scanData = modFileScanResults;
         isScalaObject = className.endsWith("$");
 
-        triggerMap.put(ModLoadingStage.CONSTRUCT, dummy().andThen(this::beforeEvent).andThen(this::constructMod).andThen(this::afterEvent));
-        triggerMap.put(ModLoadingStage.CREATE_REGISTRIES, dummy().andThen(this::beforeEvent).andThen(this::fireEvent).andThen(this::afterEvent));
-        triggerMap.put(ModLoadingStage.LOAD_REGISTRIES, dummy().andThen(this::beforeEvent).andThen(this::fireEvent).andThen(this::afterEvent));
-        triggerMap.put(ModLoadingStage.COMMON_SETUP, dummy().andThen(this::beforeEvent).andThen(this::preInitMod).andThen(this::fireEvent).andThen(this::afterEvent));
-        triggerMap.put(ModLoadingStage.SIDED_SETUP, dummy().andThen(this::beforeEvent).andThen(this::fireEvent).andThen(this::afterEvent));
-        triggerMap.put(ModLoadingStage.ENQUEUE_IMC, dummy().andThen(this::beforeEvent).andThen(this::initMod).andThen(this::fireEvent).andThen(this::afterEvent));
-        triggerMap.put(ModLoadingStage.PROCESS_IMC, dummy().andThen(this::beforeEvent).andThen(this::fireEvent).andThen(this::afterEvent));
-        triggerMap.put(ModLoadingStage.COMPLETE, dummy().andThen(this::beforeEvent).andThen(this::completeLoading).andThen(this::fireEvent).andThen(this::afterEvent));
-        triggerMap.put(ModLoadingStage.GATHERDATA, dummy().andThen(this::beforeEvent).andThen(this::fireEvent).andThen(this::afterEvent));
+        Runnable changeStage = () -> this.modLoadingStage = ModLoadingStage.ERROR;
+        triggerMap.put(ModLoadingStage.CONSTRUCT, dummy().andThen(this::beforeEvent).andThen(this::constructMod).andThen(this::afterEvent).build(changeStage));
+        triggerMap.put(ModLoadingStage.CREATE_REGISTRIES, dummy().andThen(this::beforeEvent).andThen(this::fireEvent).andThen(this::afterEvent).build(changeStage));
+        triggerMap.put(ModLoadingStage.LOAD_REGISTRIES, dummy().andThen(this::beforeEvent).andThen(this::fireEvent).andThen(this::afterEvent).build(changeStage));
+        triggerMap.put(ModLoadingStage.COMMON_SETUP, dummy().andThen(this::beforeEvent).andThen(this::preInitMod).andThen(this::fireEvent).andThen(this::afterEvent).build(changeStage));
+        triggerMap.put(ModLoadingStage.SIDED_SETUP, dummy().andThen(this::beforeEvent).andThen(this::fireEvent).andThen(this::afterEvent).build(changeStage));
+        triggerMap.put(ModLoadingStage.ENQUEUE_IMC, dummy().andThen(this::beforeEvent).andThen(this::initMod).andThen(this::fireEvent).andThen(this::afterEvent).build(changeStage));
+        triggerMap.put(ModLoadingStage.PROCESS_IMC, dummy().andThen(this::beforeEvent).andThen(this::fireEvent).andThen(this::afterEvent).build(changeStage));
+        triggerMap.put(ModLoadingStage.COMPLETE, dummy().andThen(this::beforeEvent).andThen(this::completeLoading).andThen(this::fireEvent).andThen(this::afterEvent).build(changeStage));
+        triggerMap.put(ModLoadingStage.GATHERDATA, dummy().andThen(this::beforeEvent).andThen(this::fireEvent).andThen(this::afterEvent).build(changeStage));
 
-        this.eventBus = BusBuilder.builder().setExceptionHandler(this::onEventFailed).setTrackPhases(false).build();
+        this.eventBus = BusBuilder.builder().setExceptionHandler(this::onEventFailed).setTrackPhases(false).markerType(IModBusEvent.class).build();
         this.configHandler = Optional.of(this.eventBus::post);
         final FMLJavaModLoadingContext contextExtension = createContext(eventBus);
         this.contextExtension = () -> contextExtension;
@@ -112,9 +113,14 @@ public class ScalaModContainer extends ModContainer {
             }
         }
 
-        LOGGER.debug(LOADING, "Injecting Automatic event subscribers for {}", getModId());
-        AutomaticEventSubscriber.inject(this, this.scanData, this.modClass.getClassLoader());
-        LOGGER.debug(LOADING, "Completed Automatic event subscribers for {}", getModId());
+        try {
+            LOGGER.debug(LOADING, "Injecting Automatic event subscribers for {}", getModId());
+            AutomaticEventSubscriber.inject(this, this.scanData, this.modClass.getClassLoader());
+            LOGGER.debug(LOADING, "Completed Automatic event subscribers for {}", getModId());
+        } catch (Throwable e) {
+            LOGGER.error(LOADING, "Failed to register automatic subscribers. ModID: {}, class {}", getModId(), modClass.getName(), e);
+            throw new ModLoadingException(modInfo, event.fromStage(), "fml.modloading.failedtoloadmod", e, modClass);
+        }
     }
 
     private void onEventFailed(IEventBus bus, Event event, IEventListener[] listeners, int i, Throwable throwable) {
@@ -140,15 +146,15 @@ public class ScalaModContainer extends ModContainer {
     private void afterEvent(LifecycleEventProvider.LifecycleEvent event) {
         if (getCurrentState() == ModLoadingStage.ERROR) {
             LOGGER.error(LOADING, "An error occurred while dispatching event {} to {}", event.fromStage(), getModId());
+            this.eventBus.shutdown();
         } else {
             assert true; // Dummy to avoid empty else block.
 //            LOGGER.debug(LOADING, "Scala container for {} ends {}.", className, event);
         }
     }
 
-    private static Consumer<LifecycleEventProvider.LifecycleEvent> dummy() {
-        return lifecycleEvent -> {
-        };
+    private static ScalaEventAcceptor.Builder<LifecycleEventProvider.LifecycleEvent> dummy() {
+        return ScalaEventAcceptor.dummy();
     }
 
     public IEventBus getEventBus() {
