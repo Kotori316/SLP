@@ -1,6 +1,6 @@
 {
   "pack": {
     "description": "Scalable Cat's Force, a scala language loader",
-    "pack_format": 5
+    "pack_format": 6
   }
 }
