@@ -1,5 +1,6 @@
 package com.kotori316.scala_lib;
 
+import java.lang.reflect.Constructor;
 import java.util.Optional;
 
 import net.minecraftforge.eventbus.EventBusErrorMessage;
@@ -100,13 +101,15 @@ public class ScalaModContainer extends ModContainer {
                 modClass = Class.forName(className, true, modClassLoader);
                 LOGGER.debug(LOADING, "Scala Class Loaded {} with {}.", modClass, modClass.getClassLoader());
                 LOGGER.debug(LOADING, "Scala Mod instance for {} is about to create. {}", getModId(), modClass.getName());
-                modInstance = modClass.newInstance();
+                Constructor<?> constructor = modClass.getConstructor();
+                constructor.setAccessible(true);
+                modInstance = constructor.newInstance();
                 LOGGER.debug(LOADING, "Scala Mod instance for {} created. {}", getModId(), modInstance);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
                 LOGGER.error(LOADING, "Failed to load class {}", className, e);
                 throw new ModLoadingException(info, ModLoadingStage.CONSTRUCT, "fml.modloading.failedtoloadmodclass", e);
-            } catch (IllegalAccessException | InstantiationException e) {
+            } catch (ReflectiveOperationException e) {
                 e.printStackTrace();
                 LOGGER.error(LOADING, "Failed to create mod instance. ModID: {}, class {}", getModId(), modClass.getName(), e);
                 throw new ModLoadingException(modInfo, event.fromStage(), "fml.modloading.failedtoloadmod", e, modClass);
