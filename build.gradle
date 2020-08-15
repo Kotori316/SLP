@@ -66,6 +66,22 @@ minecraft {
                 }
             }
         }
+        data {
+            workingDirectory project.file('run-server')
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'info'
+
+            if (Boolean.valueOf(System.getenv("GITHUB_ACTIONS")))
+                args '--mod', "slp_test", '--dev'
+            else
+                args '--mod', "slp_test", '--all'
+
+            mods {
+                "slp_test" {
+                    source sourceSets.main
+                }
+            }
+        }
     }
 }
 
@@ -83,8 +99,9 @@ dependencies {
     implementation group: 'org.typelevel', name: "cats-core_${scala_major}", version: cats_version
 
     // Test Dependencies.
-    testImplementation(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.6.2')
-    testRuntimeOnly(group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.6.2')
+    implementation(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.6.2')
+    runtimeOnly(group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.6.2')
+    implementation(group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.6.2')
 }
 
 test {
@@ -97,7 +114,7 @@ mixin {
 jar {
     manifest {
         attributes([
-                'FMLModType': 'LANGPROVIDER',
+                'FMLModType'  : 'LANGPROVIDER',
                 "MixinConfigs": "slp.mixins.json"
         ])
         attributes([

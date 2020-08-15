@@ -16,7 +16,7 @@ import com.kotori316.scala_lib.util.LazySupplierWrapper;
 
 @Mixin(LazyOptional.class)
 public abstract class OptionalMixin<T> {
-    LazySupplierWrapper<T> kotori_scala_LazyOptional_wrapper;
+    private LazySupplierWrapper<T> kotori_scala_LazyOptional_wrapper;
 
     @SuppressWarnings("unchecked")
     @Inject(method = "<init>", at = @At("TAIL"))

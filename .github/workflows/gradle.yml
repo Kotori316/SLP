@@ -20,7 +20,19 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
-      - name: Test
+      - name: Test JUnit
         run: chmod +x ./gradlew && ./gradlew test --info --continue --warning-mode all
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
+      - name: Test runData
+          run: chmod +x ./gradlew && ./gradlew runData
+          continue-on-error: true
+          env:
+            REPO_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
+      - name: Check started and errored
+        run: |
+          [ -f test_started.txt ]
+          ! [ -f error-trace.txt ]
+      - id: show-failure-log
+        if: failure()
+        run: cat error-trace.txt

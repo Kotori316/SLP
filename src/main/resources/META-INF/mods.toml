@@ -16,6 +16,11 @@ modId = "scala-library-java"
 displayName = "Java"
 description = '''
 A example mod in kotori_scala'''
+[[mods]]
+modId = "slp_test"
+displayName = "Dummy to test SLP"
+description = '''
+Test starter.'''
 
 [[dependencies.scala-library-object]]
 modId = "forge"
