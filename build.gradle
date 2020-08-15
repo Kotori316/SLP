@@ -3,9 +3,11 @@ buildscript {
         jcenter()
         mavenCentral()
         maven { url = "http://files.minecraftforge.net/maven" }
+        maven { url = 'https://repo.spongepowered.org/maven' }
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 plugins {
@@ -14,6 +16,7 @@ plugins {
     id 'maven-publish'
 }
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 
@@ -39,6 +42,7 @@ minecraft {
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'info'
+            property "mixin.debug.export", "true"
 
             mods {
                 "scala-library-object" {
@@ -86,11 +90,15 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+mixin {
+    add sourceSets.main, "mixins.slp.refmap.json"
+}
 
 jar {
     manifest {
         attributes([
-                'FMLModType': 'LANGPROVIDER'
+                'FMLModType': 'LANGPROVIDER',
+                "MixinConfigs": "slp.mixins.json"
         ])
         attributes([
                 "Specification-Title"     : project.name,
