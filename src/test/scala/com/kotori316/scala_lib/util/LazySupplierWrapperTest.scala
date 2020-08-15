@@ -27,11 +27,11 @@ class LazySupplierWrapperTest {
   def ifPresentTest(): Unit = {
     val bool1 = new AtomicBoolean(false)
     val bool2 = new AtomicBoolean(false)
-    aWrapper.ifPresent((_: Any) => bool1.set(true), () => bool2.set(true))
+    aWrapper.ifPresent((_: Any) => bool1.set(true), c(() => bool2.set(true)))
     assertAll(() => assertTrue(bool1.get()), () => assertFalse(bool2.get()))
     bool1.set(false)
 
-    noneWrapper.ifPresent((_: Any) => bool1.set(true), () => bool2.set(true))
+    noneWrapper.ifPresent((_: Any) => bool1.set(true), c(() => bool2.set(true)))
     assertAll(() => assertFalse(bool1.get()), () => assertTrue(bool2.get()))
   }
 
@@ -59,10 +59,12 @@ class LazySupplierWrapperTest {
   @Test
   def orElseTest(): Unit = {
     val bool1 = new AtomicBoolean(false)
-    assertTrue(aWrapper.orElse("NULL", () => bool1.set(true)) === "a", s"A $aWrapper")
+    assertTrue(aWrapper.orElse("NULL", c(() => bool1.set(true))) === "a", s"A $aWrapper")
     assertFalse(bool1.get(), "IfEmpty not called.")
 
-    assertTrue(noneWrapper.orElse("NULL", () => bool1.set(true)) === "NULL", s"A $noneWrapper")
+    assertTrue(noneWrapper.orElse("NULL", c(() => bool1.set(true))) === "NULL", s"A $noneWrapper")
     assertTrue(bool1.get(), "IfEmpty called.")
   }
+
+  private def c(a: () => Unit): Runnable = () => a()
 }
