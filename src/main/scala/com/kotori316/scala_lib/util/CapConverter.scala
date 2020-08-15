@@ -5,6 +5,8 @@ import cats.data.OptionT
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.util.LazyOptional
 
+import scala.language.implicitConversions
+
 trait CapConverter {
 
   type Cap[T] = OptionT[Eval, T]
@@ -23,6 +25,8 @@ trait CapConverter {
     }
   }
 
+  implicit def toCapHelper[T](capability: Capability[T]): CapConverter.CapHelper[T] = new CapConverter.CapHelper(capability)
+  implicit def toAsScalaLO[T](value: LazyOptional[T]): CapConverter.AsScalaLO[T] = new CapConverter.AsScalaLO(value)
 }
 
 object CapConverter extends CapConverter {
