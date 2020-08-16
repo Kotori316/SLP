@@ -24,6 +24,10 @@ private[test] class CapOptionalTest {
     val none = Cap.asJava(Cap.empty[String])
     assertEquals("NULL", none.orElse("NULL"))
     assertTrue(!none.isPresent)
+
+    def d[T](a: LazyOptional[T])(implicit ev: T =:= String) = ev
+
+    assertTrue(d(none) != null)
   }
 
   @Test

@@ -1,11 +1,13 @@
 package com.kotori316.scala_lib.util
 
+import java.util.NoSuchElementException
+
 import cats.Eval
 import cats.data.OptionT
 import net.minecraftforge.common.util._
 
-private[scala_lib] case class LazySupplierWrapper[T](supplier: OptionT[Eval, T]) extends NonNullSupplier[OptionT[Eval, T]] {
-  override def get(): OptionT[Eval, T] = supplier
+private[scala_lib] case class LazySupplierWrapper[T](supplier: OptionT[Eval, T]) extends NonNullSupplier[T] {
+  override def get(): T = supplier.getOrElse(throw new NoSuchElementException("Supplier is empty.")).value
 
   def isPresent: Boolean = supplier.isDefined.value
 

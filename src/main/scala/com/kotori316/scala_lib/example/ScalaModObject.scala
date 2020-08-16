@@ -42,6 +42,8 @@ object ScalaModObject {
 
   /**
    * Automatic subscribing of events in inner object is NOT <strong>supported</strong>.
+   * To get the correct way, see [[EventHandlers]].
+   * Registering this object via [[net.minecraftforge.eventbus.api.IEventBus]]#`register` will work fine.
    */
   @Mod.EventBusSubscriber(bus = Bus.FORGE, modid = modId)
   object BadEventHandler {

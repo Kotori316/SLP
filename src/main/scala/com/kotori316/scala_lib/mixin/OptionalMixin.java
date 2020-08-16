@@ -15,6 +15,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.kotori316.scala_lib.util.LazySupplierWrapper;
 
+/**
+ * Mixin Object for {@link LazyOptional}.
+ * Works when the supplier is instance of {@link LazySupplierWrapper}, the wrapper of {@link cats.data.OptionT} and {@link cats.Eval}.
+ *
+ * @param <T> the same as the parameter {@link LazyOptional} has.
+ */
 @SuppressWarnings("unchecked")
 @Mixin(LazyOptional.class)
 public abstract class OptionalMixin<T> {
@@ -65,7 +71,7 @@ public abstract class OptionalMixin<T> {
             LazyOptional<U> r;
             if (isValid) {
                 LazySupplierWrapper<U> wrapper = ((LazySupplierWrapper<T>) supplier).map(mapper);
-                r = LazyOptional.of((NonNullSupplier<U>) wrapper);
+                r = LazyOptional.of(wrapper);
             } else {
                 r = LazyOptional.empty();
             }
@@ -79,7 +85,7 @@ public abstract class OptionalMixin<T> {
         if (kotori_scala_LazyOptional_wrapping) {
             if (isValid) {
                 LazySupplierWrapper<T> wrapper = ((LazySupplierWrapper<T>) supplier).filter(predicate);
-                cir.setReturnValue(LazyOptional.of((NonNullSupplier<T>) wrapper));
+                cir.setReturnValue(LazyOptional.of(wrapper));
             } else {
                 cir.setReturnValue(LazyOptional.empty());
             }

@@ -88,11 +88,9 @@ public class ScalaModContainer extends ModContainer {
                 LOGGER.debug(LOADING, "Scala Class Loaded {} with {}.", modClass, modClass.getClassLoader());
                 modInstance = modClass.getField("MODULE$").get(null);
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
                 LOGGER.error(LOADING, "Failed to load class {}", className, e);
                 throw new ModLoadingException(info, ModLoadingStage.CONSTRUCT, "fml.modloading.failedtoloadmodclass", e);
             } catch (IllegalAccessException | NoSuchFieldException e) {
-                e.printStackTrace();
                 LOGGER.error(LOADING, "Failed to create mod instance. ModID: {}, class {}", getModId(), modClass.getName(), e);
                 throw new ModLoadingException(modInfo, event.fromStage(), "fml.modloading.failedtoloadmod", e, modClass);
             }
@@ -106,11 +104,9 @@ public class ScalaModContainer extends ModContainer {
                 modInstance = constructor.newInstance();
                 LOGGER.debug(LOADING, "Scala Mod instance for {} created. {}", getModId(), modInstance);
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
                 LOGGER.error(LOADING, "Failed to load class {}", className, e);
                 throw new ModLoadingException(info, ModLoadingStage.CONSTRUCT, "fml.modloading.failedtoloadmodclass", e);
             } catch (ReflectiveOperationException e) {
-                e.printStackTrace();
                 LOGGER.error(LOADING, "Failed to create mod instance. ModID: {}, class {}", getModId(), modClass.getName(), e);
                 throw new ModLoadingException(modInfo, event.fromStage(), "fml.modloading.failedtoloadmod", e, modClass);
             }
@@ -189,7 +185,7 @@ public class ScalaModContainer extends ModContainer {
             UnsafeHacks.setField(FMLJavaModLoadingContext.class.getDeclaredField("container"), instance, container);
             return instance;
         } catch (ReflectiveOperationException e) {
-            LOGGER.error("Error happened in creating dummy instance.", e);
+            LOGGER.fatal("Error happened in creating dummy instance.", e);
             return null;
         }
     }

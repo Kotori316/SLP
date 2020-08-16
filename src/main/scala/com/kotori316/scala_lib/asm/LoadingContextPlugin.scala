@@ -11,6 +11,8 @@ import scala.jdk.javaapi.CollectionConverters
 
 /**
  * Can't be used because [[ILaunchPluginService]] is not loaded jars whose MANIFEST.MF has "FMLModType: LANGPROVIDER".
+ *
+ * <strong>NOT USED</strong>
  */
 class LoadingContextPlugin extends ILaunchPluginService {
   LoadingContextPlugin.LOGGER.debug(s"${getClass.getName} instance created.")

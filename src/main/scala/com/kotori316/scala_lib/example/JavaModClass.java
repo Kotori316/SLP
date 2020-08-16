@@ -14,15 +14,30 @@ public class JavaModClass {
     public static final Logger LOGGER = LogManager.getLogger(JavaModClass.class);
 
     public JavaModClass() {
+        // Registering init method.
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
     }
 
+    /**
+     * Mod initialize method. Called via Mod Event bus, which is registered in {@link JavaModClass#JavaModClass()}.
+     */
     public void init(FMLCommonSetupEvent event) {
         LOGGER.info("Hello from java init method. " + event);
     }
 
+    /**
+     * In Java code, @{@link Mod.EventBusSubscriber} can be annotated to static inner class.
+     * This example class is for {@link net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus#FORGE}.
+     *
+     * @see net.minecraftforge.fml.common.Mod.EventBusSubscriber
+     */
     @Mod.EventBusSubscriber(modid = MOD_ID)
     public static class EventHandlers {
+        /**
+         * Methods that handles event must be static.
+         *
+         * @see net.minecraftforge.eventbus.api.IEventBus#register(Object)
+         */
         @SubscribeEvent
         public static void load(WorldEvent.Load event) {
             LOGGER.info("Caught " + event);

@@ -17,6 +17,7 @@ import static org.objectweb.asm.Opcodes.V1_8;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class CreateClass {
+    // NOT USED
 
     public static final String CLASS_NAME = "com.kotori316.scala_lib.Context";
     public static final String EVENT_BUS_NAME = "L" + replace("net.minecraftforge.eventbus.api.IEventBus") + ";";
