@@ -21,7 +21,7 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
       - name: Test JUnit
-        run: chmod +x ./gradlew && ./gradlew test --no-daemon --info --continue --warning-mode all
+        run: chmod +x ./gradlew && ./gradlew test --no-daemon --continue --warning-mode all
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
       - name: Test runData

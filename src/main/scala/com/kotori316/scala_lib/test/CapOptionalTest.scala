@@ -42,7 +42,7 @@ private[test] class CapOptionalTest {
     val actual = optT.getOrElse("0")
     assertEquals("45", actual.value, s"Actual=${actual.value}, ${actual.getClass}")
 
-    val empty = LazyOptional.empty()[String]
+    val empty = LazyOptional.empty[String]
     val emT = empty.asScala
     assertAll(
       () => assertTrue(emT.isEmpty.value),
