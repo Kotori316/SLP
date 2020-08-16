@@ -4,7 +4,7 @@ import cats.Eval
 import cats.data.OptionT
 import net.minecraftforge.common.util._
 
-case class LazySupplierWrapper[T](supplier: OptionT[Eval, T]) extends NonNullSupplier[OptionT[Eval, T]] {
+private[scala_lib] case class LazySupplierWrapper[T](supplier: OptionT[Eval, T]) extends NonNullSupplier[OptionT[Eval, T]] {
   override def get(): OptionT[Eval, T] = supplier
 
   def isPresent: Boolean = supplier.isDefined.value
