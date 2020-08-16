@@ -6,7 +6,7 @@ import cats.Eval
 import cats.data.OptionT
 import com.kotori316.scala_lib.util.CapConverter
 import net.minecraftforge.common.util.LazyOptional
-import org.junit.jupiter.api.Assertions.{assertAll, assertEquals, assertTrue}
+import org.junit.jupiter.api.Assertions.{assertAll, assertEquals, assertFalse, assertTrue}
 import org.junit.jupiter.api.Test
 
 private[test] class CapOptionalTest {
@@ -53,29 +53,29 @@ private[test] class CapOptionalTest {
   @Test
   def mixinCheck1(): Unit = {
     // kotori_scala_LazyOptional_wrapper
-    val field = classOf[LazyOptional[_]].getDeclaredField("kotori_scala_LazyOptional_wrapper")
+    val field = classOf[LazyOptional[_]].getDeclaredField("kotori_scala_LazyOptional_wrapping")
     field.setAccessible(true)
     val opt1 = LazyOptional.of(() => "45")
     val opt2 = LazyOptional.of(() => Int.box(1264))
     val opt3 = LazyOptional.empty()
     assertAll(
-      () => assertEquals(null, field.get(opt1)),
-      () => assertEquals(null, field.get(opt2)),
-      () => assertEquals(null, field.get(opt3)),
+      () => assertFalse(field.getBoolean(opt1)),
+      () => assertFalse(field.getBoolean(opt2)),
+      () => assertFalse(field.getBoolean(opt3)),
     )
   }
 
   @Test
   def mixinCheck2(): Unit = {
-    val field = classOf[LazyOptional[_]].getDeclaredField("kotori_scala_LazyOptional_wrapper")
+    val field = classOf[LazyOptional[_]].getDeclaredField("kotori_scala_LazyOptional_wrapping")
     field.setAccessible(true)
     val opt1 = Cap.asJava(Cap.make("45"))
     val opt2 = Cap.asJava(Cap.make(Int.box(1264)))
     val opt3 = Cap.asJava(Cap.empty)
     assertAll(
-      () => assertTrue(null != field.get(opt1)),
-      () => assertTrue(null != field.get(opt2)),
-      () => assertTrue(null != field.get(opt3)),
+      () => assertTrue(field.getBoolean(opt1)),
+      () => assertTrue(field.getBoolean(opt2)),
+      () => assertTrue(field.getBoolean(opt3)),
     )
   }
 

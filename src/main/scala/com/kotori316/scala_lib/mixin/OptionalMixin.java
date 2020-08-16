@@ -5,6 +5,7 @@ import net.minecraftforge.common.util.NonNullConsumer;
 import net.minecraftforge.common.util.NonNullFunction;
 import net.minecraftforge.common.util.NonNullPredicate;
 import net.minecraftforge.common.util.NonNullSupplier;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,45 +15,45 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.kotori316.scala_lib.util.LazySupplierWrapper;
 
+@SuppressWarnings("unchecked")
 @Mixin(LazyOptional.class)
 public abstract class OptionalMixin<T> {
-    private LazySupplierWrapper<T> kotori_scala_LazyOptional_wrapper;
+    private boolean kotori_scala_LazyOptional_wrapping = false;
 
-    @SuppressWarnings("unchecked")
     @Inject(method = "<init>", at = @At("TAIL"))
     public void initMixin(NonNullSupplier<?> instanceSupplier, CallbackInfo ci) {
         if (instanceSupplier instanceof LazySupplierWrapper<?>) {
-            kotori_scala_LazyOptional_wrapper = (LazySupplierWrapper<T>) instanceSupplier;
+            kotori_scala_LazyOptional_wrapping = true;
         }
     }
 
     @Inject(method = "getValue", at = @At("HEAD"))
     private void getValueMixin(CallbackInfoReturnable<T> cir) {
-        if (kotori_scala_LazyOptional_wrapper != null) {
+        if (kotori_scala_LazyOptional_wrapping) {
             throw new IllegalStateException("getValue is accessed from mixin modified optional.");
         }
     }
 
     @Inject(method = "isPresent", at = @At("HEAD"), cancellable = true)
     public void isPresentMixin(CallbackInfoReturnable<Boolean> cir) {
-        if (kotori_scala_LazyOptional_wrapper != null) {
+        if (kotori_scala_LazyOptional_wrapping) {
             if (!isValid) {
                 cir.setReturnValue(false);
-                return;
+            } else {
+                boolean present = ((LazySupplierWrapper<T>) supplier).isPresent();
+                if (!present) {
+                    invalidate();
+                }
+                cir.setReturnValue(present);
             }
-            boolean present = kotori_scala_LazyOptional_wrapper.isPresent();
-            if (!present) {
-                invalidate();
-            }
-            cir.setReturnValue(present);
         }
     }
 
     @Inject(method = "ifPresent", at = @At("HEAD"), cancellable = true)
     public void ifPresentMixin(NonNullConsumer<? super T> consumer, CallbackInfo ci) {
-        if (kotori_scala_LazyOptional_wrapper != null) {
+        if (kotori_scala_LazyOptional_wrapping) {
             if (isValid)
-                kotori_scala_LazyOptional_wrapper.ifPresent(consumer, this::invalidate);
+                ((LazySupplierWrapper<T>) supplier).ifPresent(consumer, this::invalidate);
             ci.cancel();
         }
     }
@@ -60,22 +61,24 @@ public abstract class OptionalMixin<T> {
     @SuppressWarnings("unchecked")
     @Inject(method = "map", at = @At("HEAD"), cancellable = true)
     public <U> void mapMixin(NonNullFunction<? super T, ? extends U> mapper, CallbackInfoReturnable<LazyOptional<U>> cir) {
-        if (kotori_scala_LazyOptional_wrapper != null) {
+        if (kotori_scala_LazyOptional_wrapping) {
+            LazyOptional<U> r;
             if (isValid) {
-                LazySupplierWrapper<U> wrapper = kotori_scala_LazyOptional_wrapper.map(mapper);
-                cir.setReturnValue(LazyOptional.of((NonNullSupplier<U>) wrapper));
+                LazySupplierWrapper<U> wrapper = ((LazySupplierWrapper<T>) supplier).map(mapper);
+                r = LazyOptional.of((NonNullSupplier<U>) wrapper);
             } else {
-                cir.setReturnValue(LazyOptional.empty());
+                r = LazyOptional.empty();
             }
+            cir.setReturnValue(r);
         }
     }
 
     @SuppressWarnings("unchecked")
     @Inject(method = "filter", at = @At("HEAD"), cancellable = true)
     public void filterMixin(NonNullPredicate<? super T> predicate, CallbackInfoReturnable<LazyOptional<T>> cir) {
-        if (kotori_scala_LazyOptional_wrapper != null) {
+        if (kotori_scala_LazyOptional_wrapping) {
             if (isValid) {
-                LazySupplierWrapper<T> wrapper = kotori_scala_LazyOptional_wrapper.filter(predicate);
+                LazySupplierWrapper<T> wrapper = ((LazySupplierWrapper<T>) supplier).filter(predicate);
                 cir.setReturnValue(LazyOptional.of((NonNullSupplier<T>) wrapper));
             } else {
                 cir.setReturnValue(LazyOptional.empty());
@@ -85,10 +88,10 @@ public abstract class OptionalMixin<T> {
 
     @Inject(method = "orElse", at = @At("HEAD"), cancellable = true)
     public void orElseMixin(T other, CallbackInfoReturnable<T> cir) {
-        if (kotori_scala_LazyOptional_wrapper != null) {
+        if (kotori_scala_LazyOptional_wrapping) {
             T value;
             if (isValid)
-                value = kotori_scala_LazyOptional_wrapper.orElse(other, this::invalidate);
+                value = ((LazySupplierWrapper<T>) supplier).orElse(other, this::invalidate);
             else value = other;
             cir.setReturnValue(value);
         }
@@ -96,10 +99,10 @@ public abstract class OptionalMixin<T> {
 
     @Inject(method = "orElseGet", at = @At("HEAD"), cancellable = true)
     public void orElseGetMixin(NonNullSupplier<? extends T> other, CallbackInfoReturnable<T> cir) {
-        if (kotori_scala_LazyOptional_wrapper != null) {
+        if (kotori_scala_LazyOptional_wrapping) {
             T value;
             if (isValid)
-                value = kotori_scala_LazyOptional_wrapper.orElse(other, this::invalidate);
+                value = ((LazySupplierWrapper<T>) supplier).orElse(other, this::invalidate);
             else
                 value = other.get();
             cir.setReturnValue(value);
@@ -108,9 +111,9 @@ public abstract class OptionalMixin<T> {
 
     @Inject(method = "orElseThrow", at = @At("HEAD"), cancellable = true)
     public <X extends Throwable> void orElseThrowMixin(NonNullSupplier<? extends X> exceptionSupplier, CallbackInfoReturnable<T> cir) throws X {
-        if (kotori_scala_LazyOptional_wrapper != null) {
+        if (kotori_scala_LazyOptional_wrapping) {
             if (isValid)
-                cir.setReturnValue(kotori_scala_LazyOptional_wrapper.orThrow(exceptionSupplier, this::invalidate));
+                cir.setReturnValue(((LazySupplierWrapper<T>) supplier).orThrow(exceptionSupplier, this::invalidate));
             else throw exceptionSupplier.get();
         }
     }
@@ -120,4 +123,7 @@ public abstract class OptionalMixin<T> {
 
     @Shadow
     private boolean isValid;
+    @Final
+    @SuppressWarnings("unused")
+    private NonNullSupplier<?> supplier;
 }
