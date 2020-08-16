@@ -26,6 +26,13 @@ public abstract class OptionalMixin<T> {
         }
     }
 
+    @Inject(method = "getValue", at = @At("HEAD"))
+    private void getValueMixin(CallbackInfoReturnable<T> cir) {
+        if (kotori_scala_LazyOptional_wrapper != null) {
+            throw new IllegalStateException("getValue is accessed from mixin modified optional.");
+        }
+    }
+
     @Inject(method = "isPresent", at = @At("HEAD"), cancellable = true)
     public void isPresentMixin(CallbackInfoReturnable<Boolean> cir) {
         if (kotori_scala_LazyOptional_wrapper != null) {

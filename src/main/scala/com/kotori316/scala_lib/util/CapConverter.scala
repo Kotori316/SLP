@@ -31,7 +31,7 @@ trait CapConverter {
 
 object CapConverter extends CapConverter {
 
-  implicit class CapHelper[T](val capability: Capability[T]) extends AnyVal {
+  implicit class CapHelper[T](private val capability: Capability[T]) extends AnyVal {
     /**
      * @tparam F dummy parameter to satisfy compiler. It should be type parameter of [[net.minecraftforge.common.capabilities.ICapabilityProvider#getCapability]].
      */
@@ -51,7 +51,7 @@ object CapConverter extends CapConverter {
     }
   }
 
-  implicit class AsScalaLO[T](val cap: LazyOptional[T]) extends AnyVal {
+  implicit class AsScalaLO[T](private val cap: LazyOptional[T]) extends AnyVal {
     def asScala: Cap[T] = OptionT(transform0[T](cap))
   }
 
