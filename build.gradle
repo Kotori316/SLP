@@ -85,6 +85,13 @@ minecraft {
     }
 }
 
+repositories {
+    maven {
+        name = "Mixin"
+        url = 'https://repo.spongepowered.org/maven'
+    }
+}
+
 def mainClassName = "com.kotori316.scala_lib.Main"
 dependencies {
     def scala_major = getProperty("scala_major")
@@ -102,6 +109,9 @@ dependencies {
     implementation(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.6.2')
     runtimeOnly(group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.6.2')
     implementation(group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.6.2')
+
+    // Mixin
+    annotationProcessor("org.spongepowered:mixin:0.8:processor")
 }
 
 test {
@@ -180,13 +190,16 @@ publishing {
                 packaging = "jar"
                 withXml {
                     asNode().children().last() + {
+                        Project p = getProject()
                         resolveStrategy = Closure.DELEGATE_FIRST
                         dependencies {
-                            project.configurations.implementation.dependencies.each { dep ->
-                                dependency {
-                                    groupId dep.group
-                                    artifactId dep.name
-                                    version dep.version
+                            p.configurations.implementation.dependencies.each { Dependency dep ->
+                                if (!dep.name.contains("junit")) {
+                                    dependency {
+                                        groupId dep.group
+                                        artifactId dep.name
+                                        version dep.version
+                                    }
                                 }
                             }
                         }
@@ -203,7 +216,9 @@ task data() {
             if (!con.dependencies.isEmpty()) {
                 println("*" * 20)
                 println(con.name)
-                println(con.dependencies)
+                for (Object o : con.dependencies) {
+                    println(o)
+                }
             }
         }
     }
