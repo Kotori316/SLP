@@ -87,6 +87,7 @@ public class ScalaModContainer extends ModContainer {
                 modClass = Class.forName(className, true, modClassLoader);
                 LOGGER.debug(LOADING, "Scala Class Loaded {} with {}.", modClass, modClass.getClassLoader());
                 modInstance = modClass.getField("MODULE$").get(null);
+                LOGGER.debug(LOADING, "Scala Mod instance for {} was got. {}", getModId(), modInstance);
             } catch (ClassNotFoundException e) {
                 LOGGER.error(LOADING, "Failed to load class {}", className, e);
                 throw new ModLoadingException(info, ModLoadingStage.CONSTRUCT, "fml.modloading.failedtoloadmodclass", e);
