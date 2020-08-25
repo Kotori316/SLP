@@ -1,5 +1,7 @@
 package com.kotori316.scala_lib.mixin;
 
+import java.util.Optional;
+
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullConsumer;
 import net.minecraftforge.common.util.NonNullFunction;
@@ -36,21 +38,21 @@ public abstract class OptionalMixin<T> {
     @Inject(method = "getValue", at = @At("HEAD"), remap = false)
     private void getValueMixin(CallbackInfoReturnable<T> cir) {
         if (kotori_scala_LazyOptional_wrapping) {
-            throw new IllegalStateException("getValue is accessed from mixin modified optional.");
+            throw new IllegalStateException("getValue is accessed from mixin modified optional. Did API change?");
         }
     }
 
     @Inject(method = "isPresent", at = @At("HEAD"), cancellable = true, remap = false)
     public void isPresentMixin(CallbackInfoReturnable<Boolean> cir) {
         if (kotori_scala_LazyOptional_wrapping) {
-            if (!isValid) {
-                cir.setReturnValue(false);
-            } else {
+            if (isValid) {
                 boolean present = ((LazySupplierWrapper<T>) supplier).isPresent();
                 if (!present) {
                     invalidate();
                 }
                 cir.setReturnValue(present);
+            } else {
+                cir.setReturnValue(false);
             }
         }
     }
@@ -66,7 +68,22 @@ public abstract class OptionalMixin<T> {
 
     @SuppressWarnings("unchecked")
     @Inject(method = "map", at = @At("HEAD"), cancellable = true, remap = false)
-    public <U> void mapMixin(NonNullFunction<? super T, ? extends U> mapper, CallbackInfoReturnable<LazyOptional<U>> cir) {
+    public <U> void mapMixin(NonNullFunction<? super T, ? extends U> mapper, CallbackInfoReturnable<Optional<U>> cir) {
+        if (kotori_scala_LazyOptional_wrapping) {
+            Optional<U> r;
+            if (isValid) {
+                LazySupplierWrapper<U> wrapper = ((LazySupplierWrapper<T>) supplier).map(mapper);
+                r = wrapper.getAsJava();
+            } else {
+                r = Optional.empty();
+            }
+            cir.setReturnValue(r);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Inject(method = "lazyMap", at = @At("HEAD"), cancellable = true, remap = false)
+    public <U> void lazyMapMixin(NonNullFunction<? super T, ? extends U> mapper, CallbackInfoReturnable<LazyOptional<U>> cir) {
         if (kotori_scala_LazyOptional_wrapping) {
             LazyOptional<U> r;
             if (isValid) {
@@ -81,14 +98,21 @@ public abstract class OptionalMixin<T> {
 
     @SuppressWarnings("unchecked")
     @Inject(method = "filter", at = @At("HEAD"), cancellable = true, remap = false)
-    public void filterMixin(NonNullPredicate<? super T> predicate, CallbackInfoReturnable<LazyOptional<T>> cir) {
+    public void filterMixin(NonNullPredicate<? super T> predicate, CallbackInfoReturnable<Optional<T>> cir) {
         if (kotori_scala_LazyOptional_wrapping) {
             if (isValid) {
                 LazySupplierWrapper<T> wrapper = ((LazySupplierWrapper<T>) supplier).filter(predicate);
-                cir.setReturnValue(LazyOptional.of(wrapper));
+                cir.setReturnValue(wrapper.getAsJava());
             } else {
-                cir.setReturnValue(LazyOptional.empty());
+                cir.setReturnValue(Optional.empty());
             }
+        }
+    }
+
+    @Inject(method = "resolve", at = @At("HEAD"), cancellable = true, remap = false)
+    public void resolveMixin(CallbackInfoReturnable<Optional<T>> cir) {
+        if (kotori_scala_LazyOptional_wrapping && isValid) {
+            cir.setReturnValue(((LazySupplierWrapper<T>) supplier).getAsJava());
         }
     }
 

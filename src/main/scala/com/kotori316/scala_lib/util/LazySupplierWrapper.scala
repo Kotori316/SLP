@@ -1,6 +1,6 @@
 package com.kotori316.scala_lib.util
 
-import java.util.NoSuchElementException
+import java.util.{NoSuchElementException, Optional}
 
 import cats.Eval
 import cats.data.OptionT
@@ -40,6 +40,11 @@ private[scala_lib] case class LazySupplierWrapper[T](supplier: OptionT[Eval, T])
     ifEmpty.run()
     throw exceptionSupplier.get()
   }.value
+
+  def getAsJava: Optional[T] = {
+    import scala.jdk.javaapi.OptionConverters
+    supplier.value.map(OptionConverters.toJava).value
+  }
 }
 
 object LazySupplierWrapper {

@@ -1,6 +1,6 @@
 package com.kotori316.scala_lib.test
 
-import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger}
+import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger, AtomicReference}
 
 import cats.Eval
 import cats.data.OptionT
@@ -25,6 +25,7 @@ private[test] class CapOptionalTest {
     assertEquals("NULL", none.orElse("NULL"))
     assertTrue(!none.isPresent)
 
+    //noinspection ScalaUnusedSymbol
     def d[T](a: LazyOptional[T])(implicit ev: T =:= String) = ev
 
     assertTrue(d(none) != null)
@@ -136,6 +137,31 @@ private[test] class CapOptionalTest {
       assertTrue(!bool.get())
       integer.set(200)
       assertTrue(!opt.isPresent)
+    }
+  }
+
+  @Test
+  def mapTest(): Unit = {
+    val a = Cap.asJava(Cap.make("aa"))
+    val mapped = a.map(_.length)
+
+    assertEquals(2, mapped.get())
+  }
+
+  @Test
+  def lazyMapTest(): Unit = {
+    {
+      val a = Cap.asJava(Cap.make("aa"))
+      val mapped = a.lazyMap(_.length)
+
+      assertEquals(2, mapped.orElse(45))
+    }
+    {
+      val ref = new AtomicReference("aa")
+      val b = Cap.asJava(OptionT(Eval.later(Option(ref.get()))))
+      val mapped = b.lazyMap(_.length)
+      ref.set("123456")
+      assertEquals(6, mapped.orElse(0))
     }
   }
 }
