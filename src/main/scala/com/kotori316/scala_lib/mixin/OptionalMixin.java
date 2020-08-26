@@ -44,16 +44,12 @@ public abstract class OptionalMixin<T> {
 
     @Inject(method = "isPresent", at = @At("HEAD"), cancellable = true, remap = false)
     public void isPresentMixin(CallbackInfoReturnable<Boolean> cir) {
-        if (kotori_scala_LazyOptional_wrapping) {
-            if (isValid) {
-                boolean present = ((LazySupplierWrapper<T>) supplier).isPresent();
-                if (!present) {
-                    invalidate();
-                }
-                cir.setReturnValue(present);
-            } else {
-                cir.setReturnValue(false);
+        if (kotori_scala_LazyOptional_wrapping && isValid) {
+            boolean present = ((LazySupplierWrapper<T>) supplier).isPresent();
+            if (!present) {
+                invalidate();
             }
+            cir.setReturnValue(present);
         }
     }
 

@@ -49,6 +49,6 @@ private[scala_lib] case class LazySupplierWrapper[T](supplier: OptionT[Eval, T])
 
 object LazySupplierWrapper {
   def makeOptional[T](supplier: OptionT[Eval, T]): LazyOptional[T] = {
-    LazyOptional.of(LazySupplierWrapper(supplier)).asInstanceOf[LazyOptional[T]]
+    LazyOptional.of(LazySupplierWrapper(supplier))
   }
 }

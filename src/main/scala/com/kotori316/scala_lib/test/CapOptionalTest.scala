@@ -1,5 +1,6 @@
 package com.kotori316.scala_lib.test
 
+import java.util.Optional
 import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger, AtomicReference}
 
 import cats.Eval
@@ -146,6 +147,10 @@ private[test] class CapOptionalTest {
     val mapped = a.map(_.length)
 
     assertEquals(2, mapped.get())
+
+    val b = Cap.asJava(Cap.empty[String])
+    val mappedB = b.map(_.length)
+    assertEquals(Optional.empty(), mappedB)
   }
 
   @Test
@@ -159,10 +164,22 @@ private[test] class CapOptionalTest {
     {
       val ref = new AtomicReference("aa")
       val b = Cap.asJava(OptionT(Eval.later(Option(ref.get()))))
-      val mapped = b.lazyMap(_.length)
+      val mapped = b.lazyMap[Int](_.length)
       ref.set("123456")
       assertEquals(6, mapped.orElse(0))
     }
+    {
+      val n = Cap.asJava(Cap.empty[String])
+      val mapped = n.lazyMap(_.length)
+
+      assertEquals(45, mapped.orElse(45))
+    }
+  }
+
+  @Test
+  def resolveTest(): Unit = {
+    val a = Cap.asJava(Cap.make("aa"))
+    assertEquals(Optional.of("aa"), a.resolve())
   }
 }
 
