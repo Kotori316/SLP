@@ -26,6 +26,7 @@ trait CapConverter {
   }
 
   implicit def toCapHelper[T](capability: Capability[T]): CapConverter.CapHelper[T] = new CapConverter.CapHelper(capability)
+
   implicit def toAsScalaLO[T](value: LazyOptional[T]): CapConverter.AsScalaLO[T] = new CapConverter.AsScalaLO(value)
 }
 
@@ -38,6 +39,13 @@ object CapConverter extends CapConverter {
     def make[F](toCheckCapability: Capability[_], instance: T): Cap[F] = {
       if (this.capability == toCheckCapability)
         Cap.make[F](instance.asInstanceOf[F])
+      else
+        Cap.empty[F]
+    }
+
+    def when[F](toCheckCapability: Capability[F], condition: => Boolean, instance: => T): Cap[F] = {
+      if (this.capability == toCheckCapability)
+        OptionT(Eval.always(Option.when(condition)(instance.asInstanceOf[F])))
       else
         Cap.empty[F]
     }
