@@ -3,7 +3,7 @@ package com.kotori316.scala_lib
 import java.time.ZonedDateTime
 
 import cats.Show
-import cats.implicits._
+import cats.implicits.toShow
 
 import scala.util.Properties
 
@@ -13,7 +13,7 @@ import scala.util.Properties
  */
 object Main {
   def main(args: Array[String]): Unit = {
-    println(s"Arg = $args")
+    println(s"Arg = ${args.mkString("Array(", ", ", ")")}")
     println("-" * 10 + " Hello Scala! " + "-" * 10)
     val comma = ", "
     val list = 1 :: 3 :: 4 :: 15 :: Nil

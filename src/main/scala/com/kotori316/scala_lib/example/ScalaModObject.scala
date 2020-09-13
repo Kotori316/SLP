@@ -1,7 +1,7 @@
 package com.kotori316.scala_lib.example
 
 import cats._
-import cats.implicits._
+import cats.implicits.toShow
 import net.minecraftforge.event.world.WorldEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.ModList
