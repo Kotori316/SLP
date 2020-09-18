@@ -71,7 +71,7 @@ dependencies {
     def java8_compat_version = getProperty("java8_compat_version")
     def cats_version = getProperty("cats_version")
 
-    minecraft 'net.minecraftforge:forge:1.15.2-31.2.31'
+    minecraft 'net.minecraftforge:forge:1.15.2-31.2.41'
     implementation "org.scala-lang:scala-library:${scala_version}"
 //    implementation "org.scala-lang.modules:scala-java8-compat_${scala_major}:${java8_compat_version}"
 
