@@ -1,15 +1,17 @@
-# Scala language provider for Minecraft 1.16.2.
+# Scala language provider for Minecraft 1.16.3.
 
 Branch 1.16
 
-This mod adds Scala library to Minecraft 1.16.2 with Forge.
+This mod adds Scala library to Minecraft 1.16.3 with Forge.
 **NO COMPATIBILITY WITH 1.15.2 version of SLP.**
 
 ### Usage
 
 * For Player - Download Jar file from [Curse Forge](https://www.curseforge.com/minecraft/mc-mods/scalable-cats-force) and move the file to your `mods` folder.
 This mod doesn't appear in mods list.
-This library provides `kotori_scala` language loader.
+This library provides `kotori_scala` language loader.  
+[![](http://cf.way2muchnoise.eu/versions/scalable-cats-force.svg)](https://www.curseforge.com/minecraft/mc-mods/scalable-cats-force)
+[![](http://cf.way2muchnoise.eu/full_scalable-cats-force_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/scalable-cats-force)
 
 * For Developer - In your `build.gradle`, add below code in the top-level.
 
