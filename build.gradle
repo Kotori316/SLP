@@ -70,6 +70,7 @@ minecraft {
             workingDirectory project.file('run-server')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'info'
+            forceExit false
 
             if (Boolean.valueOf(System.getenv("GITHUB_ACTIONS")))
                 args '--mod', "slp_test", '--dev'
