@@ -129,7 +129,7 @@ public class ScalaModContainer extends ModContainer {
         }
     }
 
-    public static FMLJavaModLoadingContext createContext(IEventBus bus) {
+    private static FMLJavaModLoadingContext createContext(IEventBus bus) {
         try {
             FMLJavaModLoadingContext instance = UnsafeHacks.newInstance(FMLJavaModLoadingContext.class);
             FMLModContainer container = UnsafeHacks.newInstance(FMLModContainer.class);
