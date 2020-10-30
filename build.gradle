@@ -181,7 +181,7 @@ publishing {
     }
     publications {
         mavenJava(MavenPublication) {
-            artifactId = archivesBaseName
+            artifactId = archivesBaseName.toLowerCase()
             artifact srcJar
             artifact jar
             pom {
