@@ -20,6 +20,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
+      - name: Check Dependency
+        run: chmod +x ./gradlew && ./gradlew data --no-daemon
       - name: download_assets
         run: |
           chmod +x ./gradlew

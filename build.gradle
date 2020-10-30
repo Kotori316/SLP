@@ -213,6 +213,7 @@ publishing {
 
 task data() {
     doLast {
+        print("All Dependencies")
         getProject().getConfigurations().forEach { con ->
             if (!con.dependencies.isEmpty()) {
                 println("*" * 20)
@@ -220,6 +221,13 @@ task data() {
                 for (Object o : con.dependencies) {
                     println(o)
                 }
+            }
+        }
+        print("\n" * 2)
+        print("Dependencies to be included in pom")
+        getProject().getConfigurations().implementation.dependencies.each { Dependency dep ->
+            if (!dep.name.contains("junit")) {
+                printf("Group: %s, ArtifactId: %s, Version: %s", dep.group, dep.name, dep.version)
             }
         }
     }
