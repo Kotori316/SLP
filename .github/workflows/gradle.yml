@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Check Branch name
         run: echo "${{ github.event.base_ref }}"
+      - name: Check Branch name
+        run: echo "${{ github.ref }}"
       - name: OS name
         run: echo "${{ runner.os }}"
   check:
@@ -30,10 +32,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         with:
           path: ~/.gradle/caches/forge_gradle/assets
-          key: ${{ runner.os }}-${{ github.event.base_ref }}
+          key: ${{ runner.os }}-${{ github.ref }}
       - name: Check Dependency
         run: chmod +x ./gradlew && ./gradlew data --no-daemon
       - name: download_assets
