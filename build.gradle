@@ -222,7 +222,10 @@ publishing {
 
 task data() {
     doLast {
-        print("All Dependencies")
+        println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') +
+                '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+        println("Forge: ${forgeVersion()}")
+        println("All Dependencies")
         getProject().getConfigurations().forEach { con ->
             if (!con.dependencies.isEmpty()) {
                 println("*" * 20)
@@ -233,10 +236,10 @@ task data() {
             }
         }
         print("\n" * 2)
-        print("Dependencies to be included in pom")
+        println("Dependencies to be included in pom")
         getProject().getConfigurations().implementation.dependencies.each { Dependency dep ->
             if (!dep.name.contains("junit")) {
-                printf("Group: %s, ArtifactId: %s, Version: %s", dep.group, dep.name, dep.version)
+                printf("Group: %s, ArtifactId: %s, Version: %s%n", dep.group, dep.name, dep.version)
             }
         }
     }
