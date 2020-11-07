@@ -23,9 +23,9 @@ jobs:
       fail-fast: false
       matrix:
         # test against latest update of each major Java version, as well as specific updates of LTS versions:
-        java: [ 1.8, 11]
+        java: [ 1.8, 11 ]
         # test against some forge versions including recommend version.
-        #forge: [ 1.16.3-34.1.0, 1.16.4-35.0.2, fixed ]
+        forge: [ 1.16.3-34.1.0, 1.16.4-35.0.2, fixed ]
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK ${{ matrix.java }}
@@ -38,19 +38,25 @@ jobs:
           key: ${{ runner.os }}-${{ github.ref }}
       - name: Check Dependency
         run: chmod +x ./gradlew && ./gradlew data --no-daemon
+        env:
+          CI_FORGE: ${{ matrix.forge }}
       - name: download_assets
         run: |
           chmod +x ./gradlew
           ./gradlew downloadAssets || ./gradlew downloadAssets || (sleep 30s && ./gradlew downloadAssets)
         continue-on-error: true
+        env:
+          CI_FORGE: ${{ matrix.forge }}
       - name: Test JUnit
         run: chmod +x ./gradlew && ./gradlew test --no-daemon --continue --warning-mode all
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
+          CI_FORGE: ${{ matrix.forge }}
       - name: Test runData
         run: chmod +x ./gradlew && ./gradlew runData --no-daemon
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
+          CI_FORGE: ${{ matrix.forge }}
       - name: Check started and errored
         run: |
           [ -f test_started.txt ]
