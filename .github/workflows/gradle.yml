@@ -10,7 +10,7 @@ on:
 jobs:
   debug_log:
     runs-on: ubuntu-latest
-    step:
+    steps:
       - name: Check Branch name
         run: echo "${{ github.event.base_ref }}"
       - name: OS name
