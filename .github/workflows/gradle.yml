@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Check Branch name
         run: echo "${{ github.event.base_ref }}"
-      - name: Check Branch name
+      - name: Check Ref name
         run: echo "${{ github.ref }}"
       - name: OS name
         run: echo "${{ runner.os }}"
