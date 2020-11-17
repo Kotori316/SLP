@@ -8,7 +8,7 @@ import cats.data.OptionT
 import com.kotori316.scala_lib.util.CapConverter
 import net.minecraftforge.common.util.LazyOptional
 import org.junit.jupiter.api.Assertions.{assertAll, assertEquals, assertFalse, assertTrue}
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.{Disabled, Test}
 
 private[test] class CapOptionalTest {
 
@@ -139,6 +139,27 @@ private[test] class CapOptionalTest {
       integer.set(200)
       assertTrue(!opt.isPresent)
     }
+  }
+
+  @Test
+  def mixin5(): Unit = {
+    val opt: LazyOptional[String] = Cap.asJava(Cap.empty)
+    val bool = new AtomicBoolean(false)
+
+    opt.ifPresent(_ => bool.set(true))
+
+    assertFalse(bool.get(), "Empty option should not be called.")
+  }
+
+  @Test
+  @Disabled("Always fail")
+  def mixin6(): Unit = {
+    val opt: LazyOptional[String] = LazyOptional.of(() => Cap.asJava(Cap.empty).orElseThrow(() => new IllegalStateException("Empty optional")))
+    val bool = new AtomicBoolean(true)
+
+    opt.ifPresent(_ => bool.set(false))
+
+    assertTrue(bool.get(), "Empty option should not be called.")
   }
 
   @Test
