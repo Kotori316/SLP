@@ -1,7 +1,7 @@
 package com.kotori316.scala_lib.util
 
-import cats.Eval
 import cats.data.OptionT
+import cats.{Eval, Now}
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.util.LazyOptional
 
@@ -17,7 +17,10 @@ trait CapConverter {
     }
 
     def asJava[A](cap: Cap[A]): LazyOptional[A] = {
-      LazySupplierWrapper.makeOptional(cap)
+      cap match {
+        case OptionT(Now(None)) => LazyOptional.empty()
+        case _ => LazySupplierWrapper.makeOptional(cap)
+      }
     }
 
     def empty[A]: Cap[A] = {
@@ -51,11 +54,17 @@ object CapConverter extends CapConverter {
     }
   }
 
-  def transform0[T](cap: LazyOptional[T]): Eval[Option[T]] = Eval.always {
+  def transform0[T](cap: LazyOptional[T]): Eval[Option[T]] = {
     if (cap.isPresent) {
-      Option(cap.orElse(null.asInstanceOf[T]))
+      Eval.always {
+        if (cap.isPresent) {
+          Option(cap.orElse(null.asInstanceOf[T]))
+        } else {
+          None
+        }
+      }
     } else {
-      None
+      Eval.now(Option.empty[T])
     }
   }
 

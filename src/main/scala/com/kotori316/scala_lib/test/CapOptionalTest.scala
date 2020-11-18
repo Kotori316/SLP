@@ -7,7 +7,7 @@ import cats.Eval
 import cats.data.OptionT
 import com.kotori316.scala_lib.util.CapConverter
 import net.minecraftforge.common.util.LazyOptional
-import org.junit.jupiter.api.Assertions.{assertAll, assertEquals, assertFalse, assertTrue}
+import org.junit.jupiter.api.Assertions.{assertAll, assertEquals, assertFalse, assertNotSame, assertSame, assertTrue}
 import org.junit.jupiter.api.{Disabled, Test}
 
 private[test] class CapOptionalTest {
@@ -57,6 +57,55 @@ private[test] class CapOptionalTest {
   }
 
   @Test
+  def convertScalaToJava1(): Unit = {
+    val empty = Cap.asJava(Cap.empty[Object])
+    assertSame(LazyOptional.empty(), empty)
+  }
+
+  @Test
+  def convertScalaToJava2(): Unit = {
+    val empty = Cap.asJava(OptionT(Eval.now(Option.empty[Object])))
+    assertSame(LazyOptional.empty(), empty)
+  }
+
+  @Test
+  def convertScalaToJava3(): Unit = {
+    val empty = Cap.asJava(OptionT(Eval.later(Option.empty[Object])))
+    assertAll(
+      () => assertNotSame(LazyOptional.empty(), empty),
+      () => assertFalse(empty.isPresent),
+      () => {
+        val b = new AtomicBoolean(false)
+        empty.ifPresent(_ => b.set(true))
+        assertFalse(b.get())
+      },
+    )
+  }
+
+  @Test
+  def convertScalaToJava4(): Unit = {
+    val empty = Cap.asJava(
+      Cap.empty[Object]
+        .orElse(Cap.empty[Object])
+    )
+    assertNotSame(LazyOptional.empty(), empty, "FlatMap will hide the status of cap.")
+  }
+
+  @Test
+  def convertScalaToJava5(): Unit = {
+    val empty = Cap.asJava(LazyOptional.empty().asScala)
+    assertSame(LazyOptional.empty(), empty, "LazyOptional.empty() => Cap => LazyOptional.empty()")
+  }
+
+  @Test
+  def convertScalaToJava6(): Unit = {
+    val opt = LazyOptional.of(() => "a")
+    opt.invalidate()
+    val empty = Cap.asJava(opt.asScala)
+    assertSame(LazyOptional.empty(), empty, "Invalidated LazyOptional => Cap => LazyOptional.empty()")
+  }
+
+  @Test
   def mixinCheck1(): Unit = {
     // kotori_scala_LazyOptional_wrapper
     val field = classOf[LazyOptional[_]].getDeclaredField("kotori_scala_LazyOptional_wrapping")
@@ -81,7 +130,7 @@ private[test] class CapOptionalTest {
     assertAll(
       () => assertTrue(field.getBoolean(opt1)),
       () => assertTrue(field.getBoolean(opt2)),
-      () => assertTrue(field.getBoolean(opt3)),
+      () => assertFalse(field.getBoolean(opt3)), // Cap.asJava(Cap.empty) returns LazyOptional.empty()
     )
   }
 
