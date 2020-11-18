@@ -42,12 +42,4 @@ class ScalaLanguageProvider extends IModLanguageProvider {
 object ScalaLanguageProvider {
   val MOD_ANNOTATION: Type = FMLJavaModLanguageProvider.MODANNOTATION
   val LOGGER: Logger = LogManager.getLogger(getClass)
-
-  {
-    val current = Thread.currentThread().getContextClassLoader
-    Thread.currentThread().setContextClassLoader(getClass.getClassLoader)
-    import org.spongepowered.asm.mixin.Mixins
-    Mixins.addConfiguration("slp.mixins.json")
-    Thread.currentThread().setContextClassLoader(current)
-  }
 }
