@@ -78,7 +78,7 @@ public class ScalaModContainer extends ModContainer {
                 LOGGER.debug(LOADING, "Scala Mod instance for {} was got. {}", this.modId, modInstance);
             } else {
                 LOGGER.debug(LOADING, "Scala Mod instance for {} is about to create. {}", this.modId, modClass.getName());
-                Constructor<?> constructor = modClass.getConstructor();
+                Constructor<?> constructor = modClass.getDeclaredConstructor();
                 constructor.setAccessible(true);
                 modInstance = constructor.newInstance();
                 LOGGER.debug(LOADING, "Scala Mod instance for {} created. {}", this.modId, modInstance);
