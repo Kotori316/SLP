@@ -63,10 +63,10 @@ jobs:
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
           CI_FORGE: ${{ matrix.forge }}
-      - name: Check started and errored
-        run: |
-          [ -f test_started.txt ]
-          ! [ -f error-trace.txt ]
-      - id: show-failure-log
-        if: failure()
-        run: cat error-trace.txt
+#      - name: Check started and errored
+#        run: |
+#          [ -f test_started.txt ]
+#          ! [ -f error-trace.txt ]
+#      - id: show-failure-log
+#        if: failure()
+#        run: cat error-trace.txt
