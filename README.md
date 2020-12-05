@@ -1,8 +1,8 @@
-# Scala language provider for Minecraft 1.16.3.
+# Scala language provider for Minecraft 1.16.4.
 
 Branch 1.16
 
-This mod adds Scala library to Minecraft 1.16.3 with Forge.
+This mod adds Scala library to Minecraft 1.16.4 with Forge.
 **NO COMPATIBILITY WITH 1.15.2 version of SLP.**
 
 ### Usage
@@ -27,8 +27,8 @@ This library provides `kotori_scala` language loader.
   }
   ```
 
-  * Properties are set in your `gradle.properties` file or just hardcoded like `def scala_version = "2.13.3"`.
-  * `scala_version` should be 2.13.3 because this project contains binary of Scala 2.13.3. Make sure your version matches the version this mod provides. See [this file](https://github.com/Kotori316/SLP/blob/1.16/gradle.properties)
+  * Properties are set in your `gradle.properties` file or just hardcoded like `def scala_version = "2.13.4"`.
+  * `scala_version` should be 2.13.4 because this project contains binary of Scala 2.13.4. Make sure your version matches the version this mod provides. See [this file](https://github.com/Kotori316/SLP/blob/1.16/gradle.properties)
   * `scala_major` must be 2.13.
 
   If you want to write Mod entry class in Scala, add this jar to dependency.
