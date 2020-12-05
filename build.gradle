@@ -122,7 +122,7 @@ test {
 jar {
     manifest {
         attributes([
-                'FMLModType'  : 'LANGPROVIDER'
+                'FMLModType': 'LANGPROVIDER'
         ])
         attributes([
                 "Specification-Title"     : project.name,
@@ -172,6 +172,14 @@ publishing {
             credentials {
                 username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR") ?: ""
                 password = project.findProperty("githubToken") ?: System.getenv("REPO_TOKEN")
+            }
+        }
+        maven {
+            name = "AzureRepository"
+            url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
+            credentials {
+                username = project.findProperty("azureUserName") ?: System.getenv("AZURE_USER_NAME") ?: ""
+                password = project.findProperty("azureToken") ?: System.getenv("AZURE_TOKEN") ?: "TOKEN"
             }
         }
     }
@@ -229,5 +237,15 @@ task data() {
                 printf("Group: %s, ArtifactId: %s, Version: %s%n", dep.group, dep.name, dep.version)
             }
         }
+        print("\n" * 2)
+        println("Publishing Information")
+        publishing.properties.each { entry ->
+            printf("%s -> %s (key: %s, value: %s)\n", entry.key, entry.value, entry.getKey().getClass(), entry.getValue().getClass())
+        }
+        println("Repositories")
+//        publishing.properties.get("repositories").getClass().getMethods().each { println(it) }
+//        publishing.properties.get("repositories").getClass().getInterfaces().each { println(it) }
+        publishing.properties.get("repositories").getAsMap().each { Map.Entry<String, Object> e -> printf("%s=%s\n", e.key, e.value.getUrl()) }
+//        (publishing.properties.get("repositories") as Collection<Object>).toArray()[0].getClass().getMethods().each {println(it)}
     }
 }
