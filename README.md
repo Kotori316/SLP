@@ -32,6 +32,18 @@ This library provides `kotori_scala` language loader.
   * `scala_major` must be 2.13.
 
   If you want to write Mod entry class in Scala, add this jar to dependency.
+  
+  ```groovy
+  repositories {
+    maven {
+      name "Kotori316 Azure Maven"
+      url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
+    }
+  }
+  dependencies {
+    implementation(group: 'com.kotori316', name: 'ScalableCatsForce'.toLowerCase(Locale.ROOT), version: '2.13.4-build-1', classifier: 'dev')
+  }
+  ```
   * Set `modloader` in your `mods.toml` file to "kotori_scala". (`modLoader="kotori_scala"`) Loader version is like `loaderVersion="[2.13.3-build-1,2.14)"`.
   * See [`ScalaModObject.scala`](https://github.com/Kotori316/SLP/blob/1.16/src/main/scala/com/kotori316/scala_lib/example/ScalaModObject.scala) and [`mods.toml`](https://github.com/Kotori316/SLP/blob/1.16/src/main/resources/META-INF/mods.toml) in this project.
   * You can get mod's event bus via `FMLJavaModLoadingContext#get()`, as same the normal java project. `@Mod.EventBusSubscriber`(both FORGE and MOD) for the top-level scala object works fine. Of course, the annotation also works for java codes.
