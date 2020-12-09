@@ -184,13 +184,15 @@ publishing {
         }
     }
     publications {
+        String v = forgeVersion()
+        String minecraftVersion = v.substring(v.lastIndexOf(":") + 1, v.lastIndexOf("-"))
         mavenJava(MavenPublication) {
             artifactId = archivesBaseName.toLowerCase()
             artifact srcJar
             artifact jar
             pom {
                 name = archivesBaseName
-                description = 'Scala Loading library for Minecraft'
+                description = "Scala Loading library for Minecraft for $minecraftVersion, build with forge $v"
                 url = 'https://github.com/Kotori316/SLP'
                 packaging = "jar"
                 withXml {
@@ -219,7 +221,9 @@ task data() {
     doLast {
         println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') +
                 '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
-        println("Forge: ${forgeVersion()}")
+        String v = forgeVersion()
+        println("Forge: $v")
+        println("Minecraft: ${v.substring(v.lastIndexOf(":") + 1, v.lastIndexOf("-"))}")
         println("All Dependencies")
         getProject().getConfigurations().forEach { con ->
             if (!con.dependencies.isEmpty()) {
@@ -235,6 +239,8 @@ task data() {
         getProject().getConfigurations().implementation.dependencies.each { Dependency dep ->
             if (!dep.name.contains("junit")) {
                 printf("Group: %s, ArtifactId: %s, Version: %s%n", dep.group, dep.name, dep.version)
+            } else {
+                printf("JUNIT - Group: %s, ArtifactId: %s, Version: %s%n", dep.group, dep.name, dep.version)
             }
         }
         print("\n" * 2)
@@ -242,6 +248,7 @@ task data() {
         publishing.properties.each { entry ->
             printf("%s -> %s (key: %s, value: %s)\n", entry.key, entry.value, entry.getKey().getClass(), entry.getValue().getClass())
         }
+        println()
         println("Repositories")
 //        publishing.properties.get("repositories").getClass().getMethods().each { println(it) }
 //        publishing.properties.get("repositories").getClass().getInterfaces().each { println(it) }
