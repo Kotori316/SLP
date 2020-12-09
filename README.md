@@ -41,6 +41,8 @@ This library provides `kotori_scala` language loader.
     }
   }
   dependencies {
+    // See https://dev.azure.com/Kotori316/minecraft/_packaging?_a=package&feed=mods&package=com.kotori316%3Ascalablecatsforce&protocolType=maven&view=versions 
+    // for other version. Description of each file tells the Minecraft version it works with.
     implementation(group: 'com.kotori316', name: 'ScalableCatsForce'.toLowerCase(Locale.ROOT), version: '2.13.4-build-1', classifier: 'dev')
   }
   ```
