@@ -63,7 +63,7 @@ jobs:
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
           CI_FORGE: ${{ matrix.forge }}
-#      - name: Check started and errored
+#      - name: Check started and error
 #        run: |
 #          [ -f test_started.txt ]
 #          ! [ -f error-trace.txt ]
