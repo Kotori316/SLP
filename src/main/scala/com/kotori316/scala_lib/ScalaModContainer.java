@@ -66,22 +66,22 @@ public class ScalaModContainer extends ModContainer {
         try {
             // Here to avoid NPE of scala object.
             modClass = Class.forName(className, true, modClassLoader);
-            LOGGER.debug(LOADING, "Scala Class Loaded {} with {}.", modClass, modClass.getClassLoader());
+            LOGGER.trace(LOADING, "Scala Class Loaded {} with {}.", modClass, modClass.getClassLoader());
         } catch (ClassNotFoundException e) {
             LOGGER.error(LOADING, "Failed to load class {}", className, e);
             throw new ModLoadingException(modInfo, ModLoadingStage.CONSTRUCT, "fml.modloading.failedtoloadmodclass", e);
         }
         try {
             if (isScalaObject) {
-                LOGGER.debug(LOADING, "Scala Mod instance object for {} is about to get via MODULE$ field. {}", this.modId, modClass.getName());
+                LOGGER.trace(LOADING, "Scala Mod instance object for {} is about to get via MODULE$ field. {}", this.modId, modClass.getName());
                 modInstance = modClass.getField("MODULE$").get(null);
-                LOGGER.debug(LOADING, "Scala Mod instance for {} was got. {}", this.modId, modInstance);
+                LOGGER.trace(LOADING, "Scala Mod instance for {} was got. {}", this.modId, modInstance);
             } else {
-                LOGGER.debug(LOADING, "Scala Mod instance for {} is about to create. {}", this.modId, modClass.getName());
+                LOGGER.trace(LOADING, "Scala Mod instance for {} is about to create. {}", this.modId, modClass.getName());
                 Constructor<?> constructor = modClass.getDeclaredConstructor();
                 constructor.setAccessible(true);
                 modInstance = constructor.newInstance();
-                LOGGER.debug(LOADING, "Scala Mod instance for {} created. {}", this.modId, modInstance);
+                LOGGER.trace(LOADING, "Scala Mod instance for {} created. {}", this.modId, modInstance);
             }
         } catch (ReflectiveOperationException e) {
             LOGGER.error(LOADING, "Failed to create/get mod instance. ModID: {}, class {}", this.modId, modClass.getName(), e);
@@ -89,9 +89,9 @@ public class ScalaModContainer extends ModContainer {
         }
 
         try {
-            LOGGER.debug(LOADING, "Injecting Automatic event subscribers for {}", this.modId);
+            LOGGER.trace(LOADING, "Injecting Automatic event subscribers for {}", this.modId);
             AutomaticEventSubscriber.inject(this, this.scanData, this.modClass.getClassLoader());
-            LOGGER.debug(LOADING, "Completed Automatic event subscribers for {}", this.modId);
+            LOGGER.trace(LOADING, "Completed Automatic event subscribers for {}", this.modId);
         } catch (Throwable e) {
             LOGGER.error(LOADING, "Failed to register automatic subscribers. ModID: {}, class {}", this.modId, modClass.getName(), e);
             throw new ModLoadingException(modInfo, ModLoadingStage.CONSTRUCT, "fml.modloading.failedtoloadmod", e, modClass);
@@ -119,10 +119,10 @@ public class ScalaModContainer extends ModContainer {
     @Override
     @SuppressWarnings("SpellCheckingInspection")
     protected void acceptEvent(Event event) {
-        LOGGER.debug(LOADING, "Firing event for modid {} : {}", this.modId, event);
+        LOGGER.trace(LOADING, "Firing event for modid {} : {}", this.modId, event);
         try {
             eventBus.post(event);
-            LOGGER.debug(LOADING, "Fired event for modid {} : {}", this.modId, event);
+            LOGGER.trace(LOADING, "Fired event for modid {} : {}", this.modId, event);
         } catch (Throwable e) {
             LOGGER.error(LOADING, "Caught exception during event {} dispatch for modid {}", event, this.modId, e);
             throw new ModLoadingException(modInfo, modLoadingStage, "fml.modloading.errorduringevent", e);
