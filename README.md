@@ -1,8 +1,8 @@
-# Scala language provider for Minecraft 1.16.4.
+# Scala language provider for Minecraft 1.16.5.
 
 Branch 1.16
 
-This mod adds Scala library to Minecraft 1.16.4 with Forge.
+This mod adds Scala library to Minecraft 1.16.5 with Forge.
 **NO COMPATIBILITY WITH 1.15.2 version of SLP.**
 
 ### Usage
