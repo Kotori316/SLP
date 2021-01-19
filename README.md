@@ -21,7 +21,7 @@ This library provides `kotori_scala` language loader.
       def scala_major = getProperty("scala_major")
   
       // Change forge and minecraft version.
-      minecraft 'net.minecraftforge:forge:1.16.4-35.1.28'
+      minecraft 'net.minecraftforge:forge:1.16.5-36.0.1'
       implementation "org.scala-lang:scala-library:${scala_version}"
   
   }
