@@ -86,6 +86,17 @@ minecraft {
     }
 }
 
+sourceSets {
+    main {
+        scala {
+            srcDir 'src/main/scala'
+            exclude "/com/kotori316/scala_lib/asm/**"
+            if (System.getenv("CI") == null)
+                exclude "/com/kotori316/scala_lib/example/**"
+        }
+    }
+}
+
 private static String forgeVersion() {
     String CI_FORGE = System.getenv("CI_FORGE")
     if (CI_FORGE != null && CI_FORGE != "fixed") {
@@ -98,12 +109,12 @@ private static String forgeVersion() {
 def mainClassName = "com.kotori316.scala_lib.Main"
 dependencies {
     def scala_major = getProperty("scala_major")
-    def java8_compat_version = getProperty("java8_compat_version")
+    // def java8_compat_version = getProperty("java8_compat_version")
     def cats_version = getProperty("cats_version")
 
     minecraft(forgeVersion())
     implementation "org.scala-lang:scala-library:${scala_version}"
-//    implementation "org.scala-lang.modules:scala-java8-compat_${scala_major}:${java8_compat_version}"
+    //implementation "org.scala-lang.modules:scala-java8-compat_${scala_major}:${java8_compat_version}"
 
     // https://mvnrepository.com/artifact/org.typelevel/cats-core
     implementation group: 'org.typelevel', name: "cats-core_${scala_major}", version: cats_version
