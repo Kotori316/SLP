@@ -13,7 +13,10 @@ This library provides `kotori_scala` language loader.
 [![](http://cf.way2muchnoise.eu/versions/scalable-cats-force.svg)](https://www.curseforge.com/minecraft/mc-mods/scalable-cats-force)
 [![](http://cf.way2muchnoise.eu/full_scalable-cats-force_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/scalable-cats-force)
 
-* For Developer - In your `build.gradle`, add below code in the top-level.
+* For Developer  
+  See [this repository](https://github.com/Kotori316/SLP-example) for example.
+
+  In your `build.gradle`, add below code in the top-level.
 
   ```groovy
   dependencies {
