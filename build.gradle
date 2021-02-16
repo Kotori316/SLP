@@ -102,7 +102,7 @@ private static String forgeVersion() {
     if (CI_FORGE != null && CI_FORGE != "fixed") {
         return "net.minecraftforge:forge:" + CI_FORGE
     } else {
-        return 'net.minecraftforge:forge:1.16.5-36.0.26'
+        return 'net.minecraftforge:forge:1.16.5-36.0.42'
     }
 }
 
