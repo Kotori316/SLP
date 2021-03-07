@@ -20,9 +20,10 @@ object Main {
     println(s"Sum of ${list.mkString(comma)} = ${list.sum}")
     println()
     println(List(ZonedDateTime.now().minusYears(1), ZonedDateTime.now(), ZonedDateTime.now().plusYears(1)).show)
-    println(s"Now ${timeShow.show(ZonedDateTime.now())}")
+    println(s"${Console.YELLOW}Now ${timeShow.show(ZonedDateTime.now())}${Console.RESET}")
     println()
-    println(s"You are running Java ${Properties.javaVersion} and Scala ${Properties.versionString}")
+    println(s"You are running Java ${Console.RED}${Properties.javaVersion}${Console.RESET} and" +
+      s" Scala ${Console.RED}${Properties.versionString}${Console.RESET}")
     println(s"On ${Properties.osName}, Working in ${Properties.userDir}")
     println("-" * 34)
   }
