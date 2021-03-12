@@ -36,7 +36,7 @@ object ScalaModObject {
 
   // Example of Cats instance.
   implicit val showId: Show[ModID] = (t: ModID) => {
-    val name = ModList.get().getModObjectById[AnyRef](t.id).map(o => o.getClass.getName).orElse("None")
+    val name = ModList.get().getModObjectById[AnyRef](t.id).map[String](o => o.getClass.getName).orElse("None")
     s"ID: ${t.id}, Class: $name"
   }
 
