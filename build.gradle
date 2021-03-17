@@ -19,7 +19,6 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-
 def scala_version = getProperty("scala_version")
 def build_number = getProperty("build_number")
 version = "${scala_version}-build-${build_number}"
@@ -91,8 +90,9 @@ sourceSets {
         scala {
             srcDir 'src/main/scala'
             exclude "/com/kotori316/scala_lib/asm/**"
-            if (System.getenv("CI") == null)
+            if (System.getenv("CI") == null) {
                 exclude "/com/kotori316/scala_lib/example/**"
+            }
         }
     }
 }
@@ -102,7 +102,7 @@ private static String forgeVersion() {
     if (CI_FORGE != null && CI_FORGE != "fixed") {
         return "net.minecraftforge:forge:" + CI_FORGE
     } else {
-        return 'net.minecraftforge:forge:1.16.5-36.0.46'
+        return 'net.minecraftforge:forge:1.16.5-36.1.0'
     }
 }
 
@@ -173,11 +173,6 @@ shadowJar {
 publishing {
     repositories {
         maven {
-            name = "BuildDir"
-            // change to point to your repo.
-            url = "$buildDir/repo"
-        }
-        maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/Kotori316/SLP")
             credentials {
@@ -230,8 +225,8 @@ publishing {
 
 task data() {
     doLast {
-        println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') +
-                '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+        println("Java: ${System.getProperty('java.version')} JVM: ${System.getProperty('java.vm.version')}" +
+                "(${System.getProperty('java.vendor')}) Arch: ${System.getProperty('os.arch')}")
         String v = forgeVersion()
         println("Forge: $v")
         println("Minecraft: ${v.substring(v.lastIndexOf(":") + 1, v.lastIndexOf("-"))}")

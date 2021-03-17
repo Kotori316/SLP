@@ -24,14 +24,14 @@ This library provides `kotori_scala` language loader.
       def scala_major = getProperty("scala_major")
   
       // Change forge and minecraft version.
-      minecraft 'net.minecraftforge:forge:1.16.5-36.0.1'
+      minecraft 'net.minecraftforge:forge:1.16.5-36.1.0'
       implementation "org.scala-lang:scala-library:${scala_version}"
   
   }
   ```
 
-  * Properties are set in your `gradle.properties` file or just hardcoded like `def scala_version = "2.13.4"`.
-  * `scala_version` should be 2.13.4 because this project contains binary of Scala 2.13.4. Make sure your version matches the version this mod provides. See [this file](https://github.com/Kotori316/SLP/blob/1.16/gradle.properties)
+  * Properties are set in your `gradle.properties` file or just hardcoded like `def scala_version = "2.13.5"`.
+  * `scala_version` should be 2.13.5 because this project contains binary of Scala 2.13.5. Make sure your version matches the version this mod provides. See [this file](https://github.com/Kotori316/SLP/blob/1.16/gradle.properties)
   * `scala_major` must be 2.13.
 
   If you want to write Mod entry class in Scala, add this jar to dependency.
@@ -46,7 +46,7 @@ This library provides `kotori_scala` language loader.
   dependencies {
     // See https://dev.azure.com/Kotori316/minecraft/_packaging?_a=package&feed=mods&package=com.kotori316%3Ascalablecatsforce&protocolType=maven&view=versions 
     // for other version. Description of each file tells the Minecraft version it works with.
-    implementation(group: 'com.kotori316', name: 'ScalableCatsForce'.toLowerCase(Locale.ROOT), version: '2.13.4-build-1', classifier: 'dev')
+    implementation(group: 'com.kotori316', name: 'ScalableCatsForce'.toLowerCase(Locale.ROOT), version: '2.13.5-build-1', classifier: 'dev')
   }
   ```
   * Set `modloader` in your `mods.toml` file to "kotori_scala". (`modLoader="kotori_scala"`) Loader version is like `loaderVersion="[2.13.3-build-1,2.14)"`.
