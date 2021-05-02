@@ -89,7 +89,9 @@ sourceSets {
         scala {
             srcDir 'src/main/scala'
             exclude "/com/kotori316/scala_lib/asm/**"
+            exclude "/com/kotori316/scala_lib/config/**"
             if (System.getenv("CI") == null) {
+                // I use classes in package `example` in tests.
                 exclude "/com/kotori316/scala_lib/example/**"
             }
         }
