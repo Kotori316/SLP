@@ -56,7 +56,7 @@ final class ConfigJava {
     @Test
     void testString() {
         ConfigTemplate template = ConfigTemplate.debugTemplate();
-        ConfigKey<String> stringKey = ConfigKey.create(template, "stringKey", "default");
+        ConfigKey<String> stringKey = ConfigKey.create(template, "stringKey", "default", ED.edString());
         assertEquals("default", stringKey.get());
         assertEquals("default", stringKey.defaultValue());
         assertEquals("default", template.get(stringKey));
@@ -97,7 +97,7 @@ final class ConfigJava {
     @Test
     void testGetParent() {
         ConfigTemplate template = ConfigTemplate.debugTemplate();
-        ConfigKey<String> stringKey = ConfigKey.create(template, "stringKey", "default");
+        ConfigKey<String> stringKey = ConfigKey.create(template, "stringKey", "default", ED.edString());
         assertEquals(template, stringKey.parent());
     }
 }

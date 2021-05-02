@@ -1,5 +1,7 @@
 package com.kotori316.scala_lib.config
 
+import cats.Invariant
+
 sealed trait ConfigKey[A] {
   protected def parent: ConfigTemplate
 
@@ -10,6 +12,8 @@ sealed trait ConfigKey[A] {
   def get: A = parent.get(this)
 
   def set(newValue: A): Unit = parent.set(this, newValue)
+
+  def edInstance: ED[A]
 }
 
 object ConfigKey {
@@ -49,8 +53,8 @@ object ConfigKey {
   def createSubCategory(subCategory: ConfigTemplate.ChildTemplate): SubCategoryKey =
     trackKey(parent = subCategory.parent, SubCategoryKey(subCategory))
 
-  def create[A](parent: ConfigTemplate, configName: String, defaultValue: A): ConfigKey[A] =
-    trackKey(parent = parent, a = GenericsKey(parent, configName, defaultValue))
+  def create[A](parent: ConfigTemplate, configName: String, defaultValue: A)(implicit ed: ED[A]): ConfigKey[A] =
+    trackKey(parent = parent, a = GenericsKey(parent, configName, defaultValue, ed))
 }
 
 final case class BooleanKey private(override val parent: ConfigTemplate, configName: String, override val defaultValue: Boolean) extends ConfigKey[Boolean] {
@@ -59,6 +63,8 @@ final case class BooleanKey private(override val parent: ConfigTemplate, configN
   override def get: Boolean = super.get // Give concrete(not generic) return type for Java access.
 
   override def toString: String = s"BooleanKey{name=$name, defaultValue=$defaultValue}"
+
+  override val edInstance: ED[Boolean] = ED[Boolean]
 }
 
 final case class IntKey private(override val parent: ConfigTemplate, configName: String, override val defaultValue: Int,
@@ -68,6 +74,8 @@ final case class IntKey private(override val parent: ConfigTemplate, configName:
   override def get: Int = super.get // Give concrete(not generic) return type for Java access.
 
   override def toString: String = s"IntKey{name=$name, defaultValue=$defaultValue, rangeMin=$rangeMin, rangeMax=$rangeMax}"
+
+  override val edInstance: ED[Int] = ED[Int]
 }
 
 final case class DoubleKey private(override val parent: ConfigTemplate, configName: String, override val defaultValue: Double,
@@ -77,9 +85,12 @@ final case class DoubleKey private(override val parent: ConfigTemplate, configNa
   override def get: Double = super.get // Give concrete(not generic) return type for Java access.
 
   override def toString: String = s"DoubleKey{name=$name, defaultValue=$defaultValue, rangeMin=$rangeMin, rangeMax=$rangeMax}"
+
+  override val edInstance: ED[Double] = ED[Double]
 }
 
-final case class GenericsKey[A] private(override val parent: ConfigTemplate, configName: String, override val defaultValue: A)
+final case class GenericsKey[A] private(override val parent: ConfigTemplate, configName: String, override val defaultValue: A,
+                                        override val edInstance: ED[A])
   extends ConfigKey[A] {
   override val name: String = ConfigKey.getName(parent.categoryName, configName)
 
@@ -94,4 +105,7 @@ final case class SubCategoryKey private(subCategory: ConfigTemplate.ChildTemplat
   override def parent: ConfigTemplate = subCategory.parent
 
   override def toString: String = s"SubCategoryKey{$name}"
+
+  // Actually, unused.
+  override def edInstance: ED[ConfigTemplate.ChildTemplate] = Invariant[ED].imap(ED[String])(_ => subCategory)(_.toString)
 }

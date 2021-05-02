@@ -24,4 +24,8 @@ class ConfigImpl extends ConfigTemplate {
   }
 
   override def toString: String = s"ConfigImpl{$settings}"
+
+  def write(file: ConfigFile): Unit = {
+    this.settings.keys.filterNot(_.isInstanceOf[SubCategoryKey]).foreach(k => file.write(k))
+  }
 }
