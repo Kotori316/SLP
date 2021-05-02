@@ -89,10 +89,10 @@ sourceSets {
         scala {
             srcDir 'src/main/scala'
             exclude "/com/kotori316/scala_lib/asm/**"
-            exclude "/com/kotori316/scala_lib/config/**"
             if (System.getenv("CI") == null) {
                 // I use classes in package `example` in tests.
                 exclude "/com/kotori316/scala_lib/example/**"
+                exclude "/com/kotori316/scala_lib/config/**"
             }
         }
     }
@@ -120,6 +120,7 @@ dependencies {
 
     // Test Dependencies.
     implementation(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.0')
+    testImplementation(group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.7.0')
     runtimeOnly(group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0')
     implementation(group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.7.0')
 
