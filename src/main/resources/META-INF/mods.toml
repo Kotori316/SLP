@@ -1,4 +1,4 @@
-modLoader = "kotori_scala" # The name of laugage provider
+modLoader = "kotori_scala" # The name of language provider
 loaderVersion = "[2.13.2,2.14.0),[33,)" # Version filter. In this case, scala 2.13.2 and newer but under 2.14
 license = "APACHE LICENSE, VERSION 2.0"
 
@@ -9,7 +9,7 @@ displayName = "Scala Lib"
 credits = "Kotori316"
 authors = "Kotori316"
 description = '''
-A langulage provider for Scala mods.
+A language provider for Scala mods.
 A example mod in kotori_scala'''
 [[mods]]
 modId = "scala-library-java"
