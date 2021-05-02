@@ -20,6 +20,31 @@ class ConfigImplTest {
   }
 
   @Test
+  def testString(): Unit = {
+    val template = ConfigTemplate.debugTemplate
+    val stringKey = ConfigKey.create(template, "stringKey", "default")
+    assertEquals("default", stringKey.get)
+    assertEquals("default", stringKey.defaultValue)
+    assertEquals("default", template.get(stringKey))
+  }
+
+  @Test
+  def setTest1(): Unit = {
+    val config = new ConfigImpl
+    val boolKey = ConfigKey.createBoolean(config, "boolKey", defaultValue = false)
+    val intKey = ConfigKey.createInt(config, "intKey", defaultValue = 5)
+
+    assertFalse(boolKey.get)
+    assertEquals(5, intKey.get)
+
+    boolKey.set(true)
+    intKey.set(100)
+
+    assertTrue(boolKey.get)
+    assertEquals(100, intKey.get)
+  }
+
+  @Test
   def noSuchElement1(): Unit = {
     val config = new ConfigImpl
     val boolKey = ConfigKey.createBoolean(ConfigTemplate.DebugTemplate, "key1", defaultValue = false)

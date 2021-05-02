@@ -54,6 +54,15 @@ final class ConfigJava {
     }
 
     @Test
+    void testString() {
+        ConfigTemplate template = ConfigTemplate.debugTemplate();
+        ConfigKey<String> stringKey = ConfigKey.create(template, "stringKey", "default");
+        assertEquals("default", stringKey.get());
+        assertEquals("default", stringKey.defaultValue());
+        assertEquals("default", template.get(stringKey));
+    }
+
+    @Test
     void testSubCategory() {
         ConfigTemplate parent = ConfigTemplate.debugTemplate();
         ConfigTemplate.ChildTemplate child1 = new ConfigTemplate.DebugChildTemplate(parent, "sub1");
@@ -67,5 +76,28 @@ final class ConfigJava {
         assertEquals(child2, parent.get(key2));
         assertEquals(child2, key2.get());
         assertNotEquals(child2, parent.get(key1));
+    }
+
+    @Test
+    void testSet() {
+        ConfigTemplate template = new ConfigImpl();
+        BooleanKey boolKey = ConfigKey.createBoolean(template, "boolKey", false);
+        IntKey intKey = ConfigKey.createInt(template, "intKey", 5);
+
+        assertFalse(boolKey.get());
+        assertEquals(5, intKey.get());
+
+        boolKey.set(true);
+        intKey.set(100);
+
+        assertTrue(boolKey.get());
+        assertEquals(100, intKey.get());
+    }
+
+    @Test
+    void testGetParent() {
+        ConfigTemplate template = ConfigTemplate.debugTemplate();
+        ConfigKey<String> stringKey = ConfigKey.create(template, "stringKey", "default");
+        assertEquals(template, stringKey.parent());
     }
 }

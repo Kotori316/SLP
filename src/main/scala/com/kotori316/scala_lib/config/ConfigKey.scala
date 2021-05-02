@@ -1,13 +1,15 @@
 package com.kotori316.scala_lib.config
 
 sealed trait ConfigKey[A] {
-  def parent: ConfigTemplate
+  protected def parent: ConfigTemplate
 
   def name: String
 
   def defaultValue: A
 
   def get: A = parent.get(this)
+
+  def set(newValue: A): Unit = parent.set(this, newValue)
 }
 
 object ConfigKey {
@@ -46,12 +48,16 @@ object ConfigKey {
 
   def createSubCategory(subCategory: ConfigTemplate.ChildTemplate): SubCategoryKey =
     trackKey(parent = subCategory.parent, SubCategoryKey(subCategory))
+
+  def create[A](parent: ConfigTemplate, configName: String, defaultValue: A): ConfigKey[A] =
+    trackKey(parent = parent, a = GenericsKey(parent, configName, defaultValue))
 }
 
 final case class BooleanKey private(override val parent: ConfigTemplate, configName: String, override val defaultValue: Boolean) extends ConfigKey[Boolean] {
   override val name: String = ConfigKey.getName(parent.categoryName, configName)
 
   override def get: Boolean = super.get // Give concrete(not generic) return type for Java access.
+
   override def toString: String = s"BooleanKey{name=$name, defaultValue=$defaultValue}"
 }
 
@@ -60,6 +66,7 @@ final case class IntKey private(override val parent: ConfigTemplate, configName:
   override val name: String = ConfigKey.getName(parent.categoryName, configName)
 
   override def get: Int = super.get // Give concrete(not generic) return type for Java access.
+
   override def toString: String = s"IntKey{name=$name, defaultValue=$defaultValue, rangeMin=$rangeMin, rangeMax=$rangeMax}"
 }
 
@@ -68,7 +75,15 @@ final case class DoubleKey private(override val parent: ConfigTemplate, configNa
   override val name: String = ConfigKey.getName(parent.categoryName, configName)
 
   override def get: Double = super.get // Give concrete(not generic) return type for Java access.
+
   override def toString: String = s"DoubleKey{name=$name, defaultValue=$defaultValue, rangeMin=$rangeMin, rangeMax=$rangeMax}"
+}
+
+final case class GenericsKey[A] private(override val parent: ConfigTemplate, configName: String, override val defaultValue: A)
+  extends ConfigKey[A] {
+  override val name: String = ConfigKey.getName(parent.categoryName, configName)
+
+  override def toString: String = s"GenericsKey{name=$name, defaultValue=$defaultValue}"
 }
 
 final case class SubCategoryKey private(subCategory: ConfigTemplate.ChildTemplate) extends ConfigKey[ConfigTemplate.ChildTemplate] {

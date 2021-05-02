@@ -10,7 +10,7 @@ class ConfigImpl extends ConfigTemplate {
     option.getOrElse(throw new NoSuchElementException(s"Config $key not found in this config."))
   }
 
-  def set[A](key: ConfigKey[A], value: A): Unit = {
+  override def set[A](key: ConfigKey[A], value: A): Unit = {
     if (settings.contains(key))
       settings = settings.updated(key, value)
     else
