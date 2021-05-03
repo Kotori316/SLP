@@ -20,7 +20,7 @@ jobs:
           echo "${{ runner.os }}"
           cat /etc/os-release
       - name: Time
-        run: date && ncal -bh $$ ncal -bhj
+        run: date && ncal -bh && ncal -bhj
       - name: Environment Values
         run: env | grep -i github
       - name: Job Values
