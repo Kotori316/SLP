@@ -32,7 +32,7 @@ class SimpleConfigFileTest {
     @Test
     void writeFile() throws IOException {
         ConfigImpl template = new ConfigImpl();
-        ConfigFile file = new ConfigFile.SimpleTextConfig(tempFile);
+        ConfigFile file = new SimpleTextConfigFile(tempFile);
 
         ConfigKey.createBoolean(template, "a", true);
         ConfigKey.createBoolean(template, "b", false);
@@ -68,7 +68,7 @@ class SimpleConfigFileTest {
         ConfigKey.createBoolean(template2, "e", false);
         ConfigKey.createInt(template2, "f", 200);
 
-        ConfigFile file = new ConfigFile.SimpleTextConfig(tempFile);
+        ConfigFile file = new SimpleTextConfigFile(tempFile);
         template.write(file);
         List<String> expect = Arrays.asList(
             "root=45",
@@ -85,7 +85,7 @@ class SimpleConfigFileTest {
     @Test
     void readFile1() throws IOException {
         ConfigImpl template = new ConfigImpl();
-        ConfigFile file = new ConfigFile.SimpleTextConfig(tempFile);
+        ConfigFile file = new SimpleTextConfigFile(tempFile);
 
         BooleanKey a = ConfigKey.createBoolean(template, "a", true);
         BooleanKey b = ConfigKey.createBoolean(template, "b", false);
@@ -127,7 +127,7 @@ class SimpleConfigFileTest {
         BooleanKey e = ConfigKey.createBoolean(template2, "e", false);
         IntKey f = ConfigKey.createInt(template2, "f", 200);
 
-        ConfigFile file = new ConfigFile.SimpleTextConfig(tempFile);
+        ConfigFile file = new SimpleTextConfigFile(tempFile);
         Files.write(tempFile, Arrays.asList(
             "# Comment",
             "root=63",

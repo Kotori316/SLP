@@ -23,7 +23,7 @@ object SimpleConfigTest {
       val template = new ConfigImpl
       val key1 = ConfigKey.createBoolean(template, "a", defaultValue = false)
       key1.set(true)
-      val update1 = ConfigFile.SimpleTextConfig.updateValue(key1, pre)
+      val update1 = SimpleTextConfigFile.updateValue(key1, pre)
       assertLinesMatch(CollectionConverters.asJava(pre), CollectionConverters.asJava(update1))
     }
 
@@ -33,7 +33,7 @@ object SimpleConfigTest {
       val key2 = ConfigKey.createBoolean(template, "b", defaultValue = false)
       key2.set(true)
 
-      val update2 = ConfigFile.SimpleTextConfig.updateValue(key2, pre)
+      val update2 = SimpleTextConfigFile.updateValue(key2, pre)
       assertLinesMatch(CollectionConverters.asJava(
         """
           |# Comment
@@ -49,7 +49,7 @@ object SimpleConfigTest {
       val template = new ConfigImpl
       val key3 = ConfigKey.createInt(template, "c", 15)
 
-      val update3 = ConfigFile.SimpleTextConfig.updateValue(key3, pre)
+      val update3 = SimpleTextConfigFile.updateValue(key3, pre)
       assertLinesMatch(CollectionConverters.asJava(
         """
           |# Comment
@@ -64,7 +64,7 @@ object SimpleConfigTest {
     def testUpdate4(): Unit = {
       val template = new ConfigImpl
       val key4 = ConfigKey.createInt(template, "d", 80)
-      val update4 = ConfigFile.SimpleTextConfig.updateValue(key4, pre)
+      val update4 = SimpleTextConfigFile.updateValue(key4, pre)
 
       assertLinesMatch(CollectionConverters.asJava(
         """
@@ -82,7 +82,7 @@ object SimpleConfigTest {
       val template = new ConfigImpl
       val key = ConfigKey.create(template, "e", "enabled")
       key.set("disabled")
-      val update = ConfigFile.SimpleTextConfig.updateValue(key, pre)
+      val update = SimpleTextConfigFile.updateValue(key, pre)
 
       assertLinesMatch(CollectionConverters.asJava(
         """
@@ -104,7 +104,7 @@ object SimpleConfigTest {
         ConfigKey.createInt(template, "d", 80),
         ConfigKey.create(template, "e", "enabled"),
       ).map(_.asInstanceOf[ConfigKey[Any]])
-      val updated = keys.foldLeft("") { case (str, key) => ConfigFile.SimpleTextConfig.updateValue(key, str.linesIterator.toSeq)(key.edInstance).mkString(System.lineSeparator()) }
+      val updated = keys.foldLeft("") { case (str, key) => SimpleTextConfigFile.updateValue(key, str.linesIterator.toSeq)(key.edInstance).mkString(System.lineSeparator()) }
       assertLinesMatch(
         CollectionConverters.asJava(
           """a=true
@@ -127,7 +127,7 @@ object SimpleConfigTest {
         ConfigKey.create(template, "e", defaultValue = "enabled"),
         ConfigKey.create(sub1, "a", defaultValue = "sub1")
       ).map(_.asInstanceOf[ConfigKey[Any]])
-      val updated = keys.foldLeft(Seq.empty[String]) { case (strSeq, key) => ConfigFile.SimpleTextConfig.updateValue(key, strSeq)(key.edInstance).toSeq }
+      val updated = keys.foldLeft(Seq.empty[String]) { case (strSeq, key) => SimpleTextConfigFile.updateValue(key, strSeq)(key.edInstance).toSeq }
       assertLinesMatch(
         CollectionConverters.asJava(
           """a=true
@@ -151,11 +151,11 @@ object SimpleConfigTest {
       val key5 = ConfigKey.create(template, "e", "enabled")
 
       assertAll(
-        () => assertEquals(Some(true), ConfigFile.SimpleTextConfig.findValue(key1, pre.iterator)),
-        () => assertEquals(Some(false), ConfigFile.SimpleTextConfig.findValue(key2, pre.iterator)),
-        () => assertEquals(Some(45), ConfigFile.SimpleTextConfig.findValue(key3, pre.iterator)),
-        () => assertEquals(None, ConfigFile.SimpleTextConfig.findValue(key4, pre.iterator)),
-        () => assertEquals(Some("disabled"), ConfigFile.SimpleTextConfig.findValue(key5, pre.iterator)),
+        () => assertEquals(Some(true), SimpleTextConfigFile.findValue(key1, pre.iterator)),
+        () => assertEquals(Some(false), SimpleTextConfigFile.findValue(key2, pre.iterator)),
+        () => assertEquals(Some(45), SimpleTextConfigFile.findValue(key3, pre.iterator)),
+        () => assertEquals(None, SimpleTextConfigFile.findValue(key4, pre.iterator)),
+        () => assertEquals(Some("disabled"), SimpleTextConfigFile.findValue(key5, pre.iterator)),
       )
     }
 
@@ -172,7 +172,7 @@ object SimpleConfigTest {
           |""".stripMargin.linesIterator.toSeq
       val typedKey: ConfigKey[Any] = key.asInstanceOf[ConfigKey[Any]]
 
-      assertEquals(expect, ConfigFile.SimpleTextConfig.findValue(typedKey, configText.iterator)(typedKey.edInstance))
+      assertEquals(expect, SimpleTextConfigFile.findValue(typedKey, configText.iterator)(typedKey.edInstance))
     }
 
     //noinspection ScalaUnusedSymbol
@@ -181,8 +181,8 @@ object SimpleConfigTest {
     def find3(key: ConfigKey[_], unused: Option[_]): Unit = {
       val configText = ""
       val typedKey: ConfigKey[Any] = key.asInstanceOf[ConfigKey[Any]]
-      assertEquals(None, ConfigFile.SimpleTextConfig.findValue(typedKey, Iterator(configText))(typedKey.edInstance))
-      assertEquals(None, ConfigFile.SimpleTextConfig.findValue(typedKey, Iterator.empty)(typedKey.edInstance))
+      assertEquals(None, SimpleTextConfigFile.findValue(typedKey, Iterator(configText))(typedKey.edInstance))
+      assertEquals(None, SimpleTextConfigFile.findValue(typedKey, Iterator.empty)(typedKey.edInstance))
     }
   }
 
