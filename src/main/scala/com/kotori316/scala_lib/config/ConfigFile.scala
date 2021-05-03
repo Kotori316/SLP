@@ -8,7 +8,19 @@ import scala.jdk.javaapi.CollectionConverters
 trait ConfigFile {
   def write[A](key: ConfigKey[A]): Unit
 
+  def writeAll(keys: Seq[ConfigKey[_]]): Unit = {
+    for (key <- keys; typed = key.asInstanceOf[ConfigKey[Any]]) {
+      write(typed)
+    }
+  }
+
   def read[A](key: ConfigKey[A]): Unit
+
+  def readAll(keys: Seq[ConfigKey[_]]): Unit = {
+    for (key <- keys; typed = key.asInstanceOf[ConfigKey[Any]]) {
+      read(typed)
+    }
+  }
 }
 
 object ConfigFile {
@@ -20,9 +32,23 @@ object ConfigFile {
       Files.write(path, CollectionConverters.asJava(newlyAdded))
     }
 
+    override def writeAll(keys: Seq[ConfigKey[_]]): Unit = {
+      val allLines = if (Files.exists(path)) CollectionConverters.asScala(Files.readAllLines(path)) else Seq.empty
+      val newlyAdded = keys.foldLeft(allLines) { case (lines, key) =>
+        val typed = key.asInstanceOf[ConfigKey[Any]]
+        SimpleTextConfig.updateValue(typed, lines)(typed.edInstance)
+      }
+      Files.write(path, CollectionConverters.asJava(newlyAdded))
+    }
+
     override def read[A](key: ConfigKey[A]): Unit = {
       val allLines = if (Files.exists(path)) CollectionConverters.asScala(Files.readAllLines(path)) else Seq.empty
       SimpleTextConfig.findValue(key, allLines.iterator)(key.edInstance).foreach(key.set)
+    }
+
+    override def readAll(keys: Seq[ConfigKey[_]]): Unit = {
+      val allLines = if (Files.exists(path)) CollectionConverters.asScala(Files.readAllLines(path)) else Seq.empty
+      SimpleTextConfig.findAllValues(keys, allLines.iterator)
     }
   }
 
@@ -67,6 +93,21 @@ object ConfigFile {
         }
       }
       None
+    }
+
+    def findAllValues(keys: Seq[ConfigKey[_]], allLines: Iterator[String]): Unit = {
+      while (allLines.hasNext) {
+        val matcher = ignoreSpacePattern.matcher(allLines.next())
+        if (matcher.matches()) {
+          val keyName = matcher.group("key")
+          for {
+            key <- keys.find(_.name == keyName).map(_.asInstanceOf[ConfigKey[Any]])
+            value <- key.edInstance.fromString(matcher.group("value"))
+          } {
+            key.set(value)
+          }
+        }
+      }
     }
   }
 }

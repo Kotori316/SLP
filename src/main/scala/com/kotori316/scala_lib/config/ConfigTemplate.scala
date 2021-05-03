@@ -16,6 +16,8 @@ trait ConfigTemplate {
   def addTrack(key: ConfigKey[_]): Unit
 
   def write(file: ConfigFile): Unit
+
+  def read(file: ConfigFile): Unit
 }
 
 object ConfigTemplate {
@@ -31,6 +33,8 @@ object ConfigTemplate {
     override def addTrack(key: ConfigKey[_]): Unit = ()
 
     override def write(file: ConfigFile): Unit = ()
+
+    override def read(file: ConfigFile): Unit = ()
   }
 
   trait ChildTemplate extends ConfigTemplate {
@@ -47,6 +51,8 @@ object ConfigTemplate {
     override def addTrack(key: ConfigKey[_]): Unit = ()
 
     override def write(file: ConfigFile): Unit = ()
+
+    override def read(file: ConfigFile): Unit = ()
   }
 
 }

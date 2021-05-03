@@ -33,4 +33,19 @@ class ConfigImpl extends ConfigTemplate {
       case k => file.write(k)
     }
   }
+
+  override def read(file: ConfigFile): Unit = {
+    file.readAll(getKeys(this).toSeq)
+  }
+
+  private def getKeys(c: ConfigImpl): Iterable[ConfigKey[_]] = {
+    c.settings.keys.flatMap {
+      case SubCategoryKey(subCategory) => subCategory match {
+        case impl: ConfigChildImpl => getKeys(impl)
+        case _ => Seq()
+      }
+      case k => Seq(k)
+    }
+  }
+
 }
