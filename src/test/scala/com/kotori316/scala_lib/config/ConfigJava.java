@@ -46,6 +46,22 @@ final class ConfigJava {
     }
 
     @Test
+    void testInt2() {
+        ConfigTemplate template = new ConfigImpl();
+        IntKey key = ConfigKey.createInt(template, "key1", 5, 0, 100);
+
+        intEqual(5, template.getInt(key));
+        key.set(0);
+        intEqual(0, key.get());
+        key.set(100);
+        intEqual(100, key.get());
+        key.set(-1);
+        intEqual(100, key.get());
+        key.set(101);
+        intEqual(100, key.get());
+    }
+
+    @Test
     void testDouble() {
         ConfigTemplate template = ConfigTemplate.debugTemplate();
         DoubleKey key = ConfigKey.createDouble(template, "key1", 6.12);

@@ -30,6 +30,13 @@ object ConfigKey {
     }
   }
 
+  def checkRange[A: Ordering](rangeMin: Option[A], rangeMax: Option[A], value: A): Boolean = {
+    import Ordering.Implicits._
+    val minOK = rangeMin.forall(_ <= value)
+    val maxOK = rangeMax.forall(_ >= value)
+    minOK && maxOK
+  }
+
   def createBoolean(parent: ConfigTemplate, configName: String, defaultValue: Boolean): BooleanKey = {
     trackKey(parent, BooleanKey(parent, configName, defaultValue))
   }
@@ -73,6 +80,11 @@ final case class IntKey private(override val parent: ConfigTemplate, configName:
 
   override def get: Int = super.get // Give concrete(not generic) return type for Java access.
 
+  override def set(newValue: Int): Unit = {
+    if (ConfigKey.checkRange(rangeMin, rangeMax, newValue))
+      super.set(newValue)
+  }
+
   override def toString: String = s"IntKey{name=$name, defaultValue=$defaultValue, rangeMin=$rangeMin, rangeMax=$rangeMax}"
 
   override val edInstance: ED[Int] = ED[Int]
@@ -83,6 +95,11 @@ final case class DoubleKey private(override val parent: ConfigTemplate, configNa
   override val name: String = ConfigKey.getName(parent.categoryName, configName)
 
   override def get: Double = super.get // Give concrete(not generic) return type for Java access.
+
+  override def set(newValue: Double): Unit = {
+    if (ConfigKey.checkRange(rangeMin, rangeMax, newValue))
+      super.set(newValue)
+  }
 
   override def toString: String = s"DoubleKey{name=$name, defaultValue=$defaultValue, rangeMin=$rangeMin, rangeMax=$rangeMax}"
 

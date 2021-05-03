@@ -29,6 +29,21 @@ class ConfigImplTest {
   }
 
   @Test
+  def testInt2(): Unit = {
+    val template = new ConfigImpl
+    val key = ConfigKey.createInt(template, "key1", 5, 0, 100)
+    assertEquals(5, template.getInt(key))
+    key.set(0)
+    assertEquals(0, key.get)
+    key.set(100)
+    assertEquals(100, key.get)
+    key.set(-1)
+    assertEquals(100, key.get)
+    key.set(101)
+    assertEquals(100, key.get)
+  }
+
+  @Test
   def setTest1(): Unit = {
     val config = new ConfigImpl
     val boolKey = ConfigKey.createBoolean(config, "boolKey", defaultValue = false)
