@@ -30,7 +30,8 @@ object ConfigTemplate {
   }
 
   abstract class ChildTemplate(val parent: ConfigTemplate, name: String) extends ConfigTemplate {
-    override final val categoryName: String = parent.categoryName + "." + name
+    override final val categoryName: String =
+      if (parent.categoryName.isEmpty) name else parent.categoryName + "." + name
   }
 
   class DebugChildTemplate(parent: ConfigTemplate, name: String) extends ChildTemplate(parent, name) {

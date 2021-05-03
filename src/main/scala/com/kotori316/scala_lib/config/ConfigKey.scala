@@ -60,8 +60,11 @@ object ConfigKey {
   def createSubCategory(subCategory: ConfigTemplate.ChildTemplate): SubCategoryKey =
     trackKey(parent = subCategory.parent, SubCategoryKey(subCategory))
 
-  def create[A](parent: ConfigTemplate, configName: String, defaultValue: A)(implicit ed: ED[A]): ConfigKey[A] =
-    trackKey(parent = parent, a = GenericsKey(parent, configName, defaultValue, ed))
+  def create[A](parent: ConfigTemplate, configName: String, defaultValue: A)(implicit ed: ED[A]): ConfigKey[A] = defaultValue match {
+    case i: Int => createInt(parent, configName, i).asInstanceOf[ConfigKey[A]]
+    case d: Double => createDouble(parent, configName, d).asInstanceOf[ConfigKey[A]]
+    case _ => trackKey(parent = parent, a = GenericsKey(parent, configName, defaultValue, ed))
+  }
 }
 
 final case class BooleanKey private(override val parent: ConfigTemplate, configName: String, override val defaultValue: Boolean) extends ConfigKey[Boolean] {

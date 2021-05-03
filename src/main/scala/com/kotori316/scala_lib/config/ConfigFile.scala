@@ -15,16 +15,14 @@ object ConfigFile {
   class SimpleTextConfig(path: Path) extends ConfigFile {
 
     override def write[A](key: ConfigKey[A]): Unit = {
-      implicit val ed: ED[A] = key.edInstance
-      val allLines = CollectionConverters.asScala(Files.readAllLines(path))
-      val newlyAdded = SimpleTextConfig.updateValue(key, allLines)
+      val allLines = if (Files.exists(path)) CollectionConverters.asScala(Files.readAllLines(path)) else Seq.empty
+      val newlyAdded = SimpleTextConfig.updateValue(key, allLines)(key.edInstance)
       Files.write(path, CollectionConverters.asJava(newlyAdded))
     }
 
     override def read[A](key: ConfigKey[A]): Unit = {
-      implicit val ed: ED[A] = key.edInstance
-      val allLines = CollectionConverters.asScala(Files.readAllLines(path))
-      SimpleTextConfig.findValue(key, allLines.iterator).foreach(key.set)
+      val allLines = if (Files.exists(path)) CollectionConverters.asScala(Files.readAllLines(path)) else Seq.empty
+      SimpleTextConfig.findValue(key, allLines.iterator)(key.edInstance).foreach(key.set)
     }
   }
 

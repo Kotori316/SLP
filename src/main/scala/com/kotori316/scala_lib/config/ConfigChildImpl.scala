@@ -2,9 +2,11 @@ package com.kotori316.scala_lib.config
 
 import java.util.NoSuchElementException
 
+import scala.collection.immutable.SeqMap
+
 class ConfigChildImpl(parentConfig: ConfigTemplate, subCategoryName: String)
   extends ConfigTemplate.ChildTemplate(parentConfig, subCategoryName) {
-  private var settings: Map[ConfigKey[_], Any] = Map.empty
+  private var settings: Map[ConfigKey[_], Any] = SeqMap.empty
 
   override def get[A](key: ConfigKey[A]): A = {
     val option = settings.get(key).map(_.asInstanceOf[A])

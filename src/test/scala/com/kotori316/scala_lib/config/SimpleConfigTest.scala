@@ -95,7 +95,7 @@ object SimpleConfigTest {
     }
 
     @Test
-    def testUpdateAll(): Unit = {
+    def testUpdateAll1(): Unit = {
       val template = new ConfigImpl
       val keys: Seq[ConfigKey[Any]] = Seq(
         ConfigKey.createBoolean(template, "a", defaultValue = true),
@@ -113,6 +113,30 @@ object SimpleConfigTest {
             |d=80
             |e=enabled""".stripMargin.linesIterator.toSeq
         ), CollectionConverters.asJava(updated.linesIterator.toSeq))
+    }
+
+    @Test
+    def testUpdateAll2(): Unit = {
+      val template = new ConfigImpl
+      val sub1 = new ConfigChildImpl(template, "sub1")
+      val keys: Seq[ConfigKey[Any]] = Seq(
+        ConfigKey.create(template, "a", defaultValue = true),
+        ConfigKey.create(template, "b", defaultValue = false),
+        ConfigKey.create(template, "c", defaultValue = 20),
+        ConfigKey.create(template, "d", defaultValue = 80),
+        ConfigKey.create(template, "e", defaultValue = "enabled"),
+        ConfigKey.create(sub1, "a", defaultValue = "sub1")
+      ).map(_.asInstanceOf[ConfigKey[Any]])
+      val updated = keys.foldLeft(Seq.empty[String]) { case (strSeq, key) => ConfigFile.SimpleTextConfig.updateValue(key, strSeq)(key.edInstance).toSeq }
+      assertLinesMatch(
+        CollectionConverters.asJava(
+          """a=true
+            |b=false
+            |c=20
+            |d=80
+            |e=enabled
+            |sub1.a=sub1""".stripMargin.linesIterator.toSeq
+        ), CollectionConverters.asJava(updated))
     }
   }
 
