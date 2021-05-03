@@ -20,13 +20,19 @@ jobs:
           echo "${{ runner.os }}"
           cat /etc/os-release
       - name: Time
-        run: date && cal
+        run: date && ncal -bh $$ ncal -bhj
       - name: Environment Values
         run: env | grep -i github
       - name: Job Values
         run: echo "${JOB_CONTECT}"
         env:
           JOB_CONTECT: ${{ toJson(job) }}
+      - name: Neofetch
+        run: |
+          echo "::group::APT"
+          apt update && apt install -y neofetch
+          echo "::endgroup::"
+          neofetch
   check:
     runs-on: ubuntu-latest
     strategy:
