@@ -14,6 +14,8 @@ trait ConfigTemplate {
   def categoryName: String
 
   def addTrack(key: ConfigKey[_]): Unit
+
+  def write(file: ConfigFile): Unit
 }
 
 object ConfigTemplate {
@@ -27,19 +29,24 @@ object ConfigTemplate {
     override val categoryName: String = ""
 
     override def addTrack(key: ConfigKey[_]): Unit = ()
+
+    override def write(file: ConfigFile): Unit = ()
   }
 
-  abstract class ChildTemplate(val parent: ConfigTemplate, name: String) extends ConfigTemplate {
-    override final val categoryName: String =
-      if (parent.categoryName.isEmpty) name else parent.categoryName + "." + name
+  trait ChildTemplate extends ConfigTemplate {
+    val parent: ConfigTemplate
   }
 
-  class DebugChildTemplate(parent: ConfigTemplate, name: String) extends ChildTemplate(parent, name) {
+  class DebugChildTemplate(override val parent: ConfigTemplate, name: String) extends ChildTemplate {
+    override final val categoryName: String = if (parent.categoryName.isEmpty) name else parent.categoryName + "." + name
+
     override def get[A](key: ConfigKey[A]): A = key.defaultValue
 
     override def set[A](key: ConfigKey[A], newValue: A): Unit = ()
 
     override def addTrack(key: ConfigKey[_]): Unit = ()
+
+    override def write(file: ConfigFile): Unit = ()
   }
 
 }

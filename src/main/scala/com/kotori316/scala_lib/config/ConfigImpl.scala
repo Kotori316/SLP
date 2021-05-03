@@ -5,7 +5,7 @@ import java.util.NoSuchElementException
 import scala.collection.immutable.SeqMap
 
 class ConfigImpl extends ConfigTemplate {
-  private var settings: Map[ConfigKey[_], Any] = SeqMap.empty
+  protected var settings: Map[ConfigKey[_], Any] = SeqMap.empty
 
   override def get[A](key: ConfigKey[A]): A = {
     val option = settings.get(key).map(_.asInstanceOf[A])
@@ -27,7 +27,10 @@ class ConfigImpl extends ConfigTemplate {
 
   override def toString: String = s"ConfigImpl{$settings}"
 
-  def write(file: ConfigFile): Unit = {
-    this.settings.keys.filterNot(_.isInstanceOf[SubCategoryKey]).foreach(k => file.write(k))
+  override def write(file: ConfigFile): Unit = {
+    this.settings.keys.foreach {
+      case SubCategoryKey(subCategory) => subCategory.write(file)
+      case k => file.write(k)
+    }
   }
 }
