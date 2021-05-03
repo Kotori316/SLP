@@ -1,6 +1,7 @@
 package com.kotori316.scala_lib.config
 
 import java.nio.file.{Files, Path}
+import java.util.regex.Pattern
 
 import scala.jdk.javaapi.CollectionConverters
 
@@ -28,18 +29,23 @@ object ConfigFile {
   }
 
   object SimpleTextConfig {
+    private final val ignoreSpacePattern = Pattern.compile(""" *(?<key>[^;#]+)=(?<value>.+?) *(?:|(?<comment>[;#].+))""")
 
     def updateValue[A](key: ConfigKey[A], allLines: scala.collection.Seq[String])(implicit EncoderDecoder: ED[A]): scala.collection.Seq[String] = {
       var found = false
       val changed = for {
         line <- allLines
-        split = line.split("[:#]", 2)
-        commendIgnored = split(0)
+        matcher = ignoreSpacePattern.matcher(line)
       } yield {
-        if (commendIgnored.startsWith(key.name)) {
-          found = true
-          if (split.length > 1) s"${key.name}=${EncoderDecoder.toString(key.get)} ${split(1)}"
-          else s"${key.name}=${EncoderDecoder.toString(key.get)}"
+        if (matcher.matches()) {
+          val keyName = matcher.group("key")
+          if (keyName == key.name) {
+            found = true
+            if (matcher.start("comment") > 0) s"$keyName=${EncoderDecoder.toString(key.get)} ${matcher.group("comment")}"
+            else s"$keyName=${EncoderDecoder.toString(key.get)}"
+          } else {
+            line
+          }
         } else {
           line
         }
@@ -51,12 +57,11 @@ object ConfigFile {
 
     def findValue[A](key: ConfigKey[A], allLines: Iterator[String])(implicit EncoderDecoder: ED[A]): Option[A] = {
       while (allLines.hasNext) {
-        val next = allLines.next()
-        val commendIgnored = next.split("[:#]", 2)(0)
-        if (commendIgnored.startsWith(key.name)) {
-          val split = commendIgnored.split("=", 2)
-          if (split.length > 1) {
-            EncoderDecoder.fromString(split(1)) match {
+        val matcher = ignoreSpacePattern.matcher(allLines.next())
+        if (matcher.matches()) {
+          val keyName = matcher.group("key")
+          if (keyName == key.name) {
+            EncoderDecoder.fromString(matcher.group("value")) match {
               case a: Some[_] => return a
               case None =>
             }
