@@ -67,11 +67,11 @@ minecraft {
         data {
             workingDirectory project.file('run-server')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'info'
+            property 'forge.logging.console.level', 'debug'
             forceExit false
 
             if (Boolean.valueOf(System.getenv("GITHUB_ACTIONS")))
-                args '--mod', "slp_test", '--dev'
+                args '--mod', "slp_test,scala-library-object,scala-library-java", '--dev'
             else
                 args '--mod', "slp_test", '--all'
 
