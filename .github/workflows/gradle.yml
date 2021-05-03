@@ -29,8 +29,9 @@ jobs:
           JOB_CONTECT: ${{ toJson(job) }}
       - name: Neofetch
         run: |
+          set -eu
           echo "::group::APT"
-          apt update && apt install -y neofetch
+          sudo apt-get update && sudo apt-get install -y neofetch
           echo "::endgroup::"
           neofetch
   check:
