@@ -16,7 +16,17 @@ jobs:
       - name: Check Ref name
         run: echo "${{ github.ref }}"
       - name: OS name
-        run: echo "${{ runner.os }}"
+        run: |
+          echo "${{ runner.os }}"
+          cat /etc/os-release
+      - name: Time
+        run: date && cal
+      - name: Environment Values
+        run: env | grep -i github
+      - name: Job Values
+        run: echo "${JOB_CONTECT}"
+        env:
+          JOB_CONTECT: ${{ toJson(job) }}
   check:
     runs-on: ubuntu-latest
     strategy:
@@ -49,7 +59,13 @@ jobs:
       - name: download_assets
         run: |
           chmod +x ./gradlew
+          echo "::group::Download Assets"
           ./gradlew downloadAssets || ./gradlew downloadAssets || (sleep 30s && ./gradlew downloadAssets)
+          echo "::endgroup::"
+          echo "::group::Extract Natives"
+          ./gradlew extractNatives || ./gradlew extractNatives || (sleep 30s && ./gradlew extractNatives)
+          echo "::endgroup::"
+          echo "Download Finished"
         continue-on-error: true
         env:
           CI_FORGE: ${{ matrix.forge }}
