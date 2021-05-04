@@ -232,7 +232,6 @@ static void start_group(String name) {
     println("::group::${name}")
 }
 
-
 @SuppressWarnings('SpellCheckingInspection')
 static void end_group() {
     println("::endgroup::")
