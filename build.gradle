@@ -96,6 +96,13 @@ sourceSets {
             }
         }
     }
+    test {
+        scala {
+            if (System.getenv("CI") == null) {
+                exclude "/com/kotori316/scala_lib/config/**"
+            }
+        }
+    }
 }
 
 private static String forgeVersion() {
