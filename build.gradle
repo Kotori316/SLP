@@ -228,6 +228,16 @@ publishing {
     }
 }
 
+static void start_group(String name) {
+    println("::group::${name}")
+}
+
+
+@SuppressWarnings('SpellCheckingInspection')
+static void end_group() {
+    println("::endgroup::")
+}
+
 task data() {
     doLast {
         println("Java: ${System.getProperty('java.version')} JVM: ${System.getProperty('java.vm.version')}" +
@@ -242,15 +252,15 @@ task data() {
         println("All Dependencies")
         getProject().getConfigurations().forEach { con ->
             if (!con.dependencies.isEmpty()) {
-                println("*" * 20)
-                println(con.name)
+                start_group(con.name)
                 for (Object o : con.dependencies) {
                     println(o)
                 }
+                end_group()
             }
         }
         print(System.lineSeparator() * 2)
-        println("Dependencies to be included in pom")
+        start_group("Dependencies to be included in pom")
         getProject().getConfigurations().implementation.dependencies.each { Dependency dep ->
             if (!dep.name.contains("junit")) {
                 printf("Group: %s, ArtifactId: %s, Version: %s%n", dep.group, dep.name, dep.version)
@@ -258,16 +268,17 @@ task data() {
                 printf("JUNIT - Group: %s, ArtifactId: %s, Version: %s%n", dep.group, dep.name, dep.version)
             }
         }
-        print(System.lineSeparator() * 2)
-        println("Publishing Information")
+        end_group()
+        start_group("Publishing Information")
         publishing.properties.each { entry ->
             printf("%s -> %s (key: %s, value: %s)%n", entry.key, entry.value, entry.getKey().getClass(), entry.getValue().getClass())
         }
-        println()
-        println("Repositories")
+        end_group()
+        start_group("Repositories")
 //        publishing.properties.get("repositories").getClass().getMethods().each { println(it) }
 //        publishing.properties.get("repositories").getClass().getInterfaces().each { println(it) }
         publishing.properties.get("repositories").getAsMap().each { Map.Entry<String, Object> e -> printf("%s=%s\n", e.key, e.value.getUrl()) }
 //        (publishing.properties.get("repositories") as Collection<Object>).toArray()[0].getClass().getMethods().each {println(it)}
+        end_group()
     }
 }
