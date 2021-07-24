@@ -10,12 +10,12 @@ import net.minecraftforge.forgespi.language.{IModInfo, ModFileScanData}
 
 case class ScalaLanguageTarget(override val className: String, override val modID: String) extends IModLanguageLoader with ModClassData {
 
-  override def loadMod[T](info: IModInfo, modClassLoader: ClassLoader, modFileScanResults: ModFileScanData): T = {
+  override def loadMod[T](info: IModInfo, modFileScanResults: ModFileScanData, moduleLayer: ModuleLayer): T = {
     try {
       val fmlContainer = Class.forName("com.kotori316.scala_lib.ScalaModContainer", true, Thread.currentThread.getContextClassLoader)
       LOGGER.debug(LOADING, "Loading ScalaModContainer from classloader {} - got {}", Thread.currentThread.getContextClassLoader: Any, fmlContainer.getClassLoader: Any)
-      val constructor = fmlContainer.getConstructor(classOf[IModInfo], classOf[String], classOf[ClassLoader], classOf[ModFileScanData])
-      constructor.newInstance(info, className, modClassLoader, modFileScanResults).asInstanceOf[T]
+      val constructor = fmlContainer.getConstructor(classOf[IModInfo], classOf[String], classOf[ModFileScanData], classOf[ModuleLayer])
+      constructor.newInstance(info, className, modFileScanResults, moduleLayer).asInstanceOf[T]
     } catch {
       case invocationTargetException: InvocationTargetException =>
         LOGGER.fatal(LOADING, "Failed to build mod", invocationTargetException)

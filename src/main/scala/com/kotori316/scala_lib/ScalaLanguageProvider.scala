@@ -18,10 +18,10 @@ class ScalaLanguageProvider extends IModLanguageProvider {
   override def getFileVisitor: Consumer[ModFileScanData] = scanData => {
     import scala.jdk.CollectionConverters._
     val targets = scanData.getAnnotations.asScala
-      .filter(_.getAnnotationType == MOD_ANNOTATION)
+      .filter(_.annotationType() == MOD_ANNOTATION)
       .map { data =>
-        val className = data.getClassType.getClassName
-        val id = data.getAnnotationData.get("value").asInstanceOf[String]
+        val className = data.clazz().getClassName
+        val id = data.annotationData().get("value").asInstanceOf[String]
         ScalaLanguageTarget(className, id)
       }
     ModClassData.findInstance(targets.toList) match {

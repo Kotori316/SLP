@@ -8,11 +8,11 @@ import net.minecraftforge.eventbus.api.BusBuilder;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.IEventListener;
-import net.minecraftforge.fml.AutomaticEventSubscriber;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModLoadingException;
 import net.minecraftforge.fml.ModLoadingStage;
-import net.minecraftforge.fml.event.lifecycle.IModBusEvent;
+import net.minecraftforge.fml.event.IModBusEvent;
+import net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.fml.unsafe.UnsafeHacks;
@@ -27,7 +27,7 @@ public class ScalaModContainer extends ModContainer {
     private static final Logger LOGGER = LogManager.getLogger(ScalaModContainer.class);
 
     private final String className;
-    private final ClassLoader modClassLoader;
+    private final ModuleLayer gameLayer;
     private final ModFileScanData scanData;
 
     private final boolean isScalaObject;
@@ -37,20 +37,20 @@ public class ScalaModContainer extends ModContainer {
     private Object modInstance;
 
     /**
-     * Instance created in {@link ScalaLanguageTarget#loadMod(IModInfo, ClassLoader, ModFileScanData)}
+     * Instance created in {@link ScalaLanguageTarget#loadMod(IModInfo, ModFileScanData, ModuleLayer)}
      */
-    public ScalaModContainer(IModInfo info, String className, ClassLoader modClassLoader, ModFileScanData modFileScanResults) {
+    public ScalaModContainer(IModInfo info, String className, ModFileScanData modFileScanResults, ModuleLayer gameLayer) {
         super(info);
         this.className = className;
-        this.modClassLoader = modClassLoader;
-        LOGGER.debug(LOADING, "Creating scala container Class: {}, with classLoader {} & {}", className, modClassLoader, getClass().getClassLoader());
+        this.gameLayer = gameLayer;
+        LOGGER.debug(LOADING, "Creating scala container Class: {}, with classLoader {}", className, getClass().getClassLoader());
         this.scanData = modFileScanResults;
         isScalaObject = className.endsWith("$");
 
         activityMap.put(ModLoadingStage.CONSTRUCT, this::constructMod);
 
         this.eventBus = BusBuilder.builder().setExceptionHandler(this::onEventFailed).setTrackPhases(false).markerType(IModBusEvent.class).build();
-        this.configHandler = Optional.of(this.eventBus::post);
+        this.configHandler = Optional.of(ce -> this.eventBus.post(ce.self()));
         final FMLJavaModLoadingContext contextExtension = createContext(getEventBus());
         this.contextExtension = () -> contextExtension;
     }
@@ -65,9 +65,10 @@ public class ScalaModContainer extends ModContainer {
     private void constructMod() {
         try {
             // Here to avoid NPE of scala object.
-            modClass = Class.forName(className, true, modClassLoader);
+            var layer = gameLayer.findModule(this.modInfo.getOwningFile().moduleName()).orElseThrow();
+            modClass = Class.forName(layer, className);
             LOGGER.trace(LOADING, "Scala Class Loaded {} with {}.", modClass, modClass.getClassLoader());
-        } catch (ClassNotFoundException e) {
+        } catch (Throwable e) {
             LOGGER.error(LOADING, "Failed to load class {}", className, e);
             throw new ModLoadingException(modInfo, ModLoadingStage.CONSTRUCT, "fml.modloading.failedtoloadmodclass", e);
         }

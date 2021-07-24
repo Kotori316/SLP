@@ -49,7 +49,7 @@ object ScalaModObject {
   object BadEventHandler {
     @SubscribeEvent
     def worldLogin(worldEvent: WorldEvent): Unit = {
-      LOGGER.info("NEVER HAPPENED " + worldEvent)
+      LOGGER.fatal("NEVER HAPPENED " + worldEvent)
     }
   }
 

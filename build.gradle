@@ -7,7 +7,7 @@ buildscript {
         maven { url = "https://maven.minecraftforge.net/" }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
 plugins {
@@ -24,13 +24,11 @@ version = "${scala_version}-build-${build_number}"
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ScalableCatsForce"
 
-sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
-compileScala {
-    sourceCompatibility = targetCompatibility = '1.8'
-}
+// Mojang ships Java 16 to end users in 1.17+ instead of Java 8 in 1.16 or lower, so your mod should target Java 16.
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
 minecraft {
-    mappings channel: 'snapshot', version: '20201028-1.16.3'
+    mappings channel: 'official', version: '1.17.1'
     runs {
         client {
             workingDirectory project.file('Minecraft')
@@ -110,7 +108,7 @@ private static String forgeVersion() {
     if (CI_FORGE != null && CI_FORGE != "fixed") {
         return "net.minecraftforge:forge:" + CI_FORGE
     } else {
-        return 'net.minecraftforge:forge:1.16.5-36.1.0'
+        return 'net.minecraftforge:forge:1.17.1-37.0.2'
     }
 }
 
