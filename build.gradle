@@ -64,7 +64,7 @@ minecraft {
         }
         data {
             workingDirectory project.file('run-server')
-            property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP,SCAN'
             property 'forge.logging.console.level', 'debug'
             forceExit false
 
@@ -86,12 +86,6 @@ sourceSets {
     main {
         scala {
             srcDir 'src/main/scala'
-            exclude "/com/kotori316/scala_lib/asm/**"
-            if (System.getenv("CI") == null) {
-                // I use classes in package `example` in tests.
-                exclude "/com/kotori316/scala_lib/example/**"
-                exclude "/com/kotori316/scala_lib/config/**"
-            }
         }
     }
     test {
@@ -113,6 +107,18 @@ private static String forgeVersion() {
 }
 
 def mainClassName = "com.kotori316.scala_lib.Main"
+repositories {
+    mavenLocal()
+    maven {
+        name = "Azure-SLP"
+        url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
+        content {
+            it.includeVersion("org.typelevel", "cats-core_2.13", "2.6.2-kotori")
+            it.includeVersion("org.typelevel", "cats-kernel_2.13", "2.6.2-kotori")
+        }
+    }
+}
+
 dependencies {
     String scala_major = scala_version.substring(0, scala_version.lastIndexOf("."))
     String cats_version = getProperty("cats_version")
@@ -139,39 +145,45 @@ test {
         exceptionFormat 'full'
     }
 }
-
+def jarAttributes = [
+        'FMLModType'              : 'GAMELIBRARY',
+        "Specification-Title"     : project.name,
+        "Specification-Vendor"    : "Kotori316",
+        "Specification-Version"   : "1", // We are version 1 of ourselves
+        "Implementation-Title"    : project.name,
+        "Implementation-Version"  : project.version,
+        "Implementation-Vendor"   : "Kotori316",
+        "Implementation-Timestamp": ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT),
+        'Main-Class'              : mainClassName,
+]
 jar {
     manifest {
-        attributes([
-                'FMLModType': 'LANGPROVIDER'
-        ])
-        attributes([
-                "Specification-Title"     : project.name,
-                "Specification-Vendor"    : "Kotori316",
-                "Specification-Version"   : "1", // We are version 1 of ourselves
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.version,
-                "Implementation-Vendor"   : "Kotori316",
-                "Implementation-Timestamp": ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT),
-                'Main-Class'              : mainClassName
-        ])
+        attributes(jarAttributes)
     }
     archiveClassifier.set('dev')
+}
+
+task mavenJar(type: Jar) {
+    from sourceSets.main.output
+    manifest {
+        attributes(jarAttributes)
+    }
 }
 
 task srcJar(type: Jar) {
     from sourceSets.main.allSource
     archiveClassifier.set('sources')
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 // Tell the artifact system about our extra jars
 artifacts {
-    archives shadowJar as Object, srcJar
+    archives shadowJar as Object //, srcJar
 }
 
 shadowJar {
     def groupNames = ['org.scala-lang', 'org.scala-lang.modules', 'org.typelevel']
-    archiveClassifier.set("with-library")
+    archiveClassifier.set("")
     dependencies {
         include(dependency {
             groupNames.contains(it.moduleGroup)
@@ -206,6 +218,7 @@ publishing {
             artifactId = archivesBaseName.toLowerCase()
             artifact srcJar
             artifact jar
+            artifact mavenJar
             pom {
                 name = archivesBaseName
                 description = "Scala Loading library for Minecraft for $minecraftVersion, build with forge $v"

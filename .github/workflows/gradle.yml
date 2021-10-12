@@ -36,6 +36,7 @@ jobs:
           echo "neofetch"
           neofetch
   check:
+    if: false
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

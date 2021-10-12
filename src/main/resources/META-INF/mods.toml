@@ -1,36 +1,9 @@
-modLoader = "kotori_scala" # The name of language provider
-loaderVersion = "[2.13.2,2.14.0),[33,)" # Version filter. In this case, scala 2.13.2 and newer but under 2.14
+modLoader="javafml"
+loaderVersion="[37,)"
 license = "APACHE LICENSE, VERSION 2.0"
 
 [[mods]]
-modId = "scala-library-object"
-version = "${file.jarVersion}"
-displayName = "Scala Lib"
-credits = "Kotori316"
-authors = "Kotori316"
+modId="slp"
+version = "2.13.6"
 description = '''
-A language provider for Scala mods.
-A example mod in kotori_scala'''
-[[mods]]
-modId = "scala-library-java"
-displayName = "Java"
-description = '''
-A example mod in kotori_scala'''
-[[mods]]
-modId = "slp_test"
-displayName = "Dummy to test SLP"
-description = '''
-Test starter.'''
-
-[[dependencies.scala-library-object]]
-modId = "forge"
-mandatory = true
-versionRange = "[33.0.0,)"
-ordering = "NONE"
-side = "BOTH"
-[[dependencies.scala-library-object]]
-modId = "minecraft"
-mandatory = true
-versionRange = "[1.16.2,)"
-ordering = "NONE"
-side = "BOTH"
+kotori_scala'''
