@@ -45,9 +45,9 @@ public class ScalaModContainer extends ModContainer {
         this.gameLayer = gameLayer;
         LOGGER.debug(LOADING, "Creating scala container Class: {}, with classLoader {}", className, getClass().getClassLoader());
         this.scanData = modFileScanResults;
-        isScalaObject = className.endsWith("$");
+        this.isScalaObject = className.endsWith("$");
 
-        activityMap.put(ModLoadingStage.CONSTRUCT, this::constructMod);
+        this.activityMap.put(ModLoadingStage.CONSTRUCT, this::constructMod);
 
         this.eventBus = BusBuilder.builder().setExceptionHandler(this::onEventFailed).setTrackPhases(false).markerType(IModBusEvent.class).build();
         this.configHandler = Optional.of(ce -> this.eventBus.post(ce.self()));
@@ -57,7 +57,7 @@ public class ScalaModContainer extends ModContainer {
 
     /**
      * Create class instance and get new instance or object representing the mod.
-     * Also this method injects Automatic Event Subscribers for the mod.
+     * Also, this method injects Automatic Event Subscribers for the mod.
      *
      * @throws ModLoadingException - thrown if any errors({@link ReflectiveOperationException}) happened.
      */

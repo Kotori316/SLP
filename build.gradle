@@ -108,11 +108,23 @@ private static String forgeVersion() {
     if (CI_FORGE != null && CI_FORGE != "fixed") {
         return "net.minecraftforge:forge:" + CI_FORGE
     } else {
-        return 'net.minecraftforge:forge:1.17.1-37.0.84'
+        return 'net.minecraftforge:forge:1.17.1-37.0.86'
     }
 }
 
 def mainClassName = "com.kotori316.scala_lib.Main"
+repositories {
+    mavenLocal()
+    maven {
+        name = "Azure-SLP"
+        url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
+        content {
+            it.includeVersion("org.typelevel", "cats-core_2.13", "2.6.2-kotori")
+            it.includeVersion("org.typelevel", "cats-kernel_2.13", "2.6.2-kotori")
+        }
+    }
+}
+
 dependencies {
     String scala_major = scala_version.substring(0, scala_version.lastIndexOf("."))
     String cats_version = getProperty("cats_version")
@@ -143,7 +155,8 @@ test {
 jar {
     manifest {
         attributes([
-                'FMLModType': 'LANGPROVIDER'
+                'FMLModType'           : 'LANGPROVIDER',
+                'Automatic-Module-Name': 'kotori_scala',
         ])
         attributes([
                 "Specification-Title"     : project.name,
@@ -162,6 +175,7 @@ jar {
 task srcJar(type: Jar) {
     from sourceSets.main.allSource
     archiveClassifier.set('sources')
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 // Tell the artifact system about our extra jars
