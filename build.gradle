@@ -146,7 +146,7 @@ test {
     }
 }
 def jarAttributes = [
-        'FMLModType'              : 'MOD',
+        'FMLModType'              : 'GAMELIBRARY',
         "Specification-Title"     : project.name,
         "Specification-Vendor"    : "Kotori316",
         "Specification-Version"   : "1", // We are version 1 of ourselves
