@@ -37,6 +37,7 @@ jobs:
           neofetch
   check:
     runs-on: ubuntu-latest
+    if: false
     strategy:
       fail-fast: false
       matrix:
