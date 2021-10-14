@@ -172,6 +172,9 @@ jar {
     archiveClassifier.set('dev')
 }
 
+task normalJar(type: Jar) {
+}
+
 task srcJar(type: Jar) {
     from sourceSets.main.allSource
     archiveClassifier.set('sources')
@@ -220,6 +223,8 @@ publishing {
             artifactId = archivesBaseName.toLowerCase()
             artifact srcJar
             artifact jar
+            artifact shadowJar
+            artifact normalJar
             pom {
                 name = archivesBaseName
                 description = "Scala Loading library for Minecraft for $minecraftVersion, build with forge $v"
