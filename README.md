@@ -30,8 +30,8 @@ This mod appears in mods list with name "slp".
   ```
 
   * **If the Minecraft client doesn't launch with an exception to modules, change scala dependency from "implementation" to "compileOnly" and add slp mod in mods directory.**
-  * Properties are set in your `gradle.properties` file or just hardcoded like `def scala_version = "2.13.6"`.
-  * `scala_version` should be 2.13.6 because this project contains binary of Scala 2.13.6. Make sure your version matches the version this mod provides. See [this file](https://github.com/Kotori316/SLP/blob/1.17/gradle.properties)
+  * Properties are set in your `gradle.properties` file or just hardcoded like `def scala_version = "2.13.7"`.
+  * `scala_version` should be 2.13.7 because this project contains binary of Scala 2.13.7. Make sure your version matches the version this mod provides. See [this file](https://github.com/Kotori316/SLP/blob/1.17/gradle.properties)
   * `scala_major` must be 2.13.
     * Currently, Scala3 is not supported.
 
