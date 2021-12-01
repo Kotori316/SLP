@@ -25,10 +25,10 @@ group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conv
 archivesBaseName = "ScalableCatsForce"
 
 // Mojang ships Java 16 to end users in 1.17+ instead of Java 8 in 1.16 or lower, so your mod should target Java 16.
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-    mappings channel: 'official', version: '1.17.1'
+    mappings channel: 'official', version: '1.18'
     runs {
         client {
             workingDirectory project.file('Minecraft')
@@ -108,7 +108,7 @@ private static String forgeVersion() {
     if (CI_FORGE != null && CI_FORGE != "fixed") {
         return "net.minecraftforge:forge:" + CI_FORGE
     } else {
-        return 'net.minecraftforge:forge:1.17.1-37.0.126'
+        return "net.minecraftforge:forge:1.18-38.0.1"
     }
 }
 
@@ -136,9 +136,9 @@ dependencies {
     implementation(group: 'org.typelevel', name: "cats-core_" + scala_major, version: cats_version)
 
     // Test Dependencies.
-    implementation(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.0')
-    testImplementation(group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.7.0')
-    runtimeOnly(group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0')
+    implementation(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.1')
+    testImplementation(group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.7.1')
+    runtimeOnly(group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.1')
     implementation(group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.7.0')
 
 }
