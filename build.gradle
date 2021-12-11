@@ -31,7 +31,7 @@ compileScala {
 }
 
 minecraft {
-    mappings channel: 'official', version: '1.18'
+    mappings channel: 'official', version: '1.18.1'
     runs {
         client {
             workingDirectory project.file('Minecraft')
@@ -111,7 +111,7 @@ private static String forgeVersion() {
     if (CI_FORGE != null && CI_FORGE != "fixed") {
         return "net.minecraftforge:forge:" + CI_FORGE
     } else {
-        return "net.minecraftforge:forge:1.18-38.0.16"
+        return "net.minecraftforge:forge:1.18.1-39.0.0"
     }
 }
 
