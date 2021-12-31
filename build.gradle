@@ -114,7 +114,7 @@ private static String forgeVersion() {
     if (CI_FORGE != null && CI_FORGE != "fixed") {
         return "net.minecraftforge:forge:" + CI_FORGE
     } else {
-        return "net.minecraftforge:forge:1.18.1-39.0.0"
+        return "net.minecraftforge:forge:1.18.1-39.0.9"
     }
 }
 
