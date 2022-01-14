@@ -59,7 +59,7 @@ jobs:
       - name: Get forge version
         if: ${{ matrix.forge != 'fixed' }}
         run: |
-          version=$(java -jar $(find / -maxdepth 1 -name "*.jar") ${{ matrix.forge }})
+          version=$(java -jar $(find / -maxdepth 1 -name "fic*.jar") ${{ matrix.forge }})
           echo "CI_FORGE=${version}" >> $GITHUB_ENV
           mc_version=${{ matrix.forge }}
           mc_version=${mc_version%.0}
