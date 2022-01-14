@@ -1,5 +1,6 @@
 package com.kotori316.scala_lib.example;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -16,6 +17,7 @@ public class JavaModClass {
     public JavaModClass() {
         // Registering init method.
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
+        MinecraftForge.EVENT_BUS.register(EventHandlers.class);
     }
 
     /**
@@ -26,12 +28,10 @@ public class JavaModClass {
     }
 
     /**
-     * In Java code, @{@link Mod.EventBusSubscriber} can be annotated to static inner class.
-     * This example class is for {@link net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus#FORGE}.
-     *
-     * @see net.minecraftforge.fml.common.Mod.EventBusSubscriber
+     * Please avoid the use of {@link net.minecraftforge.fml.common.Mod.EventBusSubscriber}, as it causes strange compile errors.
+     * Register via {@link net.minecraftforge.eventbus.api.IEventBus#register(Object)} is fine.
      */
-    @Mod.EventBusSubscriber(modid = MOD_ID)
+    // @Mod.EventBusSubscriber(modid = MOD_ID)
     public static class EventHandlers {
         /**
          * Methods that handles event must be static.
