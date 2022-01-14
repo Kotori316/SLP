@@ -25,7 +25,7 @@ group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conv
 archivesBaseName = "ScalableCatsForce"
 
 // Mojang ships Java 16 to end users in 1.17+ instead of Java 8 in 1.16 or lower, so your mod should target Java 16.
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+java.toolchain.languageVersion = JavaLanguageVersion.of(System.getenv("CI_JAVA") ?: "16")
 
 minecraft {
     mappings channel: 'official', version: '1.17.1'
