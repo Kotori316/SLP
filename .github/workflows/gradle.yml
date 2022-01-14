@@ -64,13 +64,12 @@ jobs:
           mc_version=${{ matrix.forge }}
           mc_version=${mc_version%.0}
           echo "Minecraft $mc_version, Forge $version"
-          sed -i -e "s/'1.17.1'/'mc_version'/g" build.gradle
       - name: Check Dependency
         run: chmod +x ./gradlew && ./gradlew data
         env:
           CI_JAVA: ${{ matrix.java }}
       - name: Test JUnit
-        run: chmod +x ./gradlew && ./gradlew test build --continue --warning-mode all
+        run: chmod +x ./gradlew && ./gradlew test build
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CI_JAVA: ${{ matrix.java }}

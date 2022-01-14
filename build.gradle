@@ -28,7 +28,7 @@ archivesBaseName = "ScalableCatsForce"
 java.toolchain.languageVersion = JavaLanguageVersion.of(System.getenv("CI_JAVA") ?: "16")
 
 minecraft {
-    mappings channel: 'official', version: '1.17.1'
+    mappings channel: 'official', version: minecraftVersion()
     runs {
         client {
             workingDirectory project.file('Minecraft')
@@ -110,6 +110,11 @@ private static String forgeVersion() {
     } else {
         return 'net.minecraftforge:forge:1.17.1-37.1.0'
     }
+}
+
+private static String minecraftVersion() {
+    String v = forgeVersion()
+    return v.substring(v.lastIndexOf(":") + 1, v.lastIndexOf("-"))
 }
 
 def mainClassName = "com.kotori316.scala_lib.Main"
@@ -268,9 +273,8 @@ task data() {
         println("Scala: $scala_version, ${scala_version.getClass()}")
         println("Build Number: $build_number, ${build_number.getClass()}")
         println("Version: $version, ${version.getClass()}")
-        String v = forgeVersion()
-        println("Forge: $v")
-        println("Minecraft: ${v.substring(v.lastIndexOf(":") + 1, v.lastIndexOf("-"))}")
+        println("Forge: ${forgeVersion()}")
+        println("Minecraft: ${minecraftVersion()}")
         print(System.lineSeparator() * 2)
         println("All Dependencies")
         getProject().getConfigurations().forEach { con ->
