@@ -27,14 +27,14 @@ version = "${scala_version}-build-${build_number}"
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ScalableCatsForce"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(System.getenv("CI_JAVA") ?: "17")
 
 compileScala {
     scalaCompileOptions.additionalParameters = ["-Wconf:cat=deprecation:w,any:e"]
 }
 
 minecraft {
-    mappings channel: 'parchment', version: project.parchmentMapping
+    mappings channel: 'parchment', version: (System.getenv("CI_PARCHMENT") ?: project.parchmentMapping)
     runs {
         client {
             workingDirectory project.file('Minecraft')
@@ -116,6 +116,11 @@ private static String forgeVersion() {
     } else {
         return "net.minecraftforge:forge:1.18.1-39.0.58"
     }
+}
+
+private static String minecraftVersion() {
+    String v = forgeVersion()
+    return v.substring(v.lastIndexOf(":") + 1, v.lastIndexOf("-"))
 }
 
 def mainClassName = "com.kotori316.scala_lib.Main"
@@ -223,8 +228,6 @@ publishing {
         }
     }
     publications {
-        String v = forgeVersion()
-        String minecraftVersion = v.substring(v.lastIndexOf(":") + 1, v.lastIndexOf("-"))
         mavenJava(MavenPublication) {
             artifactId = archivesBaseName.toLowerCase()
             artifact srcJar
@@ -233,7 +236,7 @@ publishing {
             artifact normalJar
             pom {
                 name = archivesBaseName
-                description = "Scala Loading library for Minecraft for $minecraftVersion, build with forge $v"
+                description = "Scala Loading library build with Minecraft ${minecraftVersion()} and Forge ${forgeVersion()}"
                 url = 'https://github.com/Kotori316/SLP'
                 packaging = "jar"
                 withXml {
@@ -274,9 +277,9 @@ task data() {
         println("Scala: $scala_version, ${scala_version.getClass()}")
         println("Build Number: $build_number, ${build_number.getClass()}")
         println("Version: $version, ${version.getClass()}")
-        String v = forgeVersion()
-        println("Forge: $v")
-        println("Minecraft: ${v.substring(v.lastIndexOf(":") + 1, v.lastIndexOf("-"))}")
+        println("Scala Loading library build with Minecraft ${minecraftVersion()} and Forge ${forgeVersion()}")
+        println("Forge: ${forgeVersion()}")
+        println("Minecraft: ${minecraftVersion()}")
         print(System.lineSeparator() * 2)
         println("All Dependencies")
         getProject().getConfigurations().forEach { con ->
@@ -299,14 +302,14 @@ task data() {
         }
         end_group()
         start_group("Publishing Information")
-        publishing.properties.each { entry ->
+        publishing.properties.each { Map.Entry<?, ?> entry ->
             printf("%s -> %s (key: %s, value: %s)%n", entry.key, entry.value, entry.getKey().getClass(), entry.getValue().getClass())
         }
         end_group()
         start_group("Repositories")
 //        publishing.properties.get("repositories").getClass().getMethods().each { println(it) }
 //        publishing.properties.get("repositories").getClass().getInterfaces().each { println(it) }
-        publishing.properties.get("repositories").getAsMap().each { Map.Entry<String, Object> e -> printf("%s=%s\n", e.key, e.value.getUrl()) }
+        publishing.properties.get("repositories").getAsMap().each { Map.Entry<String, Object> e -> printf("%s=%s%n", e.key, e.value.getUrl()) }
 //        (publishing.properties.get("repositories") as Collection<Object>).toArray()[0].getClass().getMethods().each {println(it)}
         end_group()
     }

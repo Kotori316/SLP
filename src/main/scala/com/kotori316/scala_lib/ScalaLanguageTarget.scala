@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationTargetException
 
 import com.kotori316.scala_lib.ScalaLanguageProvider.LOGGER
 import net.minecraftforge.fml.Logging.LOADING
-import net.minecraftforge.fml.ModLoadingStage
+import net.minecraftforge.fml.{ModLoadingException, ModLoadingStage}
 import net.minecraftforge.forgespi.language.IModLanguageProvider.IModLanguageLoader
 import net.minecraftforge.forgespi.language.{IModInfo, ModFileScanData}
 
@@ -13,6 +13,7 @@ case class ScalaLanguageTarget(override val className: String, override val modI
   /**
    * Call [[com.kotori316.scala_lib.ScalaModContainer]]
    */
+  @throws(classOf[ModLoadingException])
   override def loadMod[T](info: IModInfo, modFileScanResults: ModFileScanData, moduleLayer: ModuleLayer): T = {
     try {
       val scalaContainer = Class.forName("com.kotori316.scala_lib.ScalaModContainer", true, Thread.currentThread.getContextClassLoader)
@@ -22,11 +23,9 @@ case class ScalaLanguageTarget(override val className: String, override val modI
     } catch {
       case invocationTargetException: InvocationTargetException =>
         LOGGER.fatal(LOADING, "Failed to build mod", invocationTargetException)
-        val mleClass = getMLE
-        if (mleClass.isInstance(invocationTargetException.getTargetException)) {
-          throw invocationTargetException.getTargetException
-        } else {
-          throw createMLE(info, invocationTargetException)
+        throw invocationTargetException.getTargetException match {
+          case modLoadingException: ModLoadingException => modLoadingException
+          case _ => createMLE(info, invocationTargetException)
         }
       case reflectiveOperationException: ReflectiveOperationException =>
         LOGGER.fatal(LOADING, "Unable to load ScalaModContainer", reflectiveOperationException)
@@ -34,23 +33,8 @@ case class ScalaLanguageTarget(override val className: String, override val modI
     }
   }
 
-  private def createMLE[T](info: IModInfo, e: ReflectiveOperationException): Throwable = {
-    val mlsClass = getMLS
-    getMLE.getConstructor(classOf[IModInfo], mlsClass, classOf[String], classOf[Throwable])
-      .newInstance(info, Enum.valueOf(mlsClass, "CONSTRUCT"), "fml.ModLoading.FailedToLoadModClass".toLowerCase, e).asInstanceOf[Throwable]
+  private def createMLE[T](info: IModInfo, e: ReflectiveOperationException): ModLoadingException = {
+    new ModLoadingException(info, ModLoadingStage.CONSTRUCT, "fml.ModLoading.FailedToLoadModClass".toLowerCase, e)
   }
-
-  /**
-   * @return Class Instance of [[net.minecraftforge.fml.ModLoadingException]]
-   */
-  private def getMLE: Class[_] = getClassWithCurrentLoader("net.minecraftforge.fml.ModLoadingException")
-
-  /**
-   * @return Class Instance of [[net.minecraftforge.fml.ModLoadingStage]]
-   */
-  private def getMLS: Class[ModLoadingStage] = getClassWithCurrentLoader("net.minecraftforge.fml.ModLoadingStage").asInstanceOf[Class[ModLoadingStage]]
-
-  private def getClassWithCurrentLoader(name: String): Class[_] =
-    Class.forName(name, true, Thread.currentThread.getContextClassLoader)
 
 }

@@ -37,61 +37,39 @@ jobs:
           neofetch
   check:
     runs-on: ubuntu-latest
-    if: false
+    container:
+      image: ghcr.io/kotori316/fictional-meme/fictional-meme:1.18.1
+      credentials:
+        username: kotori316
+        password: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
-        # test against latest update of each major Java version, as well as specific updates of LTS versions:
-        java: [ 16 ]
-        # test against some forge versions including recommend version.
-        forge: [ fixed ]
+        include:
+          - forge: fixed
+            java: 16
+          - forge: 1.17.1
+            java: 16
+          - forge: 1.18.0
+            java: 17
+          - forge: 1.18.1
+            java: 17
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK ${{ matrix.java }}
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ matrix.java }}
-      - name: Cache Minecraft assets
-        uses: actions/cache@v2
-        with:
-          path: ~/.gradle/caches/forge_gradle/assets
-          key: ${{ runner.os }}-${{ github.ref }}
-      - name: Cache Jar
-        uses: actions/cache@v2
-        with:
-          path: ~/.gradle/caches/modules-2/files-2.1
-          key: ${{ runner.os }}-${{ github.ref }}-jar
+      - name: Get forge version
+        if: ${{ matrix.forge != 'fixed' }}
+        run: |
+          version=$(java -jar $(find / -maxdepth 1 -name "fic*.jar") ${{ matrix.forge }})
+          echo "CI_FORGE=${version}" >> $GITHUB_ENV
+          mc_version=${{ matrix.forge }}
+          mc_version=${mc_version%.0}
+          echo "Minecraft $mc_version, Forge $version"
       - name: Check Dependency
         run: chmod +x ./gradlew && ./gradlew data
         env:
-          CI_FORGE: ${{ matrix.forge }}
-      - name: download_assets
-        run: |
-          chmod +x ./gradlew
-          echo "::group::Download Assets"
-          ./gradlew downloadAssets || ./gradlew downloadAssets || (sleep 30s && ./gradlew downloadAssets)
-          echo "::endgroup::"
-          echo "::group::Extract Natives"
-          ./gradlew extractNatives || ./gradlew extractNatives || (sleep 30s && ./gradlew extractNatives)
-          echo "::endgroup::"
-          echo "Download Finished"
-        continue-on-error: true
-        env:
-          CI_FORGE: ${{ matrix.forge }}
+          CI_JAVA: ${{ matrix.java }}
       - name: Test JUnit
-        run: chmod +x ./gradlew && ./gradlew test --continue --warning-mode all
+        run: chmod +x ./gradlew && ./gradlew test build
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CI_FORGE: ${{ matrix.forge }}
-      - name: Test runData
-        run: chmod +x ./gradlew && ./gradlew runData
-        env:
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CI_FORGE: ${{ matrix.forge }}
-#      - name: Check started and error
-#        run: |
-#          [ -f test_started.txt ]
-#          ! [ -f error-trace.txt ]
-#      - id: show-failure-log
-#        if: failure()
-#        run: cat error-trace.txt
+          CI_JAVA: ${{ matrix.java }}

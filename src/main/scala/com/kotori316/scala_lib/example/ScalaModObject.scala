@@ -28,6 +28,7 @@ object ScalaModObject {
    * Initialization method of mods.
    */
   def init(event: FMLCommonSetupEvent): Unit = {
+    LOGGER.info("Hello from ScalaModObject#init")
     LOGGER.info(s"Mod($modId) is loaded. " + event)
     LOGGER.info(ModID(modId).show)
   }
@@ -41,11 +42,11 @@ object ScalaModObject {
   }
 
   /**
-   * Automatic subscribing of events in inner object is NOT <strong>supported</strong>.
-   * To get the correct way, see [[EventHandlers]].
+   * Automatic subscribing of events is NOT <strong>supported</strong> due to limitation of compiling.
+   * Use [[net.minecraftforge.eventbus.api.IEventBus]]#`register` to register event handlers.
    * Registering this object via [[net.minecraftforge.eventbus.api.IEventBus]]#`register` will work fine.
    */
-  @Mod.EventBusSubscriber(bus = Bus.FORGE, modid = modId)
+  // @Mod.EventBusSubscriber(bus = Bus.FORGE, modid = modId)
   object BadEventHandler {
     @SubscribeEvent
     def worldLogin(worldEvent: WorldEvent): Unit = {
