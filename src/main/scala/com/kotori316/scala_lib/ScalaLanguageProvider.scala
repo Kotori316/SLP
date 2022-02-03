@@ -32,7 +32,8 @@ class ScalaLanguageProvider extends IModLanguageProvider {
         }.toMap
         scanData.addLanguageLoader(map.asJava)
       case Validated.Invalid(e) =>
-        throw new RuntimeException(s"Exception in loading mods. ${e.mkString(""", """)}")
+        val modList = e.mkString(", ")
+        throw new RuntimeException(s"Exception in loading mods. $modList")
     }
   }
 
