@@ -47,8 +47,8 @@ jobs:
       matrix:
         include:
           - forge: fixed
-            java: 16
-            parchment: official
+            java: 17
+            parchment: default
           - forge: 1.17.1
             java: 16
             parchment: official

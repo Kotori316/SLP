@@ -95,7 +95,8 @@ object JsonConfigFile {
         case b: BooleanKey => parent.addProperty(b.configName, b.get)
         case i: IntKey => parent.addProperty(i.configName, i.get)
         case d: DoubleKey => parent.addProperty(d.configName, d.get)
-        case g: GenericsKey[Any] => parent.addProperty(g.configName, g.edInstance.toString(key.get))
+        case g: GenericsKey[_] => parent.addProperty(g.configName, g.edInstance.toString(key.get))
+        case _: SubCategoryKey =>
       }
     }
     jsonObject
