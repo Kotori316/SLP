@@ -222,8 +222,6 @@ publishing {
         }
     }
     publications {
-        String v = forgeVersion()
-        String minecraftVersion = v.substring(v.lastIndexOf(":") + 1, v.lastIndexOf("-"))
         mavenJava(MavenPublication) {
             artifactId = archivesBaseName.toLowerCase()
             artifact srcJar
@@ -232,7 +230,7 @@ publishing {
             artifact normalJar
             pom {
                 name = archivesBaseName
-                description = "Scala Loading library for Minecraft for $minecraftVersion, build with forge $v"
+                description = "Scala Loading library build with Minecraft ${minecraftVersion()} and Forge ${forgeVersion()}"
                 url = 'https://github.com/Kotori316/SLP'
                 packaging = "jar"
                 withXml {
@@ -273,6 +271,7 @@ task data() {
         println("Scala: $scala_version, ${scala_version.getClass()}")
         println("Build Number: $build_number, ${build_number.getClass()}")
         println("Version: $version, ${version.getClass()}")
+        println("Scala Loading library build with Minecraft ${minecraftVersion()} and Forge ${forgeVersion()}")
         println("Forge: ${forgeVersion()}")
         println("Minecraft: ${minecraftVersion()}")
         print(System.lineSeparator() * 2)
@@ -297,14 +296,14 @@ task data() {
         }
         end_group()
         start_group("Publishing Information")
-        publishing.properties.each { entry ->
+        publishing.properties.each { Map.Entry<?, ?> entry ->
             printf("%s -> %s (key: %s, value: %s)%n", entry.key, entry.value, entry.getKey().getClass(), entry.getValue().getClass())
         }
         end_group()
         start_group("Repositories")
 //        publishing.properties.get("repositories").getClass().getMethods().each { println(it) }
 //        publishing.properties.get("repositories").getClass().getInterfaces().each { println(it) }
-        publishing.properties.get("repositories").getAsMap().each { Map.Entry<String, Object> e -> printf("%s=%s\n", e.key, e.value.getUrl()) }
+        publishing.properties.get("repositories").getAsMap().each { Map.Entry<String, Object> e -> printf("%s=%s%n", e.key, e.value.getUrl()) }
 //        (publishing.properties.get("repositories") as Collection<Object>).toArray()[0].getClass().getMethods().each {println(it)}
         end_group()
     }
