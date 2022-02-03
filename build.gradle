@@ -34,7 +34,16 @@ compileScala {
 }
 
 minecraft {
-    mappings channel: 'parchment', version: (System.getenv("CI_PARCHMENT") ?: project.parchmentMapping)
+    String parchmentVersion = System.getenv("CI_PARCHMENT") ?: project.parchmentMapping
+    if (parchmentVersion.equalsIgnoreCase("official")) {
+        mappings channel: 'official', version: minecraftVersion()
+    } else {
+        if (parchmentVersion.equalsIgnoreCase("default")) {
+            mappings channel: 'parchment', version: project.parchmentMapping
+        } else {
+            mappings channel: 'parchment', version: parchmentVersion
+        }
+    }
     runs {
         client {
             workingDirectory project.file('Minecraft')

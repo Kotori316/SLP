@@ -48,12 +48,16 @@ jobs:
         include:
           - forge: fixed
             java: 16
+            parchment: official
           - forge: 1.17.1
             java: 16
+            parchment: official
           - forge: 1.18.0
             java: 17
+            parchment: default
           - forge: 1.18.1
             java: 17
+            parchment: default
     steps:
       - uses: actions/checkout@v2
       - name: Get forge version
@@ -68,8 +72,10 @@ jobs:
         run: chmod +x ./gradlew && ./gradlew data
         env:
           CI_JAVA: ${{ matrix.java }}
+          CI_PARCHMENT: ${{ matrix.parchment }}
       - name: Test JUnit
         run: chmod +x ./gradlew && ./gradlew test build
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CI_JAVA: ${{ matrix.java }}
+          CI_PARCHMENT: ${{ matrix.parchment }}
