@@ -28,6 +28,7 @@ class TomlConfigFile(path: Path) extends ConfigFile {
       case i: IntKey => i.set(current.getInt(i.name))
       case d: DoubleKey => d.set(current.get[Double](d.name))
       case k@GenericsKey(_, _, _, edInstance) => edInstance.fromString(current.get(k.name)).foreach(k.set)
+      case SubCategoryKey(_) => // nothing to do as this is structural key.
     }
   }
 
