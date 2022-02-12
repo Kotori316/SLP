@@ -41,7 +41,7 @@ jobs:
       fail-fast: false
       matrix:
         # test against some Java versions, as well as specific updates of LTS versions:
-        java: [ 8, 11 ]
+        java: [ 8 ]
         # test against some forge versions including recommend version.
         forge: [ fixed ]
     steps:
