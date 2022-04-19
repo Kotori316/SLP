@@ -126,6 +126,7 @@ repositories {
         content {
             it.includeVersion("org.typelevel", "cats-core_2.13", String.valueOf(project.cats_version))
             it.includeVersion("org.typelevel", "cats-kernel_2.13", String.valueOf(project.cats_version))
+            it.includeVersion("org.typelevel", "cats-free_2.13", String.valueOf(project.cats_version))
         }
     }
 }
@@ -139,6 +140,7 @@ dependencies {
     implementation(group: 'org.scala-lang', name: 'scala-library', version: scala_version)
     // https://mvnrepository.com/artifact/org.typelevel/cats-core
     implementation(group: 'org.typelevel', name: "cats-core_" + scala_major, version: cats_version)
+    implementation(group: 'org.typelevel', name: "cats-free_" + scala_major, version: cats_version)
 
     // Test Dependencies.
     implementation(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.0')
