@@ -38,11 +38,11 @@ Seems to work in both 1.17 and 1.18.
       minecraft 'net.minecraftforge:forge:1.17.1-37.0.0'
       compileOnly(group: 'org.scala-lang', name: 'scala-library', version: scala_version)
       // Add if you need this library. I use a modified version of Cats to avoid some module errors.
-      compileOnly(group: 'org.typelevel', name: "cats-core_${scala_major}", version: '2.8.0-kotori')
+      compileOnly(group: 'org.typelevel', name: "cats-core_${scala_major}", version: '2.8.1-kotori')
 
       // The language loader. You can put the jar to the mods dir instead of declaring in `build.gradle`.
       // This file is needed as the scala library will not be loaded in dev environment due to change of classpath by Forge.
-      runtimeOnly(group: "com.kotori316", name: "ScalableCatsForce".toLowerCase(), version: "2.13.8-build-2", classifier: "with-library") {
+      runtimeOnly(group: "com.kotori316", name: "ScalableCatsForce".toLowerCase(), version: "2.13.8-build-4", classifier: "with-library") {
           transitive(false)
       }
   }
