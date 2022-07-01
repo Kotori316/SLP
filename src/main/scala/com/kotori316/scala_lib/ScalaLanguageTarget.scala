@@ -33,7 +33,7 @@ case class ScalaLanguageTarget(override val className: String, override val modI
     }
   }
 
-  private def createMLE[T](info: IModInfo, e: ReflectiveOperationException): ModLoadingException = {
+  private def createMLE(info: IModInfo, e: ReflectiveOperationException): ModLoadingException = {
     new ModLoadingException(info, ModLoadingStage.CONSTRUCT, "fml.ModLoading.FailedToLoadModClass".toLowerCase, e)
   }
 
