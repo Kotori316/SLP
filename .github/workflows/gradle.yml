@@ -3,7 +3,7 @@ name: Build Test
 on:
   push:
     branches:
-      - "*"
+      - "1.19"
     tags:
       - "!*"
 
@@ -35,10 +35,11 @@ jobs:
           echo "::endgroup::"
           echo "neofetch"
           neofetch
+
   check:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/kotori316/fictional-meme/fictional-meme:1.18.1
+      image: ghcr.io/kotori316/fictional-meme/fictional-meme:1.19
       credentials:
         username: kotori316
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -47,31 +48,36 @@ jobs:
       matrix:
         include:
           - forge: fixed
-            java: 16
-          - forge: 1.17.1
-            java: 16
-          - forge: 1.18.0
             java: 17
-          - forge: 1.18.1
-            java: 17
-          - forge: 1.18.2
+          - forge: 1.19
             java: 17
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - name: Set executable
+        run: chmod +x ./gradlew
       - name: Get forge version
         if: ${{ matrix.forge != 'fixed' }}
         run: |
-          version=$(java -jar $(find / -maxdepth 1 -name "fic*.jar") ${{ matrix.forge }})
+          version=$(java -jar $(find / -maxdepth 1 -name "fictional*.jar") ${{ matrix.forge }})
           echo "CI_FORGE=${version}" >> $GITHUB_ENV
           mc_version=${{ matrix.forge }}
           mc_version=${mc_version%.0}
           echo "Minecraft $mc_version, Forge $version"
       - name: Check Dependency
-        run: chmod +x ./gradlew && ./gradlew data
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: data
         env:
           CI_JAVA: ${{ matrix.java }}
       - name: Test JUnit
-        run: chmod +x ./gradlew && ./gradlew test build
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: test build
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CI_JAVA: ${{ matrix.java }}
+      - name: Publish
+        uses: actions/upload-artifact@v2
+        with:
+          path: build/libs/*
+          name: ${{ github.event.repository.name }}-${{ github.run_number }}
