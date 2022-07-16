@@ -14,7 +14,6 @@ buildscript {
 plugins {
     id 'scala'
     id 'net.minecraftforge.gradle' version '5.+'
-    id "com.github.johnrengelman.shadow" version "5.2.0"
     id 'maven-publish'
 }
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
@@ -26,6 +25,7 @@ group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conv
 archivesBaseName = "ScalableCatsForce"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+jarJar.enable()
 
 minecraft {
     mappings channel: 'parchment', version: ((project.parchmentMapping + "-" + minecraftVersion()) as String)
@@ -85,17 +85,10 @@ minecraft {
 sourceSets {
     main {
         scala {
-            srcDir 'src/main/scala'
-            exclude "/com/kotori316/scala_lib/asm/**"
             exclude "/com/kotori316/scala_lib/example/**"
-            exclude "/com/kotori316/scala_lib/config/**"
-            exclude "/com/kotori316/scala_lib/util/**"
         }
-    }
-    test {
-        scala {
-            exclude "/com/kotori316/scala_lib/config/**"
-            exclude "/com/kotori316/scala_lib/util/**"
+        java {
+            srcDir 'src/main/java'
         }
     }
 }
@@ -137,12 +130,18 @@ dependencies {
     implementation(group: 'org.typelevel', name: "cats-core_" + scala_major, version: cats_version)
     implementation(group: 'org.typelevel', name: "cats-free_" + scala_major, version: cats_version)
 
+    // Jar in Jar
+    jarJar(group: 'org.scala-lang', name: 'scala-library', version: "[$scala_version, 3.0)")
+    jarJar(group: 'org.typelevel', name: "cats-core_" + scala_major, version: "[$cats_version, 3.0)")
+    jarJar(group: 'org.typelevel', name: "cats-kernel_" + scala_major, version: "[$cats_version, 3.0)")
+    jarJar(group: 'org.typelevel', name: "cats-free_" + scala_major, version: "[$cats_version, 3.0)")
+
     // Test Dependencies.
     final def JUPITER_VERSION = '5.8.2'
-    implementation(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: JUPITER_VERSION)
+    testImplementation(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: JUPITER_VERSION)
     testImplementation(group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: JUPITER_VERSION)
-    runtimeOnly(group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: JUPITER_VERSION)
-    implementation(group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.8.2')
+    testRuntimeOnly(group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: JUPITER_VERSION)
+    testImplementation(group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.8.2')
 
 }
 
@@ -186,10 +185,10 @@ task srcJar(type: Jar) {
 
 // Tell the artifact system about our extra jars
 artifacts {
-    archives shadowJar as Object, srcJar
+    archives srcJar
 }
 
-shadowJar {
+/*shadowJar {
     def groupNames = ['org.scala-lang', 'org.scala-lang.modules', 'org.typelevel']
     archiveClassifier.set("with-library")
     dependencies {
@@ -198,7 +197,7 @@ shadowJar {
         })
     }
 
-}
+}*/
 
 publishing {
     repositories {
@@ -222,32 +221,15 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = archivesBaseName.toLowerCase()
+            from components.java
+            jarJar.component(it)
             artifact srcJar
-            artifact jar
-            artifact shadowJar
-            artifact normalJar
+
             pom {
                 name = archivesBaseName
                 description = "Scala Loading library build with Minecraft ${minecraftVersion()} and Forge ${forgeVersion()}"
                 url = 'https://github.com/Kotori316/SLP'
                 packaging = "jar"
-                withXml {
-                    asNode().children().last() + {
-                        Project p = getProject()
-                        resolveStrategy = Closure.DELEGATE_FIRST
-                        dependencies {
-                            p.configurations.implementation.dependencies.each { Dependency dep ->
-                                if (!dep.name.contains("junit")) {
-                                    dependency {
-                                        groupId dep.group
-                                        artifactId dep.name
-                                        version dep.version
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
             }
         }
     }
