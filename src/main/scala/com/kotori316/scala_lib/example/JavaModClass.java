@@ -1,7 +1,7 @@
 package com.kotori316.scala_lib.example;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -39,12 +39,12 @@ public class JavaModClass {
          * @see net.minecraftforge.eventbus.api.IEventBus#register(Object)
          */
         @SubscribeEvent
-        public static void load(WorldEvent.Load event) {
+        public static void load(LevelEvent.Load event) {
             LOGGER.info("Caught " + event);
         }
 
         @SubscribeEvent
-        public static void unload(WorldEvent.Unload event) {
+        public static void unload(LevelEvent.Unload event) {
             LOGGER.info("Caught " + event);
         }
     }

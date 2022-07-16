@@ -2,11 +2,10 @@ package com.kotori316.scala_lib.example
 
 import cats._
 import cats.implicits.toShow
-import net.minecraftforge.event.world.WorldEvent
+import net.minecraftforge.event.level.LevelEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.ModList
 import net.minecraftforge.fml.common.Mod
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 import org.apache.logging.log4j.{LogManager, Logger}
@@ -49,7 +48,7 @@ object ScalaModObject {
   // @Mod.EventBusSubscriber(bus = Bus.FORGE, modid = modId)
   object BadEventHandler {
     @SubscribeEvent
-    def worldLogin(worldEvent: WorldEvent): Unit = {
+    def worldLogin(worldEvent: LevelEvent): Unit = {
       LOGGER.fatal("NEVER HAPPENED " + worldEvent)
     }
   }
