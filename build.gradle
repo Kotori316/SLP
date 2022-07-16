@@ -105,7 +105,6 @@ private String minecraftVersion() {
     return v.substring(v.lastIndexOf(":") + 1, v.lastIndexOf("-"))
 }
 
-def mainClassName = "com.kotori316.scala_lib.Main"
 repositories {
     mavenLocal()
     maven {
@@ -168,7 +167,6 @@ jar {
                 "Implementation-Version"  : project.version,
                 "Implementation-Vendor"   : "Kotori316",
                 "Implementation-Timestamp": ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT),
-                'Main-Class'              : mainClassName
         ])
     }
     archiveClassifier.set('dev')
@@ -188,16 +186,9 @@ artifacts {
     archives srcJar
 }
 
-/*shadowJar {
-    def groupNames = ['org.scala-lang', 'org.scala-lang.modules', 'org.typelevel']
+tasks.jarJar.configure {
     archiveClassifier.set("with-library")
-    dependencies {
-        include(dependency {
-            groupNames.contains(it.moduleGroup)
-        })
-    }
-
-}*/
+}
 
 publishing {
     repositories {
