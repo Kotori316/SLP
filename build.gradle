@@ -15,6 +15,9 @@ plugins {
     id 'scala'
     id 'net.minecraftforge.gradle' version '5.+'
     id 'maven-publish'
+    id "com.github.breadmoirai.github-release" version "2.4.1"
+    id "com.matthewprenger.cursegradle" version "1.4.0"
+    id "com.modrinth.minotaur" version "2.+"
 }
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
@@ -190,6 +193,51 @@ tasks.jarJar.configure {
     archiveClassifier.set("with-library")
 }
 
+// ---------- Publish ----------
+
+curseforge {
+    apiKey = project.hasProperty("curseforge_additional-enchanted-miner_key") ? getProperty("curseforge_additional-enchanted-miner_key") : ""
+    project {
+        id = '320926'
+        changelogType = 'markdown'
+        changelog = getChangelog()
+        releaseType = 'release'
+        addGameVersion(minecraftVersion())
+        mainArtifact(tasks.jarJar)
+        addArtifact jar
+        addArtifact srcJar
+    }
+    options {
+        curseGradleOptions.debug = false // defaults to false
+        javaVersionAutoDetect = false
+    }
+}
+
+githubRelease {
+    repo.set('SLP')
+    token = project.findProperty("githubToken") ?: System.getenv("REPO_TOKEN") ?: ""
+    targetCommitish.set(project.branch as String)
+    prerelease.set(project.version.toString().contains("SNAPSHOT"))
+    body.set(getChangelog())
+    releaseAssets = files(
+            tasks.jarJar,
+            jar,
+            srcJar,
+    )
+    dryRun.set(false)
+}
+
+modrinth {
+    token = project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: ""
+    projectId = "scalable-cats-force"
+    versionType = "release"
+    uploadFile = tasks.jarJar
+    gameVersions = [minecraftVersion()]
+    loaders = ["forge"]
+    changelog = project.getChangelog()
+    debugMode = false
+}
+
 publishing {
     repositories {
         maven {
@@ -225,6 +273,20 @@ publishing {
         }
     }
 }
+
+String getChangelog() {
+    String t = """For Minecraft ${minecraftVersion()}
+Built with forge ${forgeVersion()}
+
+This mod provides language provider, "kotori_scala".
+
+Scala: $scala_version
+Cats: ${project.cats_version}, modified version of 2.7.0
+"""
+    return t
+}
+
+// --------- Github Actions ----------
 
 static void start_group(String name) {
     println("::group::${name}")
@@ -276,6 +338,9 @@ task data() {
 //        publishing.properties.get("repositories").getClass().getInterfaces().each { println(it) }
         publishing.properties.get("repositories").getAsMap().each { Map.Entry<String, Object> e -> printf("%s=%s%n", e.key, e.value.getUrl()) }
 //        (publishing.properties.get("repositories") as Collection<Object>).toArray()[0].getClass().getMethods().each {println(it)}
+        end_group()
+        start_group("Changelog")
+        println(getChangelog())
         end_group()
     }
 }
