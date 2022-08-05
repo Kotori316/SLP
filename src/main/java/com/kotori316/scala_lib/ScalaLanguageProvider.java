@@ -25,14 +25,15 @@ public final class ScalaLanguageProvider implements IModLanguageProvider {
     @Override
     public Consumer<ModFileScanData> getFileVisitor() {
         return scanData -> {
-            var targets = scanData.getAnnotations().stream()
+            var annotatedClasses = scanData.getAnnotations().stream()
                 .filter(t -> t.annotationType().equals(MODANNOTATION))
                 .map(data -> {
                     var className = data.clazz().getClassName();
                     var id = (String) data.annotationData().get("value");
                     return new ScalaLanguageTarget(className, id);
                 }).toList();
-            var map = ModClassData.findInstance(targets).stream()
+            var targets = ModClassData.findInstance(annotatedClasses);
+            var map = targets.stream()
                 .peek(a -> LOGGER.debug(SCAN, "Found @Mod class {} with id {}", a.className(), a.modID()))
                 .collect(Collectors.toMap(ModClassData::modID, Function.identity()));
             scanData.addLanguageLoader(map);

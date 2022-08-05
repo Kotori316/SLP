@@ -2,7 +2,6 @@ package com.kotori316.scala_lib;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public interface ModClassData {
@@ -20,9 +19,10 @@ public interface ModClassData {
             if (ts.size() == 1) {
                 return ts.get(0);
             } else {
-                var classData = ts.stream().filter(Predicate.not(ModClassData::isScalaObj)).toList();
-                if (classData.size() == 1) {
-                    return classData.get(0);
+                var objectData = ts.stream().filter(ModClassData::isScalaObj).toList();
+                if (objectData.size() == 1) {
+                    // Ignore anything but a Scala Object.
+                    return objectData.get(0);
                 } else {
                     throw new RuntimeException("Exception in loading mods. %s".formatted(targets));
                 }

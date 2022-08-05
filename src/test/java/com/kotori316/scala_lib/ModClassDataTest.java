@@ -48,13 +48,42 @@ class ModClassDataTest {
         }
 
         @Test
+        void threeModIdWithObject() {
+            var targets = Set.of(
+                new ModClassDataImpl("com.kotori316.test.Mod1$", "test1"),
+                new ModClassDataImpl("com.kotori316.test.Mod1", "test1"),
+                new ModClassDataImpl("com.kotori316.test.Mod2", "test2"),
+                new ModClassDataImpl("com.kotori316.test.Mod3$", "test3"),
+                new ModClassDataImpl("com.kotori316.test.Mod3", "test3"),
+                new ModClassDataImpl("com.kotori316.test.Mod3_1", "test3")
+            );
+            var result = Set.copyOf(assertDoesNotThrow(() -> ModClassData.findInstance(targets)));
+            assertEquals(Set.of(
+                new ModClassDataImpl("com.kotori316.test.Mod1$", "test1"),
+                new ModClassDataImpl("com.kotori316.test.Mod2", "test2"),
+                new ModClassDataImpl("com.kotori316.test.Mod3$", "test3")
+            ), result);
+        }
+
+        @Test
         void classAndObj() {
             var targets = Set.of(
                 new ModClassDataImpl("com.kotori316.test.Mod1$", "test1"),
                 new ModClassDataImpl("com.kotori316.test.Mod1", "test1")
             );
             var result = Set.copyOf(assertDoesNotThrow(() -> ModClassData.findInstance(targets)));
-            assertEquals(Set.of(new ModClassDataImpl("com.kotori316.test.Mod1", "test1")), result);
+            assertEquals(Set.of(new ModClassDataImpl("com.kotori316.test.Mod1$", "test1")), result);
+        }
+
+        @Test
+        void classAndObj2() {
+            var targets = Set.of(
+                new ModClassDataImpl("com.kotori316.test.Mod1$", "test1"),
+                new ModClassDataImpl("com.kotori316.test.Mod1", "test1"),
+                new ModClassDataImpl("com.kotori316.test.Mod1_other", "test1")
+            );
+            var result = Set.copyOf(assertDoesNotThrow(() -> ModClassData.findInstance(targets)));
+            assertEquals(Set.of(new ModClassDataImpl("com.kotori316.test.Mod1$", "test1")), result);
         }
 
         @Test
