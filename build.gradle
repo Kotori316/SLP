@@ -274,7 +274,7 @@ publishing {
     }
 }
 
-String getChangelog() {
+def getChangelog() {
     String t = """For Minecraft ${minecraftVersion()}
 Built with forge ${forgeVersion()}
 
