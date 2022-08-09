@@ -49,7 +49,7 @@ public class ScalaModContainer extends ModContainer {
 
         this.activityMap.put(ModLoadingStage.CONSTRUCT, this::constructMod);
 
-        this.eventBus = BusBuilder.builder().setExceptionHandler(this::onEventFailed).setTrackPhases(false).markerType(IModBusEvent.class).build();
+        this.eventBus = BusBuilder.builder().setExceptionHandler(this::onEventFailed).setTrackPhases(false).markerType(IModBusEvent.class).useModLauncher().build();
         this.configHandler = Optional.of(ce -> this.eventBus.post(ce.self()));
         final FMLJavaModLoadingContext contextExtension = createContext(getEventBus());
         this.contextExtension = () -> contextExtension;
