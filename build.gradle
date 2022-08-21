@@ -261,7 +261,7 @@ publishing {
         mavenJava(MavenPublication) {
             artifactId = archivesBaseName.toLowerCase()
             from components.java
-            jarJar.component(it)
+            artifact tasks.jarJar
             artifact srcJar
 
             pom {
