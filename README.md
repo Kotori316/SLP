@@ -43,7 +43,7 @@ This mod adds Scala library to Minecraft 1.19 with Forge.
 
       // The language loader. You can put the jar to the mods dir instead of declaring in `build.gradle`.
       // This file is needed as the scala library will not be loaded in dev environment due to change of classpath by Forge.
-      runtimeOnly(group: "com.kotori316", name: "ScalableCatsForce".toLowerCase(), version: "2.13.8-build-8", classifier: "with-library") {
+      runtimeOnly(group: "com.kotori316", name: "ScalableCatsForce".toLowerCase(), version: "2.13.9-build-9", classifier: "with-library") {
           transitive(false)
       }
   }
