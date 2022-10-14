@@ -39,7 +39,7 @@ This mod adds Scala library to Minecraft 1.19 with Forge.
       minecraft 'net.minecraftforge:forge:1.19-41.0.98'
       compileOnly(group: 'org.scala-lang', name: 'scala-library', version: scala_version)
       // Add if you need this library. I use a modified version of Cats to avoid some module errors.
-      compileOnly(group: 'org.typelevel', name: "cats-core_${scala_major}", version: '2.8.4-kotori')
+      compileOnly(group: 'org.typelevel', name: "cats-core_${scala_major}", version: '2.8.5-kotori')
 
       // The language loader. You can put the jar to the mods dir instead of declaring in `build.gradle`.
       // This file is needed as the scala library will not be loaded in dev environment due to change of classpath by Forge.
@@ -51,8 +51,8 @@ This mod adds Scala library to Minecraft 1.19 with Forge.
 
   * **If the Minecraft client doesn't launch with an exception to modules, change scala dependency from "implementation"
     to "compileOnly" and add slp mod in mods directory.**
-  * Properties are set in your `gradle.properties` file or just hardcoded like `def scala_version = "2.13.9"`.
-  * `scala_version` should be 2.13.9 because this project contains binary of Scala 2.13.9. Make sure your version
+  * Properties are set in your `gradle.properties` file or just hardcoded like `def scala_version = "2.13.10"`.
+  * `scala_version` should be 2.13.10 because this project contains binary of Scala 2.13.10. Make sure your version
     matches the version this mod provides. See [this file](https://github.com/Kotori316/SLP/blob/1.19/gradle.properties)
   * `scala_major` must be 2.13.
     * Currently, Scala3 is not supported.
