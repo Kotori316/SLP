@@ -200,7 +200,7 @@ curseforge {
     project {
         id = '320926'
         changelogType = 'markdown'
-        changelog = getChangelog()
+        changelog = project.getChangelog()
         releaseType = 'release'
         addGameVersion(minecraftVersion())
         mainArtifact(tasks.jarJar)
@@ -276,12 +276,13 @@ publishing {
 
 def getChangelog() {
     String t = """For Minecraft ${minecraftVersion()}
+
 Built with forge ${forgeVersion()}
 
 This mod provides language provider, "kotori_scala".
 
 Scala: $scala_version
-Cats: ${project.cats_version}, modified version of 2.7.0
+Cats: ${project.cats_version}, modified version of 2.8.0
 """
     return t
 }
