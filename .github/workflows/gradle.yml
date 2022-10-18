@@ -77,7 +77,7 @@ jobs:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CI_JAVA: ${{ matrix.java }}
       - name: Publish
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           path: build/libs/*
           name: ${{ github.event.repository.name }}-${{ github.run_number }}
