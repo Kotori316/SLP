@@ -164,6 +164,7 @@ jar {
 task srcJar(type: Jar) {
     from sourceSets.main.allSource
     archiveClassifier.set('sources')
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 // Tell the artifact system about our extra jars
