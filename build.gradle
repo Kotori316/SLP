@@ -134,9 +134,9 @@ dependencies {
 
     // Jar in Jar
     jarJar(group: 'org.scala-lang', name: 'scala-library', version: "[$scala_version, 3.0)")
-    jarJar(group: 'org.typelevel', name: "cats-core_" + scala_major, version: "[$cats_version, 3.0)")
-    jarJar(group: 'org.typelevel', name: "cats-kernel_" + scala_major, version: "[$cats_version, 3.0)")
-    jarJar(group: 'org.typelevel', name: "cats-free_" + scala_major, version: "[$cats_version, 3.0)")
+    jarJar(group: 'org.typelevel', name: "cats-core_" + scala_major, version: "[2.0, $cats_version]")
+    jarJar(group: 'org.typelevel', name: "cats-kernel_" + scala_major, version: "[2.0, $cats_version]")
+    jarJar(group: 'org.typelevel', name: "cats-free_" + scala_major, version: "[2.0, $cats_version]")
 
     // Test Dependencies.
     final def JUPITER_VERSION = '5.8.2'
@@ -192,6 +192,11 @@ artifacts {
 tasks.jarJar.configure {
     archiveClassifier.set("with-library")
 }
+
+reobf {
+    jarJar { }
+}
+tasks.jarJar.finalizedBy('reobfJarJar')
 
 // ---------- Publish ----------
 
