@@ -10,11 +10,12 @@ import net.minecraftforge.forgespi.language.IModLanguageProvider;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.objectweb.asm.Type;
 
 import static net.minecraftforge.fml.Logging.SCAN;
-import static net.minecraftforge.fml.javafmlmod.FMLJavaModLanguageProvider.MODANNOTATION;
 
 public final class ScalaLanguageProvider implements IModLanguageProvider {
+    private static final Type MODANNOTATION = Type.getType("Lnet/minecraftforge/fml/common/Mod;");
     static final Logger LOGGER = LogManager.getLogger(ScalaLanguageProvider.class);
 
     @Override
