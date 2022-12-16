@@ -140,11 +140,10 @@ dependencies {
     jarJar(group: 'org.typelevel', name: "cats-free_" + scala_major, version: "[2.0, $cats_version]")
 
     // Test Dependencies.
-    final def JUPITER_VERSION = '5.8.2'
-    testImplementation(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: JUPITER_VERSION)
-    testImplementation(group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: JUPITER_VERSION)
-    testRuntimeOnly(group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: JUPITER_VERSION)
-    testImplementation(group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.8.2')
+    testImplementation(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: project.jupiterVersion)
+    testImplementation(group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: project.jupiterVersion)
+    testRuntimeOnly(group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: project.jupiterVersion)
+    testImplementation(group: 'org.junit.platform', name: 'junit-platform-launcher', version: project.jupiterPlatformVersion)
 
 }
 
