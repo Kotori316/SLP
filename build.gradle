@@ -18,6 +18,7 @@ plugins {
     id "com.github.breadmoirai.github-release" version "2.4.1"
     id "com.matthewprenger.cursegradle" version "1.4.0"
     id "com.modrinth.minotaur" version "2.+"
+    id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
@@ -134,9 +135,9 @@ dependencies {
 
     // Jar in Jar
     jarJar(group: 'org.scala-lang', name: 'scala-library', version: "[$scala_version, 3.0)")
-    jarJar(group: 'org.typelevel', name: "cats-core_" + scala_major, version: "[$cats_version, 3.0)")
-    jarJar(group: 'org.typelevel', name: "cats-kernel_" + scala_major, version: "[$cats_version, 3.0)")
-    jarJar(group: 'org.typelevel', name: "cats-free_" + scala_major, version: "[$cats_version, 3.0)")
+    jarJar(group: 'org.typelevel', name: "cats-core_" + scala_major, version: "[2.0, $cats_version]")
+    jarJar(group: 'org.typelevel', name: "cats-kernel_" + scala_major, version: "[2.0, $cats_version]")
+    jarJar(group: 'org.typelevel', name: "cats-free_" + scala_major, version: "[2.0, $cats_version]")
 
     // Test Dependencies.
     final def JUPITER_VERSION = '5.8.2'
@@ -186,12 +187,28 @@ task srcJar(type: Jar) {
 
 // Tell the artifact system about our extra jars
 artifacts {
-    archives srcJar
+    archives shadowJar as Object, srcJar
+}
+
+shadowJar {
+    def groupNames = ['org.scala-lang', 'org.scala-lang.modules', 'org.typelevel']
+    archiveClassifier.set("with-library")
+    dependencies {
+        include(dependency {
+            groupNames.contains(it.moduleGroup)
+        })
+    }
+
 }
 
 tasks.jarJar.configure {
-    archiveClassifier.set("with-library")
+    archiveClassifier.set("with-library-JiJ")
 }
+
+reobf {
+    jarJar { }
+}
+tasks.jarJar.finalizedBy('reobfJarJar')
 
 // ---------- Publish ----------
 
@@ -203,7 +220,8 @@ curseforge {
         changelog = project.getChangelog()
         releaseType = 'release'
         addGameVersion(minecraftVersion())
-        mainArtifact(tasks.jarJar)
+        mainArtifact(shadowJar)
+        // mainArtifact(tasks.jarJar)
         addArtifact jar
         addArtifact srcJar
     }
@@ -220,7 +238,8 @@ githubRelease {
     prerelease.set(project.version.toString().contains("SNAPSHOT"))
     body.set(getChangelog())
     releaseAssets = files(
-            tasks.jarJar,
+            shadowJar,
+            // tasks.jarJar,
             jar,
             srcJar,
     )
@@ -231,7 +250,8 @@ modrinth {
     token = project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: ""
     projectId = "scalable-cats-force"
     versionType = "release"
-    uploadFile = tasks.jarJar
+    // uploadFile = tasks.jarJar
+    uploadFile = shadowJar
     gameVersions = [minecraftVersion()]
     loaders = ["forge"]
     changelog = project.getChangelog()
@@ -260,8 +280,9 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = archivesBaseName.toLowerCase()
-            from components.java
-            artifact tasks.jarJar
+            // from components.java
+            // artifact tasks.jarJar
+            artifact shadowJar
             artifact srcJar
 
             pom {
