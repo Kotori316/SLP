@@ -191,7 +191,7 @@ artifacts {
 
 shadowJar {
     def groupNames = ['org.scala-lang', 'org.scala-lang.modules', 'org.typelevel']
-    archiveClassifier.set("with-library")
+    archiveClassifier.set("shadowed")
     dependencies {
         include(dependency {
             groupNames.contains(it.moduleGroup)
@@ -201,11 +201,11 @@ shadowJar {
 }
 
 tasks.jarJar.configure {
-    archiveClassifier.set("with-library-JiJ")
+    archiveClassifier.set("with-library")
 }
 
 reobf {
-    jarJar { }
+    jarJar {}
 }
 tasks.jarJar.finalizedBy('reobfJarJar')
 
@@ -219,10 +219,10 @@ curseforge {
         changelog = project.getChangelog()
         releaseType = 'release'
         addGameVersion(minecraftVersion())
-        mainArtifact(shadowJar)
-        // mainArtifact(tasks.jarJar)
+        mainArtifact(tasks.jarJar)
         addArtifact jar
         addArtifact srcJar
+        addArtifact shadowJar
     }
     options {
         curseGradleOptions.debug = false // defaults to false
@@ -238,7 +238,7 @@ githubRelease {
     body.set(getChangelog())
     releaseAssets = files(
             shadowJar,
-            // tasks.jarJar,
+            tasks.jarJar,
             jar,
             srcJar,
     )
@@ -249,8 +249,12 @@ modrinth {
     token = project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: ""
     projectId = "scalable-cats-force"
     versionType = "release"
-    // uploadFile = tasks.jarJar
-    uploadFile = shadowJar
+    uploadFile = tasks.jarJar
+    additionalFiles = [
+            shadowJar,
+            jar,
+            srcJar,
+    ]
     gameVersions = [minecraftVersion()]
     loaders = ["forge"]
     changelog = project.getChangelog()
@@ -279,9 +283,8 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = archivesBaseName.toLowerCase()
-            // from components.java
-            // artifact tasks.jarJar
-            artifact shadowJar
+            from components.java
+            artifact tasks.jarJar
             artifact srcJar
 
             pom {
