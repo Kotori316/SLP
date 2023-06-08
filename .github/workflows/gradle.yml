@@ -3,79 +3,25 @@ name: Build Test
 on:
   push:
     branches:
-      - "1.19"
+      - "1.20"
     tags:
       - "!*"
 
 jobs:
-  debug_log:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Branch name
-        run: echo "${{ github.event.base_ref }}"
-      - name: Check Ref name
-        run: echo "${{ github.ref }}"
-      - name: OS name
-        run: |
-          echo "${{ runner.os }}"
-          cat /etc/os-release
-      - name: Time
-        run: date
-      - name: Environment Values
-        run: env | grep -i github
-      - name: Job Values
-        run: echo "${JOB_CONTECT}"
-        env:
-          JOB_CONTECT: ${{ toJson(job) }}
-      - name: Neofetch
-        run: |
-          set -eu
-          echo "::group::APT"
-          sudo apt-get update && sudo apt-get install -y neofetch
-          echo "::endgroup::"
-          echo "neofetch"
-          neofetch
-
   check:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/kotori316/fictional-meme/fictional-meme:1.19
-      credentials:
-        username: kotori316
-        password: ${{ secrets.GITHUB_TOKEN }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - forge: fixed
-            java: 17
-          - forge: 1.19
-            java: 17
     steps:
       - uses: actions/checkout@v3
       - name: Set executable
         run: chmod +x ./gradlew
-      - name: Get forge version
-        if: ${{ matrix.forge != 'fixed' }}
-        run: |
-          version=$(java -jar $(find / -maxdepth 1 -name "fictional*.jar") ${{ matrix.forge }})
-          echo "CI_FORGE=${version}" >> $GITHUB_ENV
-          mc_version=${{ matrix.forge }}
-          mc_version=${mc_version%.0}
-          echo "Minecraft $mc_version, Forge $version"
       - name: Check Dependency
         uses: gradle/gradle-build-action@v2
         with:
           arguments: data
-        env:
-          CI_JAVA: ${{ matrix.java }}
       - name: Test JUnit
         uses: gradle/gradle-build-action@v2
         with:
           arguments: test build
-        env:
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CI_JAVA: ${{ matrix.java }}
       - name: Publish
         uses: actions/upload-artifact@v3
         with:
