@@ -7,6 +7,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'maven-publish'
+    id 'signing'
     id "com.github.breadmoirai.github-release" version "2.4.1"
     id "com.matthewprenger.cursegradle" version "1.4.0"
     id "com.modrinth.minotaur" version "2.+"
@@ -208,7 +209,7 @@ tasks.withType(JavaCompile).configureEach {
 // ---------- Publish ----------
 
 curseforge {
-    apiKey = project.hasProperty("curseforge_additional-enchanted-miner_key") ? getProperty("curseforge_additional-enchanted-miner_key") : ""
+    apiKey = project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: ""
     project {
         id = '320926'
         changelogType = 'markdown'
@@ -282,6 +283,7 @@ publishing {
             from components.java
             artifact srcJar
 
+
             pom {
                 name = archivesBaseName
                 description = "Scala Loading library build with Minecraft ${minecraftVersion()} and Forge ${forgeVersion()}"
@@ -293,6 +295,30 @@ publishing {
                 }
             }
         }
+    }
+}
+
+signing {
+    sign(publishing.publications)
+    sign(tasks.jar, tasks.shadowJar, tasks.srcJar, tasks.jarJar)
+}
+
+boolean hasGpgSignature = project.hasProperty("signing.keyId") &&
+        project.hasProperty("signing.password") &&
+        project.hasProperty("signing.secretKeyRingFile")
+
+tasks.withType(Sign).configureEach {
+    it.onlyIf {
+        hasGpgSignature
+    }
+}
+
+tasks.withType(AbstractPublishToMaven).configureEach {
+    if (hasGpgSignature) {
+        it.dependsOn(":signJar")
+        it.dependsOn(":signSrcJar")
+        it.dependsOn(":signJarJar")
+        it.dependsOn(":signShadowJar")
     }
 }
 
