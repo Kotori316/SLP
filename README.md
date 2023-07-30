@@ -1,16 +1,18 @@
-# Scala language provider for Minecraft 1.19.
+# Scala language provider for Minecraft 1.20.
 
-Branch 1.19
+Branch 1.20
 
-This mod adds Scala library to Minecraft 1.19 with Forge.
-**NO COMPATIBILITY WITH 1.18 version of SLP.**
+This mod adds Scala library to Minecraft 1.20 with Forge.
+**NO COMPATIBILITY WITH 1.19 version of SLP.**
 
 [![](http://cf.way2muchnoise.eu/versions/scalable-cats-force.svg)][curse_forge]
 [![](http://cf.way2muchnoise.eu/full_scalable-cats-force_downloads.svg)][curse_forge]
 
+[![](https://img.shields.io/modrinth/dt/scalable-cats-force?logo=modrinth&style=flat-square)][Modrinth]
+
 ## Usage
 
-* For Player - Download Jar file from [Curse Forge][curse_forge] and move the file to your `mods` folder. This mod will
+* For Player - Download Jar file from [Curse Forge][curse_forge] or [Modrinth] and move the file to your `mods` folder. This mod will
   not appear in mods list.
 
 * For Developer  
@@ -25,25 +27,23 @@ This mod adds Scala library to Minecraft 1.19 with Forge.
           url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
           content {
               it.includeModule("com.kotori316", "ScalableCatsForce".toLowerCase())
-              it.includeModule("org.typelevel", "cats-core_2.13")
-              it.includeModule("org.typelevel", "cats-kernel_2.13")
-              it.includeModule("org.typelevel", "cats-free_2.13")
+              it.includeModule("org.typelevel", "cats-core_3")
+              it.includeModule("org.typelevel", "cats-kernel_3")
+              it.includeModule("org.typelevel", "cats-free_3")
           }
       }
   }
 
   dependencies {
-      def scala_version = getProperty("scala_version")
-      def scala_major = getProperty("scala_major")
       // Change forge and minecraft version.
-      minecraft 'net.minecraftforge:forge:1.19-41.0.98'
-      compileOnly(group: 'org.scala-lang', name: 'scala-library', version: scala_version)
+      minecraft 'net.minecraftforge:forge:1.20.1-47.1.43'
+      compileOnly(group: 'org.scala-lang', name: 'scala-library', version: '3.3.0')
       // Add if you need this library. I use a modified version of Cats to avoid some module errors.
-      compileOnly(group: 'org.typelevel', name: "cats-core_${scala_major}", version: '2.8.5-kotori')
+      compileOnly(group: 'org.typelevel', name: 'cats-core_3', version: '2.9.2-kotori')
 
       // The language loader. You can put the jar to the mods dir instead of declaring in `build.gradle`.
       // This file is needed as the scala library will not be loaded in dev environment due to change of classpath by Forge.
-      runtimeOnly(group: "com.kotori316", name: "ScalableCatsForce".toLowerCase(), version: "2.13.10-build-10", classifier: "with-library") {
+      runtimeOnly(group: "com.kotori316", name: "ScalableCatsForce".toLowerCase(), version: "3.3.0-build-2", classifier: "with-library") {
           transitive(false)
       }
   }
@@ -51,13 +51,14 @@ This mod adds Scala library to Minecraft 1.19 with Forge.
 
   * **If the Minecraft client doesn't launch with an exception to modules, change scala dependency from "implementation"
     to "compileOnly" and add slp mod in mods directory.**
-  * Properties are set in your `gradle.properties` file or just hardcoded like `def scala_version = "2.13.10"`.
-  * `scala_version` should be 2.13.10 because this project contains binary of Scala 2.13.10. Make sure your version
-    matches the version this mod provides. See [this file](https://github.com/Kotori316/SLP/blob/1.19/gradle.properties)
-  * `scala_major` must be 2.13.
-    * Currently, Scala3 is not supported.
-
-Since 1.19, dependencies are included by Jar in Jar.
+  * Change library version if needed.
+    * See detail pages in CurseForge or Modrinth to get which library version is included in the Jar file.
+  * From 1.20 version, SLP includes Scala 3
+    * **May not have binary compatibility with jars build with Scala2**.
+      * Files build with Scala2 may throw error if you use ["Macthing on case classes"](https://docs.scala-lang.org/tour/pattern-matching.html#matching-on-case-classes) in your code.
+      * This is due to internal change in Scala3.
+      * Though SLP jar contains all classes from Scala2, this kind of error happens.
+    * Compile with Scala3 will not cause these runtime errors.
 
 ### Limitations
 
@@ -82,3 +83,4 @@ In this section, I note some points you should care.
   * SLP uses [modified version of Cats](https://github.com/Kotori316/cats) to avoid module error.
 
 [curse_forge]: https://www.curseforge.com/minecraft/mc-mods/scalable-cats-force
+[Modrinth]: https://modrinth.com/mod/scalable-cats-force
