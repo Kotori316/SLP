@@ -215,7 +215,8 @@ curseforge {
         changelogType = 'markdown'
         changelog = project.getChangelog()
         releaseType = 'release'
-        addGameVersion(minecraftVersion())
+        addGameVersion("1.20.1")
+        addGameVersion("1.20.2")
         mainArtifact(tasks.shadowJar)
         addArtifact(tasks.jar)
         addArtifact(tasks.srcJar)
@@ -252,7 +253,7 @@ modrinth {
             tasks.srcJar,
             tasks.jarJar,
     ]
-    gameVersions = [minecraftVersion()]
+    gameVersions = ["1.20.1", "1.20.2"]
     loaders = ["forge"]
     changelog = project.getChangelog()
     debugMode = false
