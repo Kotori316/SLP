@@ -127,7 +127,7 @@ dependencies {
 
     // Jar in Jar
     jarJar(group: 'org.scala-lang', name: 'scala-library', version: "[$project.scala_version, 3.0)") { transitive = false }
-    jarJar(group: 'org.scala-lang', name: 'scala3-library_3', version: "[$project.scala3_version, 3.3.1)") { transitive = false }
+    jarJar(group: 'org.scala-lang', name: 'scala3-library_3', version: "[3.0, $project.scala3_version]") { transitive = false }
     jarJar(group: 'org.typelevel', name: "cats-core_3", version: "[2.0, $cats_version]") { transitive = false }
     jarJar(group: 'org.typelevel', name: "cats-kernel_3", version: "[2.0, $cats_version]") { transitive = false }
     jarJar(group: 'org.typelevel', name: "cats-free_3", version: "[2.0, $cats_version]") { transitive = false }
@@ -332,7 +332,7 @@ def getChangelog() {
         
         Scala3: ${project.scala3_version}
         Scala: ${project.scala_version}
-        Cats: ${project.cats_version}, modified version of 2.9.0
+        Cats: ${project.cats_version}
         """.stripIndent()
     return t
 }
@@ -395,3 +395,4 @@ tasks.register('data') {
         end_group()
     }
 }
+
