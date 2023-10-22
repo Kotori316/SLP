@@ -299,6 +299,28 @@ publishing {
     }
 }
 
+tasks.register("jksSignJar") {
+    dependsOn(tasks.shadowJar, tasks.reobfJar)
+    boolean executeCondition = project.hasProperty("jarSign.keyAlias") &&
+            project.hasProperty("jarSign.keyLocation") &&
+            project.hasProperty("jarSign.storePass")
+    onlyIf { executeCondition }
+    doLast {
+        //noinspection HttpUrlsUsage
+        ant.signjar(
+                jar: tasks.shadowJar.archiveFile.get(),
+                alias: project.findProperty("jarSign.keyAlias") ?: "",
+                keystore: project.findProperty("jarSign.keyLocation") ?: "",
+                storepass: project.findProperty("jarSign.storePass") ?: "",
+                sigalg: "Ed25519",
+                digestalg: "SHA-256",
+                tsaurl: "http://timestamp.digicert.com",
+        )
+    }
+}
+
+tasks.named("assemble").get().dependsOn("jksSignJar")
+
 signing {
     sign(publishing.publications)
     sign(tasks.jar, tasks.shadowJar, tasks.srcJar, tasks.jarJar)
