@@ -4,8 +4,7 @@ import java.util.function.Predicate
 
 plugins {
     id 'scala'
-    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'net.neoforged.gradle.userdev' version '7.0.26'
     id 'maven-publish'
     id 'signing'
     id "com.github.breadmoirai.github-release" version "2.4.1"
@@ -13,6 +12,7 @@ plugins {
     id "com.modrinth.minotaur" version "2.+"
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
+
 
 def build_number = String.valueOf(getProperty("build_number"))
 version = "${project.scala3_version}-build-${build_number}"
@@ -22,58 +22,24 @@ archivesBaseName = "ScalableCatsForce"
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 jarJar.enable()
 
-minecraft {
-    mappings channel: 'parchment', version: ((project.parchmentMapping + "-" + minecraftVersion()) as String)
-    // copyIdeResources = true
-    runs {
-        client {
-            workingDirectory project.file('Minecraft')
+runs {
+    configureEach {
+        systemProperty 'forge.logging.markers', 'REGISTRIES'
+        systemProperty 'forge.logging.console.level', 'debug'
+        modSource project.sourceSets.main
+    }
 
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+    client {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+    }
 
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'info'
-            property "mixin.debug", "true"
+    server {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+        programArgument '--nogui'
+    }
 
-            mods {
-                "scala-library-object" {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run-server')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'info'
-
-            mods {
-                "scala-library-object" {
-                    source sourceSets.main
-                }
-            }
-        }
-        data {
-            workingDirectory project.file('run-server')
-            property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
-
-            if (Boolean.valueOf(System.getenv("GITHUB_ACTIONS")))
-                args '--mod', "slp_test,scala-library-object,scala-library-java", '--dev'
-            else
-                args '--mod', "slp_test", '--all'
-
-            mods {
-                "slp_test" {
-                    source sourceSets.main
-                }
-            }
-        }
+    data {
+        programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
     }
 }
 
@@ -86,18 +52,6 @@ sourceSets {
             srcDir 'src/main/java'
         }
     }
-}
-
-private String forgeVersion() {
-    return (java.util.Optional.ofNullable(System.getenv("CI_FORGE"))
-            .filter(Predicate.isEqual("fixed").negate()) | () -> java.util.Optional.of(project.forgeVersion))
-            .map { version -> "net.minecraftforge:forge:" + version }
-            .orElse(null)
-}
-
-private String minecraftVersion() {
-    String v = forgeVersion()
-    return v.substring(v.lastIndexOf(":") + 1, v.lastIndexOf("-"))
 }
 
 repositories {
@@ -116,7 +70,8 @@ repositories {
 dependencies {
     String cats_version = getProperty("cats_version")
 
-    minecraft(forgeVersion())
+    implementation "net.neoforged:neoforge:${neo_version}"
+
     // https://mvnrepository.com/artifact/org.scala-lang/scala-library
     implementation(group: 'org.scala-lang', name: 'scala-library', version: project.scala_version)
     implementation(group: "org.scala-lang", name: "scala3-library_3", version: project.scala3_version) { transitive = false }
@@ -196,11 +151,6 @@ shadowJar {
 tasks.jarJar.configure {
     archiveClassifier.set("jar-jar")
 }
-
-reobf {
-    jarJar {}
-}
-tasks.jarJar.finalizedBy('reobfJarJar')
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
@@ -287,7 +237,7 @@ publishing {
 
             pom {
                 name = archivesBaseName
-                description = "Scala Loading library build with Minecraft ${minecraftVersion()} and Forge ${forgeVersion()}"
+                description = "Scala Loading library build with Minecraft ${project.minecraft_version} and Forge ${project.neo_version}"
                 url = 'https://github.com/Kotori316/SLP'
                 packaging = "jar"
                 withXml {
@@ -300,7 +250,7 @@ publishing {
 }
 
 tasks.register("jksSignJar") {
-    dependsOn(tasks.shadowJar, tasks.reobfJar, tasks.reobfJarJar, tasks.srcJar)
+    dependsOn(tasks.shadowJar, tasks.jar, tasks.jarJar, tasks.srcJar)
     boolean executeCondition = project.hasProperty("jarSign.keyAlias") &&
             project.hasProperty("jarSign.keyLocation") &&
             project.hasProperty("jarSign.storePass")
@@ -351,9 +301,9 @@ tasks.withType(AbstractPublishToMaven).configureEach {
 
 def getChangelog() {
     String t = """\
-        For Minecraft ${minecraftVersion()}
+        For Minecraft ${project.minecraft_version}
         
-        Built with forge ${forgeVersion()}
+        Built with Neo Forge ${project.neo_version}
         
         This mod provides language provider, "kotori_scala".
         
@@ -382,9 +332,9 @@ tasks.register('data') {
         println("Scala: ${project.scala_version}, ${project.scala_version.getClass()}")
         println("Build Number: $build_number, ${build_number.getClass()}")
         println("Version: $version, ${version.getClass()}")
-        println("Scala Loading library build with Minecraft ${minecraftVersion()} and Forge ${forgeVersion()}")
-        println("Forge: ${forgeVersion()}")
-        println("Minecraft: ${minecraftVersion()}")
+        println("Scala Loading library build with Minecraft ${project.minecraft_version} and NeoForge ${project.neo_version}")
+        println("NeoForge: ${project.neo_version}")
+        println("Minecraft: ${project.minecraft_version}")
         print(System.lineSeparator() * 2)
         println("All Dependencies")
         getProject().getConfigurations().forEach { con ->

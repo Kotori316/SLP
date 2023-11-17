@@ -1,27 +1,27 @@
 package com.kotori316.scala_lib;
 
-import java.lang.reflect.Constructor;
-import java.util.Optional;
-
-import net.minecraftforge.eventbus.EventBusErrorMessage;
-import net.minecraftforge.eventbus.api.BusBuilder;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.IEventListener;
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.ModLoadingException;
-import net.minecraftforge.fml.ModLoadingStage;
-import net.minecraftforge.fml.event.IModBusEvent;
-import net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.fml.unsafe.UnsafeHacks;
-import net.minecraftforge.forgespi.language.IModInfo;
-import net.minecraftforge.forgespi.language.ModFileScanData;
+import net.neoforged.bus.EventBusErrorMessage;
+import net.neoforged.bus.api.BusBuilder;
+import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.EventListener;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModLoadingException;
+import net.neoforged.fml.ModLoadingStage;
+import net.neoforged.fml.event.IModBusEvent;
+import net.neoforged.fml.javafmlmod.AutomaticEventSubscriber;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.fml.javafmlmod.FMLModContainer;
+import net.neoforged.neoforgespi.language.IModInfo;
+import net.neoforged.neoforgespi.language.ModFileScanData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static net.minecraftforge.fml.Logging.LOADING;
+import java.lang.reflect.Constructor;
+import java.util.Optional;
+
+import static net.neoforged.fml.Logging.LOADING;
 
 public class ScalaModContainer extends ModContainer {
     private static final Logger LOGGER = LogManager.getLogger(ScalaModContainer.class);
@@ -49,7 +49,11 @@ public class ScalaModContainer extends ModContainer {
 
         this.activityMap.put(ModLoadingStage.CONSTRUCT, this::constructMod);
 
-        this.eventBus = BusBuilder.builder().setExceptionHandler(this::onEventFailed).setTrackPhases(false).markerType(IModBusEvent.class).useModLauncher().build();
+        this.eventBus = BusBuilder.builder()
+                .setExceptionHandler(this::onEventFailed)
+                .allowPerPhasePost()
+                .markerType(IModBusEvent.class)
+                .build();
         this.configHandler = Optional.of(ce -> this.eventBus.post(ce.self()));
         final FMLJavaModLoadingContext contextExtension = createContext(getEventBus());
         this.contextExtension = () -> contextExtension;
@@ -99,7 +103,7 @@ public class ScalaModContainer extends ModContainer {
         }
     }
 
-    private void onEventFailed(IEventBus bus, Event event, IEventListener[] listeners, int i, Throwable throwable) {
+    private void onEventFailed(IEventBus bus, Event event, EventListener[] listeners, int i, Throwable throwable) {
         LOGGER.error(new EventBusErrorMessage(event, i, listeners, throwable));
     }
 
@@ -115,19 +119,6 @@ public class ScalaModContainer extends ModContainer {
     @Override
     public Object getMod() {
         return modInstance;
-    }
-
-    @Override
-    @SuppressWarnings("SpellCheckingInspection")
-    protected void acceptEvent(Event event) {
-        LOGGER.trace(LOADING, "Firing event for modid {} : {}", this.modId, event);
-        try {
-            eventBus.post(event);
-            LOGGER.trace(LOADING, "Fired event for modid {} : {}", this.modId, event);
-        } catch (Throwable e) {
-            LOGGER.error(LOADING, "Caught exception during event {} dispatch for modid {}", event, this.modId, e);
-            throw new ModLoadingException(modInfo, modLoadingStage, "fml.modloading.errorduringevent", e);
-        }
     }
 
     private static FMLJavaModLoadingContext createContext(IEventBus bus) {

@@ -3,14 +3,14 @@ package com.kotori316.scala_lib;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 
-import net.minecraftforge.fml.ModLoadingException;
-import net.minecraftforge.fml.ModLoadingStage;
-import net.minecraftforge.forgespi.language.IModInfo;
-import net.minecraftforge.forgespi.language.IModLanguageProvider;
-import net.minecraftforge.forgespi.language.ModFileScanData;
+import net.neoforged.fml.ModLoadingException;
+import net.neoforged.fml.ModLoadingStage;
+import net.neoforged.neoforgespi.language.IModInfo;
+import net.neoforged.neoforgespi.language.IModLanguageProvider;
+import net.neoforged.neoforgespi.language.ModFileScanData;
 
 import static com.kotori316.scala_lib.ScalaLanguageProvider.LOGGER;
-import static net.minecraftforge.fml.Logging.LOADING;
+import static net.neoforged.fml.Logging.LOADING;
 
 public record ScalaLanguageTarget(String className, String modID)
     implements IModLanguageProvider.IModLanguageLoader, ModClassData {
