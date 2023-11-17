@@ -8,22 +8,38 @@ on:
       - "!*"
 
 jobs:
-  check:
+  check-forge:
     runs-on: ubuntu-latest
+    env:
+      DISABLE_NEO_FORGE: 'true'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set executable
         run: chmod +x ./gradlew
-      - name: Check Dependency
+      - name: Get cache
         uses: gradle/gradle-build-action@v2
-        with:
-          arguments: data
-      - name: Test JUnit
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: test build
+      - run: ./gradlew data
+      - run: ./gradlew test build
       - name: Publish
         uses: actions/upload-artifact@v3
         with:
-          path: build/libs/*
-          name: ${{ github.event.repository.name }}-${{ github.run_number }}
+          path: '*/build/libs/*'
+          name: ${{ github.event.repository.name }}-Forge-${{ github.run_number }}
+
+  check-neoforge:
+    runs-on: ubuntu-latest
+    env:
+      DISABLE_FORGE: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set executable
+        run: chmod +x ./gradlew
+      - name: Get cache
+        uses: gradle/gradle-build-action@v2
+      - run: ./gradlew data
+      - run: ./gradlew test build
+      - name: Publish
+        uses: actions/upload-artifact@v3
+        with:
+          path: '*/build/libs/*'
+          name: ${{ github.event.repository.name }}-NeoForge-${{ github.run_number }}
