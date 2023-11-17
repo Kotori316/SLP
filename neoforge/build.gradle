@@ -7,7 +7,6 @@ plugins {
     id 'net.neoforged.gradle.userdev' version '[7.0.26, 8.0)'
     id 'maven-publish'
     id 'signing'
-    id "com.github.breadmoirai.github-release" version "2.4.1"
     id "com.matthewprenger.cursegradle" version "1.4.0"
     id "com.modrinth.minotaur" version "2.+"
     id "com.github.johnrengelman.shadow" version "7.1.2"
@@ -165,8 +164,8 @@ curseforge {
         changelogType = 'markdown'
         changelog = project.getChangelog()
         releaseType = 'release'
-        addGameVersion("1.20.1")
         addGameVersion("1.20.2")
+        addGameVersion("neoforge")
         mainArtifact(tasks.shadowJar)
         addArtifact(tasks.jar)
         addArtifact(tasks.srcJar)
@@ -179,21 +178,6 @@ curseforge {
     }
 }
 
-githubRelease {
-    repo.set('SLP')
-    token = project.findProperty("githubToken") ?: System.getenv("REPO_TOKEN") ?: ""
-    targetCommitish.set(project.branch as String)
-    prerelease.set(project.version.toString().contains("SNAPSHOT"))
-    body.set(getChangelog())
-    releaseAssets = files(
-            tasks.shadowJar,
-            tasks.jarJar,
-            tasks.jar,
-            tasks.srcJar,
-    )
-    dryRun.set(false)
-}
-
 modrinth {
     token = project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: ""
     projectId = "scalable-cats-force"
@@ -204,8 +188,8 @@ modrinth {
             tasks.srcJar,
             tasks.jarJar,
     ]
-    gameVersions = ["1.20.1", "1.20.2"]
-    loaders = ["forge"]
+    gameVersions = ["1.20.2"]
+    loaders = ["neoforge"]
     changelog = project.getChangelog()
     debugMode = false
 }
@@ -228,6 +212,12 @@ publishing {
                 password = project.findProperty("azureToken") ?: System.getenv("AZURE_TOKEN") ?: "TOKEN"
             }
         }
+        if (System.getenv("CI") == null) {
+            maven {
+                name = "MavenTestGCP"
+                url = uri("gcs://kotori316-maven-test-storage/maven/")
+            }
+        }
     }
     publications {
         mavenJava(MavenPublication) {
@@ -235,10 +225,9 @@ publishing {
             from components.java
             artifact srcJar
 
-
             pom {
                 name = archivesBaseName
-                description = "Scala Loading library build with Minecraft ${project.minecraft_version} and Forge ${project.neo_version}"
+                description = "Scala Loading library build with Minecraft ${project.minecraft_version} and Neo Forge ${project.neo_version}"
                 url = 'https://github.com/Kotori316/SLP'
                 packaging = "jar"
                 withXml {
@@ -374,3 +363,6 @@ tasks.register('data') {
     }
 }
 
+afterEvaluate {
+    rootProject.tasks.named("githubRelease").configure { it.dependsOn(":neoforge:assemble") }
+}

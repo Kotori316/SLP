@@ -1,8 +1,36 @@
 plugins {
     id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.7"
+    id "com.github.breadmoirai.github-release" version "2.4.1"
 }
 
 tasks.named("wrapper", Wrapper.class) {
     distributionType = Wrapper.DistributionType.BIN
     gradleVersion = "8.4"
+}
+
+githubRelease {
+    repo.set('SLP')
+    token = project.findProperty("githubToken") ?: System.getenv("REPO_TOKEN") ?: ""
+    targetCommitish.set(project.branch as String)
+    prerelease.set(project.version.toString().contains("SNAPSHOT"))
+    body.set("""\
+        For Minecraft ${project.minecraft_version}
+        
+        This mod provides language provider, "kotori_scala".
+        
+        Scala3: ${project.scala3_version}
+        Scala: ${project.scala_version}
+        Cats: ${project.cats_version}
+        """.stripIndent())
+    releaseAssets = files(
+            releaseAssets = files(
+                    fileTree("${findProject(":forge")?.buildDir}/libs") {
+                        include("*.jar")
+                    },
+                    fileTree("${findProject(":neoforge")?.buildDir}/libs") {
+                        include("*.jar")
+                    }
+            )
+    )
+    dryRun.set(false)
 }

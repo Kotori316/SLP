@@ -1,6 +1,5 @@
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.function.Predicate
 
 plugins {
     id 'scala'
@@ -8,7 +7,6 @@ plugins {
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'maven-publish'
     id 'signing'
-    id "com.github.breadmoirai.github-release" version "2.4.1"
     id "com.matthewprenger.cursegradle" version "1.4.0"
     id "com.modrinth.minotaur" version "2.+"
     id "com.github.johnrengelman.shadow" version "7.1.2"
@@ -17,7 +15,7 @@ plugins {
 def build_number = String.valueOf(getProperty("build_number"))
 version = "${project.scala3_version}-build-${build_number}"
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "ScalableCatsForce-Forge"
+archivesBaseName = "ScalableCatsForce"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 jarJar.enable()
@@ -203,8 +201,8 @@ curseforge {
         changelogType = 'markdown'
         changelog = project.getChangelog()
         releaseType = 'release'
-        addGameVersion("1.20.1")
         addGameVersion("1.20.2")
+        addGameVersion("forge")
         mainArtifact(tasks.shadowJar)
         addArtifact(tasks.jar)
         addArtifact(tasks.srcJar)
@@ -214,21 +212,6 @@ curseforge {
         curseGradleOptions.debug = false // defaults to false
         javaVersionAutoDetect = false
     }
-}
-
-githubRelease {
-    repo.set('SLP')
-    token = project.findProperty("githubToken") ?: System.getenv("REPO_TOKEN") ?: ""
-    targetCommitish.set(project.branch as String)
-    prerelease.set(project.version.toString().contains("SNAPSHOT"))
-    body.set(getChangelog())
-    releaseAssets = files(
-            tasks.shadowJar,
-            tasks.jarJar,
-            tasks.jar,
-            tasks.srcJar,
-    )
-    dryRun.set(false)
 }
 
 modrinth {
@@ -241,7 +224,7 @@ modrinth {
             tasks.srcJar,
             tasks.jarJar,
     ]
-    gameVersions = ["1.20.1", "1.20.2"]
+    gameVersions = ["1.20.2"]
     loaders = ["forge"]
     changelog = project.getChangelog()
     debugMode = false
@@ -265,13 +248,18 @@ publishing {
                 password = project.findProperty("azureToken") ?: System.getenv("AZURE_TOKEN") ?: "TOKEN"
             }
         }
+        if (System.getenv("CI") == null) {
+            maven {
+                name = "MavenTestGCP"
+                url = uri("gcs://kotori316-maven-test-storage/maven/")
+            }
+        }
     }
     publications {
         mavenJava(MavenPublication) {
             artifactId = archivesBaseName.toLowerCase()
             from components.java
             artifact srcJar
-
 
             pom {
                 name = archivesBaseName
@@ -411,3 +399,6 @@ tasks.register('data') {
     }
 }
 
+afterEvaluate {
+    rootProject.tasks.named("githubRelease").configure { it.dependsOn(":forge:assemble") }
+}
