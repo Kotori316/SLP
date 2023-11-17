@@ -107,6 +107,7 @@ public class ScalaModContainer extends ModContainer {
         LOGGER.error(new EventBusErrorMessage(event, i, listeners, throwable));
     }
 
+    @Override
     public IEventBus getEventBus() {
         return eventBus;
     }
