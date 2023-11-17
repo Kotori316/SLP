@@ -8,6 +8,8 @@ tasks.named("wrapper", Wrapper.class) {
     gradleVersion = "8.4"
 }
 
+version = "${project.scala3_version}-build-${project.build_number}"
+
 final boolean RELEASE_DEBUG = Boolean.parseBoolean(System.getenv("RELEASE_DEBUG") ?: "true")
 githubRelease {
     repo.set('SLP')
@@ -25,10 +27,10 @@ githubRelease {
         """.stripIndent())
     releaseAssets = files(
             releaseAssets = files(
-                    fileTree("${findProject(":forge")?.buildDir}/libs") {
+                    fileTree(project(":forge").layout.buildDirectory.dir("libs")) {
                         include("*.jar")
                     },
-                    fileTree("${findProject(":neoforge")?.buildDir}/libs") {
+                    fileTree(project(":neoforge").layout.buildDirectory.dir("libs")) {
                         include("*.jar")
                     }
             )

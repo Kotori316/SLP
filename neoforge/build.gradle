@@ -165,7 +165,7 @@ curseforge {
         changelog = project.getChangelog()
         releaseType = 'release'
         addGameVersion("1.20.2")
-        addGameVersion("neoforge")
+        addGameVersion("NeoForge")
         mainArtifact(tasks.shadowJar)
         addArtifact(tasks.jar)
         addArtifact(tasks.srcJar)
