@@ -1,13 +1,13 @@
 package com.kotori316.scala_lib.example
 
-import cats._
+import cats.*
 import cats.implicits.toShow
-import net.minecraftforge.event.level.LevelEvent
-import net.minecraftforge.eventbus.api.SubscribeEvent
-import net.minecraftforge.fml.ModList
-import net.minecraftforge.fml.common.Mod
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
+import net.neoforged.neoforge.event.level.LevelEvent
+import net.neoforged.bus.api.SubscribeEvent
+import net.neoforged.fml.ModList
+import net.neoforged.fml.common.Mod
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext
 import org.apache.logging.log4j.{LogManager, Logger}
 
 /**
