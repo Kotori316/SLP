@@ -4,7 +4,7 @@ import java.util.function.Predicate
 
 plugins {
     id 'scala'
-    id 'net.neoforged.gradle.userdev' version '7.0.26'
+    id 'net.neoforged.gradle.userdev' version '[7.0.26, 8.0)'
     id 'maven-publish'
     id 'signing'
     id "com.github.breadmoirai.github-release" version "2.4.1"
