@@ -17,7 +17,7 @@ plugins {
 def build_number = String.valueOf(getProperty("build_number"))
 version = "${project.scala3_version}-build-${build_number}"
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "ScalableCatsForce"
+archivesBaseName = "ScalableCatsForce-NeoForge"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 jarJar.enable()
@@ -174,7 +174,8 @@ curseforge {
     }
     options {
         curseGradleOptions.debug = false // defaults to false
-        javaVersionAutoDetect = false
+        curseGradleOptions.javaVersionAutoDetect = false
+        curseGradleOptions.forgeGradleIntegration = false
     }
 }
 

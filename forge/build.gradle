@@ -17,13 +17,13 @@ plugins {
 def build_number = String.valueOf(getProperty("build_number"))
 version = "${project.scala3_version}-build-${build_number}"
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "ScalableCatsForce"
+archivesBaseName = "ScalableCatsForce-Forge"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 jarJar.enable()
 
 minecraft {
-    mappings channel: 'parchment', version: ((project.parchmentMapping + "-" + minecraftVersion()) as String)
+    mappings channel: 'parchment', version: ((project.parchmentMapping + "-" + project.minecraft_version) as String)
     // copyIdeResources = true
     runs {
         client {
@@ -88,18 +88,6 @@ sourceSets {
     }
 }
 
-private String forgeVersion() {
-    return (java.util.Optional.ofNullable(System.getenv("CI_FORGE"))
-            .filter(Predicate.isEqual("fixed").negate()) | () -> java.util.Optional.of(project.forge_version))
-            .map { version -> "net.minecraftforge:forge:" + version }
-            .orElse(null)
-}
-
-private String minecraftVersion() {
-    String v = forgeVersion()
-    return v.substring(v.lastIndexOf(":") + 1, v.lastIndexOf("-"))
-}
-
 repositories {
     mavenLocal()
     maven {
@@ -116,7 +104,7 @@ repositories {
 dependencies {
     String cats_version = getProperty("cats_version")
 
-    minecraft(forgeVersion())
+    minecraft("net.minecraftforge:forge:" + project.forge_version)
     // https://mvnrepository.com/artifact/org.scala-lang/scala-library
     implementation(group: 'org.scala-lang', name: 'scala-library', version: project.scala_version)
     implementation(group: "org.scala-lang", name: "scala3-library_3", version: project.scala3_version) { transitive = false }
@@ -287,7 +275,7 @@ publishing {
 
             pom {
                 name = archivesBaseName
-                description = "Scala Loading library build with Minecraft ${minecraftVersion()} and Forge ${forgeVersion()}"
+                description = "Scala Loading library build with Minecraft ${project.minecraft_version} and Forge ${project.forge_version}"
                 url = 'https://github.com/Kotori316/SLP'
                 packaging = "jar"
                 withXml {
@@ -300,26 +288,30 @@ publishing {
 }
 
 tasks.register("jksSignJar") {
-    dependsOn(tasks.shadowJar, tasks.reobfJar)
+    dependsOn(tasks.shadowJar, tasks.reobfJar, tasks.reobfJarJar, tasks.srcJar)
     boolean executeCondition = project.hasProperty("jarSign.keyAlias") &&
             project.hasProperty("jarSign.keyLocation") &&
             project.hasProperty("jarSign.storePass")
     onlyIf { executeCondition }
     doLast {
-        //noinspection HttpUrlsUsage
-        ant.signjar(
-                jar: tasks.shadowJar.archiveFile.get(),
-                alias: project.findProperty("jarSign.keyAlias") ?: "",
-                keystore: project.findProperty("jarSign.keyLocation") ?: "",
-                storepass: project.findProperty("jarSign.storePass") ?: "",
-                sigalg: "Ed25519",
-                digestalg: "SHA-256",
-                tsaurl: "http://timestamp.digicert.com",
-        )
+        for (def t : [tasks.jar, tasks.shadowJar, tasks.srcJar, tasks.jarJar]) {
+            //noinspection HttpUrlsUsage
+            ant.signjar(
+                    jar: t.archiveFile.get(),
+                    alias: project.findProperty("jarSign.keyAlias") ?: "",
+                    keystore: project.findProperty("jarSign.keyLocation") ?: "",
+                    storepass: project.findProperty("jarSign.storePass") ?: "",
+                    sigalg: "Ed25519",
+                    digestalg: "SHA-256",
+                    tsaurl: "http://timestamp.digicert.com",
+            )
+        }
     }
 }
 
-tasks.named("assemble").get().dependsOn("jksSignJar")
+tasks.named("assemble") {
+    dependsOn("jksSignJar")
+}
 
 signing {
     sign(publishing.publications)
@@ -347,9 +339,9 @@ tasks.withType(AbstractPublishToMaven).configureEach {
 
 def getChangelog() {
     String t = """\
-        For Minecraft ${minecraftVersion()}
+        For Minecraft ${project.minecraft_version}
         
-        Built with forge ${forgeVersion()}
+        Built with forge ${project.forge_version}
         
         This mod provides language provider, "kotori_scala".
         
@@ -378,9 +370,9 @@ tasks.register('data') {
         println("Scala: ${project.scala_version}, ${project.scala_version.getClass()}")
         println("Build Number: $build_number, ${build_number.getClass()}")
         println("Version: $version, ${version.getClass()}")
-        println("Scala Loading library build with Minecraft ${minecraftVersion()} and Forge ${forgeVersion()}")
-        println("Forge: ${forgeVersion()}")
-        println("Minecraft: ${minecraftVersion()}")
+        println("Scala Loading library build with Minecraft ${project.minecraft_version} and Forge ${project.forge_version}")
+        println("Forge: ${project.forge_version}")
+        println("Minecraft: ${project.minecraft_version}")
         print(System.lineSeparator() * 2)
         println("All Dependencies")
         getProject().getConfigurations().forEach { con ->
