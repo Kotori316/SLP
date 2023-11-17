@@ -27,10 +27,10 @@ githubRelease {
         """.stripIndent())
     releaseAssets = files(
             releaseAssets = files(
-                    fileTree(project(":forge").layout.buildDirectory.dir("libs")) {
+                    fileTree(findProject(":forge")?.layout?.buildDirectory?.dir("libs")) {
                         include("*.jar")
                     },
-                    fileTree(project(":neoforge").layout.buildDirectory.dir("libs")) {
+                    fileTree(findProject(":neoforge")?.layout?.buildDirectory?.dir("libs")) {
                         include("*.jar")
                     }
             )
