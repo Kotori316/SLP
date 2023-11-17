@@ -3,7 +3,7 @@ name: Build Test
 on:
   push:
     branches:
-      - "1.20.2"
+      - "1.20"
     tags:
       - "!*"
 
