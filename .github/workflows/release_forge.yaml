@@ -59,7 +59,7 @@ jobs:
           -PjarSign.storePass="${JAR_PASSWORD}"
           build publishToMavenLocal curseforge modrinth githubRelease publish -x test
         env:
-          RELEASE_DEBUG: 'true'
+          RELEASE_DEBUG: 'false'
           REPO_TOKEN: ${{secrets.GITHUB_TOKEN}}
           AZURE_TOKEN: ${{steps.get-secrets.outputs.azure_token}}
           KEY_PASSWORD: ${{steps.get-secrets.outputs.key_password}}
@@ -93,3 +93,4 @@ jobs:
           path: |
             */build/libs/
             ~/.m2
+          retention-days: 14

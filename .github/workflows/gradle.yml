@@ -25,6 +25,7 @@ jobs:
         with:
           path: '*/build/libs/*'
           name: ${{ github.event.repository.name }}-Forge-${{ github.run_number }}
+          retention-days: 3
 
   check-neoforge:
     runs-on: ubuntu-latest
@@ -43,3 +44,4 @@ jobs:
         with:
           path: '*/build/libs/*'
           name: ${{ github.event.repository.name }}-NeoForge-${{ github.run_number }}
+          retention-days: 3
