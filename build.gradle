@@ -12,6 +12,7 @@ version = "${project.scala3_version}-build-${project.build_number}"
 
 final boolean RELEASE_DEBUG = Boolean.parseBoolean(System.getenv("RELEASE_DEBUG") ?: "true")
 githubRelease {
+    setOwner("Kotori316")
     repo.set('SLP')
     token = project.findProperty("githubToken") ?: System.getenv("REPO_TOKEN") ?: ""
     targetCommitish.set(project.branch as String)
