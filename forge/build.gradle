@@ -193,6 +193,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 // ---------- Publish ----------
+final boolean RELEASE_DEBUG = Boolean.parseBoolean(System.getenv("RELEASE_DEBUG") ?: "true")
 
 curseforge {
     apiKey = project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: ""
@@ -209,8 +210,8 @@ curseforge {
         addArtifact(tasks.jarJar)
     }
     options {
-        curseGradleOptions.debug = false // defaults to false
-        javaVersionAutoDetect = false
+        curseGradleOptions.debug = RELEASE_DEBUG // defaults to false
+        curseGradleOptions.javaVersionAutoDetect = false
     }
 }
 
@@ -227,25 +228,27 @@ modrinth {
     gameVersions = ["1.20.2"]
     loaders = ["forge"]
     changelog = project.getChangelog()
-    debugMode = false
+    debugMode = RELEASE_DEBUG
 }
 
 publishing {
     repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/Kotori316/SLP")
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR") ?: ""
-                password = project.findProperty("githubToken") ?: System.getenv("REPO_TOKEN")
+        if(!RELEASE_DEBUG) {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/Kotori316/SLP")
+                credentials {
+                    username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR") ?: ""
+                    password = project.findProperty("githubToken") ?: System.getenv("REPO_TOKEN")
+                }
             }
-        }
-        maven {
-            name = "AzureRepository"
-            url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
-            credentials {
-                username = project.findProperty("azureUserName") ?: System.getenv("AZURE_USER_NAME") ?: ""
-                password = project.findProperty("azureToken") ?: System.getenv("AZURE_TOKEN") ?: "TOKEN"
+            maven {
+                name = "AzureRepository"
+                url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
+                credentials {
+                    username = project.findProperty("azureUserName") ?: System.getenv("AZURE_USER_NAME") ?: ""
+                    password = project.findProperty("azureToken") ?: System.getenv("AZURE_TOKEN") ?: "TOKEN"
+                }
             }
         }
         if (System.getenv("CI") == null) {

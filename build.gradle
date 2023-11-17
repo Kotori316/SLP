@@ -8,6 +8,7 @@ tasks.named("wrapper", Wrapper.class) {
     gradleVersion = "8.4"
 }
 
+final boolean RELEASE_DEBUG = Boolean.parseBoolean(System.getenv("RELEASE_DEBUG") ?: "true")
 githubRelease {
     repo.set('SLP')
     token = project.findProperty("githubToken") ?: System.getenv("REPO_TOKEN") ?: ""
@@ -32,5 +33,5 @@ githubRelease {
                     }
             )
     )
-    dryRun.set(false)
+    dryRun.set(RELEASE_DEBUG)
 }
