@@ -8,7 +8,7 @@ tasks.named("wrapper", Wrapper.class) {
     gradleVersion = "8.4"
 }
 
-version = "${project.scala3_version}-build-${project.build_number}"
+version = "${libs.versions.scala3.get()}-build-${project.build_number}"
 
 final boolean RELEASE_DEBUG = Boolean.parseBoolean(System.getenv("RELEASE_DEBUG") ?: "true")
 githubRelease {
@@ -18,13 +18,13 @@ githubRelease {
     targetCommitish.set(project.branch as String)
     prerelease.set(project.version.toString().contains("SNAPSHOT"))
     body.set("""\
-        For Minecraft ${project.minecraft_version}
+        For Minecraft ${libs.versions.minecraft.get()}
         
         This mod provides language provider, "kotori_scala".
         
-        Scala3: ${project.scala3_version}
-        Scala: ${project.scala_version}
-        Cats: ${project.cats_version}
+        Scala3: ${libs.versions.scala3.get()}
+        Scala: ${libs.versions.scala2.get()}
+        Cats: ${libs.versions.cats.get()}
         """.stripIndent())
     releaseAssets = files(
             releaseAssets = files(
@@ -37,4 +37,84 @@ githubRelease {
             )
     )
     dryRun.set(RELEASE_DEBUG)
+}
+
+subprojects {
+    apply(plugin: "scala")
+
+    repositories {
+        mavenLocal()
+        maven {
+            name = "Azure-SLP"
+            url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
+            content {
+                it.includeVersion("org.typelevel", "cats-core_3", libs.versions.cats.get())
+                it.includeVersion("org.typelevel", "cats-kernel_3", libs.versions.cats.get())
+                it.includeVersion("org.typelevel", "cats-free_3", libs.versions.cats.get())
+            }
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+
+        testLogging {
+            events "skipped", "failed", "standardOut", "standardError"
+            exceptionFormat 'full'
+        }
+    }
+
+    tasks.register('data') {
+        doLast {
+            println("Java: ${System.getProperty('java.version')} JVM: ${System.getProperty('java.vm.version')}" +
+                    "(${System.getProperty('java.vendor')}) Arch: ${System.getProperty('os.arch')}")
+            println("Scala: ${libs.versions.scala3.get()}}")
+            println("Build Number: $build_number, ${build_number.getClass()}")
+            println("Version: $version, ${version.getClass()}")
+            println("Minecraft: ${libs.versions.minecraft.get()}")
+            println("Forge: ${libs.versions.forge.get()}")
+            println("NeoForge: ${libs.versions.neoforge.get()}")
+            print(System.lineSeparator() * 2)
+            println("All Dependencies")
+            getProject().getConfigurations().forEach { con ->
+                if (!con.dependencies.isEmpty()) {
+                    start_group(con.name)
+                    for (Object o : con.dependencies) {
+                        println(o)
+                    }
+                    end_group()
+                }
+            }
+            print(System.lineSeparator() * 2)
+            start_group("Dependencies to be included in pom")
+            getProject().getConfigurations().implementation.dependencies.each { Dependency dep ->
+                if (!dep.name.contains("junit")) {
+                    printf("Group: %s, ArtifactId: %s, Version: %s%n", dep.group, dep.name, dep.version)
+                } else {
+                    printf("JUNIT - Group: %s, ArtifactId: %s, Version: %s%n", dep.group, dep.name, dep.version)
+                }
+            }
+            end_group()
+            start_group("Publishing Information")
+            publishing.properties.each { Map.Entry<?, ?> entry ->
+                printf("%s -> %s (key: %s, value: %s)%n", entry.key, entry.value, entry.getKey().getClass(), entry.getValue().getClass())
+            }
+            end_group()
+            start_group("Repositories")
+            publishing.properties.get("repositories").getAsMap().each { Map.Entry<String, Object> e -> printf("%s=%s%n", e.key, e.value.getUrl()) }
+            end_group()
+            start_group("Changelog")
+            println(project.getChangelog() as String)
+            end_group()
+        }
+    }
+}
+
+static void start_group(String name) {
+    println("::group::${name}")
+}
+
+@SuppressWarnings('SpellCheckingInspection')
+static void end_group() {
+    println("::endgroup::")
 }

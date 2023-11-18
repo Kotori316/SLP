@@ -11,9 +11,7 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
-
-def build_number = String.valueOf(getProperty("build_number"))
-version = "${project.scala3_version}-build-${build_number}"
+version = "${libs.versions.scala3.get()}-build-${project.build_number}"
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ScalableCatsForce-NeoForge"
 
@@ -41,65 +39,27 @@ runs {
     }
 }
 
-sourceSets {
-    main {
-        scala {
-            exclude "/com/kotori316/scala_lib/example/**"
-        }
-        java {
-            srcDir 'src/main/java'
-        }
-    }
-}
-
-repositories {
-    mavenLocal()
-    maven {
-        name = "Azure-SLP"
-        url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
-        content {
-            it.includeVersion("org.typelevel", "cats-core_3", String.valueOf(project.cats_version))
-            it.includeVersion("org.typelevel", "cats-kernel_3", String.valueOf(project.cats_version))
-            it.includeVersion("org.typelevel", "cats-free_3", String.valueOf(project.cats_version))
-        }
-    }
-}
-
 dependencies {
-    String cats_version = getProperty("cats_version")
-
-    implementation "net.neoforged:neoforge:${neo_version}"
+    implementation ("net.neoforged:neoforge:${libs.versions.neoforge.get()}")
 
     // https://mvnrepository.com/artifact/org.scala-lang/scala-library
-    implementation(group: 'org.scala-lang', name: 'scala-library', version: project.scala_version)
-    implementation(group: "org.scala-lang", name: "scala3-library_3", version: project.scala3_version) { transitive = false }
+    implementation(libs.scala2)
+    implementation(libs.scala3) { transitive = false }
     // https://mvnrepository.com/artifact/org.typelevel/cats-core
-    implementation(group: 'org.typelevel', name: "cats-kernel_3", version: cats_version) { transitive = false }
-    implementation(group: 'org.typelevel', name: "cats-core_3", version: cats_version) { transitive = false }
-    implementation(group: 'org.typelevel', name: "cats-free_3", version: cats_version) { transitive = false }
+    implementation(libs.bundles.cats) { transitive = false }
 
     // Jar in Jar
-    jarJar(group: 'org.scala-lang', name: 'scala-library', version: "[$project.scala_version, 3.0)") { transitive = false }
-    jarJar(group: 'org.scala-lang', name: 'scala3-library_3', version: "[3.0, $project.scala3_version]") { transitive = false }
-    jarJar(group: 'org.typelevel', name: "cats-core_3", version: "[2.0, $cats_version]") { transitive = false }
-    jarJar(group: 'org.typelevel', name: "cats-kernel_3", version: "[2.0, $cats_version]") { transitive = false }
-    jarJar(group: 'org.typelevel', name: "cats-free_3", version: "[2.0, $cats_version]") { transitive = false }
+    jarJar(group: 'org.scala-lang', name: 'scala-library', version: "[${libs.versions.scala2.get()}, 3.0)") { transitive = false }
+    jarJar(group: 'org.scala-lang', name: 'scala3-library_3', version: "[3.0, ${libs.versions.scala3.get()}]") { transitive = false }
+    jarJar(group: 'org.typelevel', name: "cats-core_3", version: "[2.0, ${libs.versions.cats.get()}]") { transitive = false }
+    jarJar(group: 'org.typelevel', name: "cats-kernel_3", version: "[2.0, ${libs.versions.cats.get()}]") { transitive = false }
+    jarJar(group: 'org.typelevel', name: "cats-free_3", version: "[2.0, ${libs.versions.cats.get()}]") { transitive = false }
 
     // Test Dependencies.
-    testImplementation(group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: project.jupiterVersion)
-    testImplementation(group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: project.jupiterVersion)
-    testRuntimeOnly(group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: project.jupiterVersion)
-    testImplementation(group: 'org.junit.platform', name: 'junit-platform-launcher', version: project.jupiterPlatformVersion)
-
-}
-
-test {
-    useJUnitPlatform()
-
-    testLogging {
-        events "skipped", "failed", "standardOut", "standardError"
-        exceptionFormat 'full'
-    }
+    testImplementation(libs.jupiter.api)
+    testImplementation(libs.jupiter.params)
+    testRuntimeOnly(libs.jupiter.engine)
+    testImplementation(libs.jupiter.launcher)
 }
 
 jar {
@@ -162,7 +122,7 @@ curseforge {
     project {
         id = '320926'
         changelogType = 'markdown'
-        changelog = project.getChangelog()
+        changelog = getChangelog()
         releaseType = 'release'
         addGameVersion("1.20.2")
         addGameVersion("NeoForge")
@@ -190,7 +150,7 @@ modrinth {
     ]
     gameVersions = ["1.20.2"]
     loaders = ["neoforge"]
-    changelog = project.getChangelog()
+    changelog = getChangelog()
     debugMode = RELEASE_DEBUG
 }
 
@@ -229,7 +189,7 @@ publishing {
 
             pom {
                 name = archivesBaseName
-                description = "Scala Loading library build with Minecraft ${project.minecraft_version} and Neo Forge ${project.neo_version}"
+                description = "Scala Loading library build with Minecraft ${libs.versions.minecraft.get()} and Neo Forge ${libs.versions.neoforge.get()}"
                 url = 'https://github.com/Kotori316/SLP'
                 packaging = "jar"
                 withXml {
@@ -293,76 +253,17 @@ tasks.withType(AbstractPublishToMaven).configureEach {
 
 def getChangelog() {
     String t = """\
-        For Minecraft ${project.minecraft_version}
+        For Minecraft ${libs.versions.minecraft.get()}
         
-        Built with Neo Forge ${project.neo_version}
+        Built with Neo Forge ${libs.versions.neoforge.get()}
         
         This mod provides language provider, "kotori_scala".
         
-        Scala3: ${project.scala3_version}
-        Scala: ${project.scala_version}
-        Cats: ${project.cats_version}
+        Scala3: ${libs.versions.scala3.get()}
+        Scala: ${libs.versions.scala2.get()}
+        Cats: ${libs.versions.cats.get()}
         """.stripIndent()
     return t
-}
-
-// --------- Github Actions ----------
-
-static void start_group(String name) {
-    println("::group::${name}")
-}
-
-@SuppressWarnings('SpellCheckingInspection')
-static void end_group() {
-    println("::endgroup::")
-}
-
-tasks.register('data') {
-    doLast {
-        println("Java: ${System.getProperty('java.version')} JVM: ${System.getProperty('java.vm.version')}" +
-                "(${System.getProperty('java.vendor')}) Arch: ${System.getProperty('os.arch')}")
-        println("Scala: ${project.scala_version}, ${project.scala_version.getClass()}")
-        println("Build Number: $build_number, ${build_number.getClass()}")
-        println("Version: $version, ${version.getClass()}")
-        println("Scala Loading library build with Minecraft ${project.minecraft_version} and NeoForge ${project.neo_version}")
-        println("NeoForge: ${project.neo_version}")
-        println("Minecraft: ${project.minecraft_version}")
-        print(System.lineSeparator() * 2)
-        println("All Dependencies")
-        getProject().getConfigurations().forEach { con ->
-            if (!con.dependencies.isEmpty()) {
-                start_group(con.name)
-                for (Object o : con.dependencies) {
-                    println(o)
-                }
-                end_group()
-            }
-        }
-        print(System.lineSeparator() * 2)
-        start_group("Dependencies to be included in pom")
-        getProject().getConfigurations().implementation.dependencies.each { Dependency dep ->
-            if (!dep.name.contains("junit")) {
-                printf("Group: %s, ArtifactId: %s, Version: %s%n", dep.group, dep.name, dep.version)
-            } else {
-                printf("JUNIT - Group: %s, ArtifactId: %s, Version: %s%n", dep.group, dep.name, dep.version)
-            }
-        }
-        end_group()
-        start_group("Publishing Information")
-        publishing.properties.each { Map.Entry<?, ?> entry ->
-            printf("%s -> %s (key: %s, value: %s)%n", entry.key, entry.value, entry.getKey().getClass(), entry.getValue().getClass())
-        }
-        end_group()
-        start_group("Repositories")
-//        publishing.properties.get("repositories").getClass().getMethods().each { println(it) }
-//        publishing.properties.get("repositories").getClass().getInterfaces().each { println(it) }
-        publishing.properties.get("repositories").getAsMap().each { Map.Entry<String, Object> e -> printf("%s=%s%n", e.key, e.value.getUrl()) }
-//        (publishing.properties.get("repositories") as Collection<Object>).toArray()[0].getClass().getMethods().each {println(it)}
-        end_group()
-        start_group("Changelog")
-        println(getChangelog())
-        end_group()
-    }
 }
 
 afterEvaluate {
