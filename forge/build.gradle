@@ -16,7 +16,6 @@ version = "${libs.versions.scala3.get()}-build-${project.build_number}"
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ScalableCatsForce"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 jarJar.enable()
 
 minecraft {
@@ -191,32 +190,6 @@ modrinth {
 }
 
 publishing {
-    repositories {
-        if (!RELEASE_DEBUG) {
-            maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/Kotori316/SLP")
-                credentials {
-                    username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR") ?: ""
-                    password = project.findProperty("githubToken") ?: System.getenv("REPO_TOKEN")
-                }
-            }
-            maven {
-                name = "AzureRepository"
-                url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
-                credentials {
-                    username = project.findProperty("azureUserName") ?: System.getenv("AZURE_USER_NAME") ?: ""
-                    password = project.findProperty("azureToken") ?: System.getenv("AZURE_TOKEN") ?: "TOKEN"
-                }
-            }
-        }
-        if (System.getenv("CI") == null) {
-            maven {
-                name = "MavenTestGCP"
-                url = uri("gcs://kotori316-maven-test-storage/maven/")
-            }
-        }
-    }
     publications {
         mavenJava(MavenPublication) {
             artifactId = archivesBaseName.toLowerCase()

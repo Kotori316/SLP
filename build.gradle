@@ -41,6 +41,9 @@ githubRelease {
 
 subprojects {
     apply(plugin: "scala")
+    apply(plugin: "maven-publish")
+
+    java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
     repositories {
         mavenLocal()
@@ -51,6 +54,35 @@ subprojects {
                 it.includeVersion("org.typelevel", "cats-core_3", libs.versions.cats.get())
                 it.includeVersion("org.typelevel", "cats-kernel_3", libs.versions.cats.get())
                 it.includeVersion("org.typelevel", "cats-free_3", libs.versions.cats.get())
+            }
+        }
+    }
+
+    publishing {
+        repositories {
+            if (!RELEASE_DEBUG) {
+                maven {
+                    name = "GitHubPackages"
+                    url = uri("https://maven.pkg.github.com/Kotori316/SLP")
+                    credentials {
+                        username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR") ?: ""
+                        password = project.findProperty("githubToken") ?: System.getenv("REPO_TOKEN")
+                    }
+                }
+                maven {
+                    name = "AzureRepository"
+                    url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
+                    credentials {
+                        username = project.findProperty("azureUserName") ?: System.getenv("AZURE_USER_NAME") ?: ""
+                        password = project.findProperty("azureToken") ?: System.getenv("AZURE_TOKEN") ?: "TOKEN"
+                    }
+                }
+            }
+            if (System.getenv("CI") == null) {
+                maven {
+                    name = "MavenTestGCP"
+                    url = uri("gcs://kotori316-maven-test-storage/maven/")
+                }
             }
         }
     }
@@ -68,7 +100,7 @@ subprojects {
         doLast {
             println("Java: ${System.getProperty('java.version')} JVM: ${System.getProperty('java.vm.version')}" +
                     "(${System.getProperty('java.vendor')}) Arch: ${System.getProperty('os.arch')}")
-            println("Scala: ${libs.versions.scala3.get()}}")
+            println("Scala: ${libs.versions.scala3.get()}")
             println("Build Number: $build_number, ${build_number.getClass()}")
             println("Version: $version, ${version.getClass()}")
             println("Minecraft: ${libs.versions.minecraft.get()}")
