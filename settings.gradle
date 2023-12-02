@@ -5,6 +5,10 @@ pluginManagement {
         maven { url = "https://maven.minecraftforge.net/" }
         maven { url = "https://maven.neoforged.net/releases" }
         maven { url = "https://maven.parchmentmc.org" }
+        maven {
+            name = "Kotori316 Plugin"
+            url = uri("https://storage.googleapis.com/kotori316-maven-storage/maven/")
+        }
     }
 }
 

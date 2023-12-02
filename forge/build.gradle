@@ -1,5 +1,7 @@
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import com.kotori316.plugin.cf.CallVersionCheckFunctionTask
+import com.kotori316.plugin.cf.CallVersionFunctionTask
 
 plugins {
     id "scala"
@@ -10,6 +12,7 @@ plugins {
     id "com.matthewprenger.cursegradle" version "1.4.0"
     id "com.modrinth.minotaur" version "2.+"
     id "com.github.johnrengelman.shadow" version "7.1.2"
+    id("com.kotori316.plugin.cf") version ("1.+")
 }
 
 version = "${libs.versions.scala3.get()}-build-${project.build_number}"
@@ -277,4 +280,22 @@ def getChangelog() {
 
 afterEvaluate {
     rootProject.tasks.named("githubRelease").configure { it.dependsOn(":forge:assemble") }
+}
+
+tasks.register("registerVersion", CallVersionFunctionTask.class) {
+    functionEndpoint = readVersionFunctionEndpoint(project)
+    gameVersion = libs.versions.minecraft.get()
+    platform = "forge"
+    modName = archivesBaseName
+    changelog = "For ${libs.versions.minecraft.get()} with ${libs.versions.scala3.get()}"
+    isDryRun = !RELEASE_DEBUG
+    homepage = "https://www.curseforge.com/minecraft/mc-mods/scalable-cats-force"
+}
+
+tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
+    gameVersion = libs.versions.minecraft.get()
+    platform = "forge"
+    modName = archivesBaseName
+    version = project.version as String
+    failIfExists = RELEASE_DEBUG
 }
