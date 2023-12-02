@@ -2,10 +2,10 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 plugins {
-    id 'scala'
-    id 'net.neoforged.gradle.userdev' version '[7.0.26, 8.0)'
-    id 'maven-publish'
-    id 'signing'
+    id "scala"
+    id "net.neoforged.gradle.userdev" version "[7.0.26, 8.0)"
+    id "maven-publish"
+    id "signing"
     id "com.matthewprenger.cursegradle" version "1.4.0"
     id "com.modrinth.minotaur" version "2.+"
     id "com.github.johnrengelman.shadow" version "7.1.2"
@@ -19,22 +19,22 @@ jarJar.enable()
 
 runs {
     configureEach {
-        systemProperty 'forge.logging.markers', 'REGISTRIES'
-        systemProperty 'forge.logging.console.level', 'debug'
+        systemProperty "forge.logging.markers", "REGISTRIES"
+        systemProperty "forge.logging.console.level", "debug"
         modSource project.sourceSets.main
     }
 
     client {
-        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+        systemProperty "forge.enabledGameTestNamespaces", project.mod_id
     }
 
     server {
-        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
-        programArgument '--nogui'
+        systemProperty "forge.enabledGameTestNamespaces", project.mod_id
+        programArgument "--nogui"
     }
 
     data {
-        programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        programArguments.addAll "--mod", project.mod_id, "--all", "--output", file("src/generated/resources/").getAbsolutePath(), "--existing", file("src/main/resources/").getAbsolutePath()
     }
 }
 
@@ -48,11 +48,11 @@ dependencies {
     implementation(libs.bundles.cats) { transitive = false }
 
     // Jar in Jar
-    jarJar(group: 'org.scala-lang', name: 'scala-library', version: "[${libs.versions.scala2.get()}, 3.0)") { transitive = false }
-    jarJar(group: 'org.scala-lang', name: 'scala3-library_3', version: "[3.0, ${libs.versions.scala3.get()}]") { transitive = false }
-    jarJar(group: 'org.typelevel', name: "cats-core_3", version: "[2.0, ${libs.versions.cats.get()}]") { transitive = false }
-    jarJar(group: 'org.typelevel', name: "cats-kernel_3", version: "[2.0, ${libs.versions.cats.get()}]") { transitive = false }
-    jarJar(group: 'org.typelevel', name: "cats-free_3", version: "[2.0, ${libs.versions.cats.get()}]") { transitive = false }
+    jarJar(group: "org.scala-lang", name: "scala-library", version: "[${libs.versions.scala2.get()}, 3.0)") { transitive = false }
+    jarJar(group: "org.scala-lang", name: "scala3-library_3", version: "[3.0, ${libs.versions.scala3.get()}]") { transitive = false }
+    jarJar(group: "org.typelevel", name: "cats-core_3", version: "[2.0, ${libs.versions.cats.get()}]") { transitive = false }
+    jarJar(group: "org.typelevel", name: "cats-kernel_3", version: "[2.0, ${libs.versions.cats.get()}]") { transitive = false }
+    jarJar(group: "org.typelevel", name: "cats-free_3", version: "[2.0, ${libs.versions.cats.get()}]") { transitive = false }
 
     // Test Dependencies.
     testImplementation(libs.jupiter.api)
@@ -64,8 +64,8 @@ dependencies {
 jar {
     manifest {
         attributes([
-                'FMLModType'           : 'LANGPROVIDER',
-                'Automatic-Module-Name': 'kotori_scala',
+                "FMLModType"           : "LANGPROVIDER",
+                "Automatic-Module-Name": "kotori_scala",
         ])
         attributes([
                 "Specification-Title"     : project.name,
@@ -77,15 +77,15 @@ jar {
                 "Implementation-Timestamp": ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT),
         ])
     }
-    archiveClassifier.set('dev')
+    archiveClassifier.set("dev")
 }
 
-tasks.register('normalJar', Jar) {
+tasks.register("normalJar", Jar) {
 }
 
-tasks.register('srcJar', Jar) {
+tasks.register("srcJar", Jar) {
     from sourceSets.main.allSource
-    archiveClassifier.set('sources')
+    archiveClassifier.set("sources")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
@@ -95,7 +95,7 @@ artifacts {
 }
 
 shadowJar {
-    def groupNames = ['org.scala-lang', 'org.scala-lang.modules', 'org.typelevel']
+    def groupNames = ["org.scala-lang", "org.scala-lang.modules", "org.typelevel"]
     archiveClassifier.set("with-library")
     dependencies {
         include(dependency {
@@ -110,7 +110,7 @@ tasks.jarJar.configure {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    options.encoding = "UTF-8" // Use the UTF-8 charset for Java compilation
 }
 
 // ---------- Publish ----------
@@ -119,10 +119,10 @@ final boolean RELEASE_DEBUG = Boolean.parseBoolean(System.getenv("RELEASE_DEBUG"
 curseforge {
     apiKey = project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: ""
     project {
-        id = '320926'
-        changelogType = 'markdown'
+        id = "320926"
+        changelogType = "markdown"
         changelog = getChangelog()
-        releaseType = 'release'
+        releaseType = "release"
         addGameVersion("1.20.2")
         addGameVersion("NeoForge")
         mainArtifact(tasks.shadowJar)
@@ -163,7 +163,7 @@ publishing {
             pom {
                 name = archivesBaseName
                 description = "Scala Loading library build with Minecraft ${libs.versions.minecraft.get()} and Neo Forge ${libs.versions.neoforge.get()}"
-                url = 'https://github.com/Kotori316/SLP'
+                url = "https://github.com/Kotori316/SLP"
                 packaging = "jar"
                 withXml {
                     def pomNode = asNode() as Node

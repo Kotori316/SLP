@@ -5,7 +5,7 @@ plugins {
 
 tasks.named("wrapper", Wrapper.class) {
     distributionType = Wrapper.DistributionType.BIN
-    gradleVersion = "8.4"
+    gradleVersion = "8.5"
 }
 
 version = "${libs.versions.scala3.get()}-build-${project.build_number}"
@@ -13,9 +13,9 @@ version = "${libs.versions.scala3.get()}-build-${project.build_number}"
 final boolean RELEASE_DEBUG = Boolean.parseBoolean(System.getenv("RELEASE_DEBUG") ?: "true")
 githubRelease {
     setOwner("Kotori316")
-    repo.set('SLP')
+    repo.set("SLP")
     token = project.findProperty("githubToken") ?: System.getenv("REPO_TOKEN") ?: ""
-    targetCommitish.set(project.branch as String)
+    targetCommitish.set(project.property("branch") as String)
     prerelease.set(project.version.toString().contains("SNAPSHOT"))
     body.set("""\
         For Minecraft ${libs.versions.minecraft.get()}
@@ -92,14 +92,14 @@ subprojects {
 
         testLogging {
             events "skipped", "failed", "standardOut", "standardError"
-            exceptionFormat 'full'
+            exceptionFormat "full"
         }
     }
 
-    tasks.register('data') {
+    tasks.register("data") {
         doLast {
-            println("Java: ${System.getProperty('java.version')} JVM: ${System.getProperty('java.vm.version')}" +
-                    "(${System.getProperty('java.vendor')}) Arch: ${System.getProperty('os.arch')}")
+            println("Java: ${System.getProperty("java.version")} JVM: ${System.getProperty("java.vm.version")}" +
+                    "(${System.getProperty("java.vendor")}) Arch: ${System.getProperty("os.arch")}")
             println("Scala: ${libs.versions.scala3.get()}")
             println("Build Number: $build_number, ${build_number.getClass()}")
             println("Version: $version, ${version.getClass()}")
@@ -146,7 +146,7 @@ static void start_group(String name) {
     println("::group::${name}")
 }
 
-@SuppressWarnings('SpellCheckingInspection')
+@SuppressWarnings("SpellCheckingInspection")
 static void end_group() {
     println("::endgroup::")
 }

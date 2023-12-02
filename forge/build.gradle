@@ -2,11 +2,11 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 plugins {
-    id 'scala'
-    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-    id 'maven-publish'
-    id 'signing'
+    id "scala"
+    id "net.minecraftforge.gradle" version "[6.0.16,6.2)"
+    id "org.parchmentmc.librarian.forgegradle" version "1.+"
+    id "maven-publish"
+    id "signing"
     id "com.matthewprenger.cursegradle" version "1.4.0"
     id "com.modrinth.minotaur" version "2.+"
     id "com.github.johnrengelman.shadow" version "7.1.2"
@@ -19,17 +19,17 @@ archivesBaseName = "ScalableCatsForce"
 jarJar.enable()
 
 minecraft {
-    mappings channel: 'parchment', version: ((libs.versions.parchment.get() + "-" + libs.versions.minecraft.get()) as String)
+    mappings channel: "parchment", version: ((libs.versions.parchment.get() + "-" + libs.versions.minecraft.get()) as String)
     // copyIdeResources = true
     runs {
         client {
-            workingDirectory project.file('Minecraft')
+            workingDirectory project.file("Minecraft")
 
             // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
 
             // Recommended logging level for the console
-            property 'forge.logging.console.level', 'info'
+            property "forge.logging.console.level", "info"
             property "mixin.debug", "true"
 
             mods {
@@ -40,13 +40,13 @@ minecraft {
         }
 
         server {
-            workingDirectory project.file('run-server')
+            workingDirectory project.file("run-server")
 
             // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
 
             // Recommended logging level for the console
-            property 'forge.logging.console.level', 'info'
+            property "forge.logging.console.level", "info"
 
             mods {
                 "scala-library-object" {
@@ -55,14 +55,14 @@ minecraft {
             }
         }
         data {
-            workingDirectory project.file('run-server')
-            property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
+            workingDirectory project.file("run-server")
+            property "forge.logging.markers", "REGISTRIES,REGISTRYDUMP"
+            property "forge.logging.console.level", "debug"
 
             if (Boolean.valueOf(System.getenv("GITHUB_ACTIONS")))
-                args '--mod', "slp_test,scala-library-object,scala-library-java", '--dev'
+                args "--mod", "slp_test,scala-library-object,scala-library-java", "--dev"
             else
-                args '--mod', "slp_test", '--all'
+                args "--mod", "slp_test", "--all"
 
             mods {
                 "slp_test" {
@@ -80,11 +80,11 @@ dependencies {
     implementation(libs.bundles.cats) { transitive = false }
 
     // Jar in Jar
-    jarJar(group: 'org.scala-lang', name: 'scala-library', version: "[${libs.versions.scala2.get()}, 3.0)") { transitive = false }
-    jarJar(group: 'org.scala-lang', name: 'scala3-library_3', version: "[3.0, ${libs.versions.scala3.get()}]") { transitive = false }
-    jarJar(group: 'org.typelevel', name: "cats-core_3", version: "[2.0, ${libs.versions.cats.get()}]") { transitive = false }
-    jarJar(group: 'org.typelevel', name: "cats-kernel_3", version: "[2.0, ${libs.versions.cats.get()}]") { transitive = false }
-    jarJar(group: 'org.typelevel', name: "cats-free_3", version: "[2.0, ${libs.versions.cats.get()}]") { transitive = false }
+    jarJar(group: "org.scala-lang", name: "scala-library", version: "[${libs.versions.scala2.get()}, 3.0)") { transitive = false }
+    jarJar(group: "org.scala-lang", name: "scala3-library_3", version: "[3.0, ${libs.versions.scala3.get()}]") { transitive = false }
+    jarJar(group: "org.typelevel", name: "cats-core_3", version: "[2.0, ${libs.versions.cats.get()}]") { transitive = false }
+    jarJar(group: "org.typelevel", name: "cats-kernel_3", version: "[2.0, ${libs.versions.cats.get()}]") { transitive = false }
+    jarJar(group: "org.typelevel", name: "cats-free_3", version: "[2.0, ${libs.versions.cats.get()}]") { transitive = false }
 
     // Test Dependencies.
     testImplementation(libs.jupiter.api)
@@ -96,8 +96,8 @@ dependencies {
 jar {
     manifest {
         attributes([
-                'FMLModType'           : 'LANGPROVIDER',
-                'Automatic-Module-Name': 'kotori_scala',
+                "FMLModType"           : "LANGPROVIDER",
+                "Automatic-Module-Name": "kotori_scala",
         ])
         attributes([
                 "Specification-Title"     : project.name,
@@ -109,15 +109,15 @@ jar {
                 "Implementation-Timestamp": ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT),
         ])
     }
-    archiveClassifier.set('dev')
+    archiveClassifier.set("dev")
 }
 
-tasks.register('normalJar', Jar) {
+tasks.register("normalJar", Jar) {
 }
 
-tasks.register('srcJar', Jar) {
+tasks.register("srcJar", Jar) {
     from sourceSets.main.allSource
-    archiveClassifier.set('sources')
+    archiveClassifier.set("sources")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
@@ -127,7 +127,7 @@ artifacts {
 }
 
 shadowJar {
-    def groupNames = ['org.scala-lang', 'org.scala-lang.modules', 'org.typelevel']
+    def groupNames = ["org.scala-lang", "org.scala-lang.modules", "org.typelevel"]
     archiveClassifier.set("with-library")
     dependencies {
         include(dependency {
@@ -144,10 +144,10 @@ tasks.jarJar.configure {
 reobf {
     jarJar {}
 }
-tasks.jarJar.finalizedBy('reobfJarJar')
+tasks.jarJar.finalizedBy("reobfJarJar")
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    options.encoding = "UTF-8" // Use the UTF-8 charset for Java compilation
 }
 
 // ---------- Publish ----------
@@ -156,10 +156,10 @@ final boolean RELEASE_DEBUG = Boolean.parseBoolean(System.getenv("RELEASE_DEBUG"
 curseforge {
     apiKey = project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: ""
     project {
-        id = '320926'
-        changelogType = 'markdown'
+        id = "320926"
+        changelogType = "markdown"
         changelog = getChangelog()
-        releaseType = 'release'
+        releaseType = "release"
         addGameVersion("1.20.2")
         addGameVersion("Forge")
         mainArtifact(tasks.shadowJar)
@@ -199,7 +199,7 @@ publishing {
             pom {
                 name = archivesBaseName
                 description = "Scala Loading library build with Minecraft ${libs.versions.minecraft.get()} and Forge ${libs.versions.forge.get()}"
-                url = 'https://github.com/Kotori316/SLP'
+                url = "https://github.com/Kotori316/SLP"
                 packaging = "jar"
                 withXml {
                     def pomNode = asNode() as Node
