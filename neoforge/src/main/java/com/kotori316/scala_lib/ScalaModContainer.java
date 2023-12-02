@@ -54,7 +54,6 @@ public class ScalaModContainer extends ModContainer {
                 .allowPerPhasePost()
                 .markerType(IModBusEvent.class)
                 .build();
-        this.configHandler = Optional.of(ce -> this.eventBus.post(ce.self()));
         final FMLJavaModLoadingContext contextExtension = createContext(getEventBus());
         this.contextExtension = () -> contextExtension;
     }
