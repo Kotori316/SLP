@@ -1,7 +1,8 @@
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import com.kotori316.plugin.cf.CallVersionCheckFunctionTask
 import com.kotori316.plugin.cf.CallVersionFunctionTask
+
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 plugins {
     id "scala"
@@ -11,7 +12,7 @@ plugins {
     id "com.matthewprenger.cursegradle" version "1.4.0"
     id "com.modrinth.minotaur" version "2.+"
     id "com.github.johnrengelman.shadow" version "7.1.2"
-    id("com.kotori316.plugin.cf") version ("1.+")
+    id("com.kotori316.plugin.cf") version("1.+")
 }
 
 version = "${libs.versions.scala3.get()}-build-${project.build_number}"
@@ -42,7 +43,7 @@ runs {
 }
 
 dependencies {
-    implementation ("net.neoforged:neoforge:${libs.versions.neoforge.get()}")
+    implementation("net.neoforged:neoforge:${libs.versions.neoforge.get()}")
 
     // https://mvnrepository.com/artifact/org.scala-lang/scala-library
     implementation(libs.scala2)
@@ -124,7 +125,7 @@ curseforge {
     project {
         id = "320926"
         changelogType = "markdown"
-        changelog = getChangelog()
+        changelog = createChangelog()
         releaseType = "release"
         addGameVersion("1.20.2")
         addGameVersion("NeoForge")
@@ -152,7 +153,7 @@ modrinth {
     ]
     gameVersions = ["1.20.2"]
     loaders = ["neoforge"]
-    changelog = getChangelog()
+    changelog = createChangelog()
     debugMode = RELEASE_DEBUG
 }
 
@@ -227,7 +228,7 @@ tasks.withType(AbstractPublishToMaven).configureEach {
     }
 }
 
-def getChangelog() {
+def createChangelog() {
     String t = """\
         For Minecraft ${libs.versions.minecraft.get()}
         
