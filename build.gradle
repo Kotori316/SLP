@@ -136,7 +136,7 @@ subprojects {
             publishing.properties.get("repositories").getAsMap().each { Map.Entry<String, Object> e -> printf("%s=%s%n", e.key, e.value.getUrl()) }
             end_group()
             start_group("Changelog")
-            println(project.getChangelog() as String)
+            println(project.createChangelog() as String)
             end_group()
         }
     }
