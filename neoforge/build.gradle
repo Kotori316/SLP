@@ -253,7 +253,7 @@ tasks.register("registerVersion", CallVersionFunctionTask.class) {
     platform = "neoforge"
     modName = archivesBaseName
     changelog = "For ${libs.versions.minecraft.get()} with ${libs.versions.scala3.get()}"
-    isDryRun = !RELEASE_DEBUG
+    isDryRun = RELEASE_DEBUG
     homepage = "https://www.curseforge.com/minecraft/mc-mods/scalable-cats-force"
 }
 
@@ -262,5 +262,5 @@ tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
     platform = "neoforge"
     modName = archivesBaseName
     version = project.version as String
-    failIfExists = RELEASE_DEBUG
+    failIfExists = !RELEASE_DEBUG
 }
