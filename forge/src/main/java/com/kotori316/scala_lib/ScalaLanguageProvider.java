@@ -1,10 +1,5 @@
 package com.kotori316.scala_lib;
 
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
 import net.minecraftforge.forgespi.language.ILifecycleEvent;
 import net.minecraftforge.forgespi.language.IModLanguageProvider;
 import net.minecraftforge.forgespi.language.ModFileScanData;
@@ -12,10 +7,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.Type;
 
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import static net.minecraftforge.fml.Logging.SCAN;
 
 public final class ScalaLanguageProvider implements IModLanguageProvider {
-    private static final Type MODANNOTATION = Type.getType("Lnet/minecraftforge/fml/common/Mod;");
+    private static final Type MOD_ANNOTATION = Type.getType("Lnet/minecraftforge/fml/common/Mod;");
     static final Logger LOGGER = LogManager.getLogger(ScalaLanguageProvider.class);
 
     @Override
@@ -27,7 +27,7 @@ public final class ScalaLanguageProvider implements IModLanguageProvider {
     public Consumer<ModFileScanData> getFileVisitor() {
         return scanData -> {
             var annotatedClasses = scanData.getAnnotations().stream()
-                .filter(t -> t.annotationType().equals(MODANNOTATION))
+                .filter(t -> t.annotationType().equals(MOD_ANNOTATION))
                 .map(data -> {
                     var className = data.clazz().getClassName();
                     var id = (String) data.annotationData().get("value");

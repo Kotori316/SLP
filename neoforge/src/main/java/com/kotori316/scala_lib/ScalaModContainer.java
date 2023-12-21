@@ -1,6 +1,7 @@
 package com.kotori316.scala_lib;
 
 import net.minecraftforge.fml.unsafe.UnsafeHacks;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.EventBusErrorMessage;
 import net.neoforged.bus.api.BusBuilder;
 import net.neoforged.bus.api.Event;
@@ -11,18 +12,22 @@ import net.neoforged.fml.ModLoadingException;
 import net.neoforged.fml.ModLoadingStage;
 import net.neoforged.fml.event.IModBusEvent;
 import net.neoforged.fml.javafmlmod.AutomaticEventSubscriber;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.javafmlmod.FMLModContainer;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforgespi.language.IModInfo;
 import net.neoforged.neoforgespi.language.ModFileScanData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Constructor;
-import java.util.Optional;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import static net.neoforged.fml.Logging.LOADING;
 
+@SuppressWarnings("removal")
 public class ScalaModContainer extends ModContainer {
     private static final Logger LOGGER = LogManager.getLogger(ScalaModContainer.class);
 
@@ -50,11 +55,11 @@ public class ScalaModContainer extends ModContainer {
         this.activityMap.put(ModLoadingStage.CONSTRUCT, this::constructMod);
 
         this.eventBus = BusBuilder.builder()
-                .setExceptionHandler(this::onEventFailed)
-                .allowPerPhasePost()
-                .markerType(IModBusEvent.class)
-                .build();
-        final FMLJavaModLoadingContext contextExtension = createContext(getEventBus());
+            .setExceptionHandler(this::onEventFailed)
+            .allowPerPhasePost()
+            .markerType(IModBusEvent.class)
+            .build();
+        final net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext contextExtension = createContext(getEventBus());
         this.contextExtension = () -> contextExtension;
     }
 
@@ -82,9 +87,9 @@ public class ScalaModContainer extends ModContainer {
                 LOGGER.trace(LOADING, "Scala Mod instance for {} was got. {}", this.modId, modInstance);
             } else {
                 LOGGER.trace(LOADING, "Scala Mod instance for {} is about to create. {}", this.modId, modClass.getName());
-                Constructor<?> constructor = modClass.getDeclaredConstructor();
-                constructor.setAccessible(true);
-                modInstance = constructor.newInstance();
+                Map.Entry<Constructor<?>, Object[]> constructors = getConstructor(modClass, this.modId, getEventBus(), this, FMLLoader.getDist());
+                constructors.getKey().setAccessible(true);
+                modInstance = constructors.getKey().newInstance(constructors.getValue());
                 LOGGER.trace(LOADING, "Scala Mod instance for {} created. {}", this.modId, modInstance);
             }
         } catch (ReflectiveOperationException e) {
@@ -121,17 +126,33 @@ public class ScalaModContainer extends ModContainer {
         return modInstance;
     }
 
-    private static FMLJavaModLoadingContext createContext(IEventBus bus) {
+    private static net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext createContext(IEventBus bus) {
         try {
-            FMLJavaModLoadingContext instance = UnsafeHacks.newInstance(FMLJavaModLoadingContext.class);
+            net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext instance = UnsafeHacks.newInstance(net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext.class);
             FMLModContainer container = UnsafeHacks.newInstance(FMLModContainer.class);
             UnsafeHacks.setField(FMLModContainer.class.getDeclaredField("eventBus"), container, bus);
-            UnsafeHacks.setField(FMLJavaModLoadingContext.class.getDeclaredField("container"), instance, container);
+            UnsafeHacks.setField(net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext.class.getDeclaredField("container"), instance, container);
             return instance;
         } catch (ReflectiveOperationException e) {
             LOGGER.fatal("Error happened in creating dummy instance.", e);
             return null;
         }
+    }
+
+    static Map.Entry<Constructor<?>, Object[]> getConstructor(Class<?> modClass, String modId, IEventBus bus, ModContainer container, Dist dist) {
+        var constructors = modClass.getDeclaredConstructors();
+        LOGGER.trace(LOADING, "Found {} constructors for {}", constructors.length, modId);
+        var args = Map.of(
+            IEventBus.class, bus,
+            ModContainer.class, container,
+            Dist.class, dist
+        );
+        var constructor = Stream.of(constructors)
+            .filter(c -> Stream.of(c.getParameterTypes()).map(args::get).allMatch(Objects::nonNull))
+            .max(Comparator.comparingInt(Constructor::getParameterCount))
+            .orElseThrow(() -> new RuntimeException("No mod constructor with allowed arg types were found for " + modId));
+        var constructorArgs = Stream.of(constructor.getParameterTypes()).map(args::get).toArray();
+        return Map.entry(constructor, constructorArgs);
     }
 
     @Override
