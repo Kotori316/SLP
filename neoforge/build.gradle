@@ -42,6 +42,12 @@ runs {
     }
 }
 
+repositories {
+    maven {
+        url = uri("https://prmaven.neoforged.net/NeoForge/pr794")
+    }
+}
+
 dependencies {
     implementation("net.neoforged:neoforge:${libs.versions.neoforge.get()}")
 
