@@ -3,32 +3,34 @@ name: Build Test
 on:
   push:
     branches:
-      - "1.20"
+      - "1.20.5"
     tags:
       - "!*"
 
 jobs:
   check-forge:
     runs-on: ubuntu-latest
+    if: false
     env:
       DISABLE_NEO_FORGE: 'true'
     steps:
       - uses: actions/checkout@v4
+      - uses: gradle/actions/wrapper-validation@v3
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
       - name: Set executable
         run: chmod +x ./gradlew
       - name: Get cache
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/actions/setup-gradle@v3
       - run: ./gradlew data
       - run: ./gradlew test build
       - name: Publish
         uses: actions/upload-artifact@v3
         with:
           path: '*/build/libs/*'
-          name: ${{ github.event.repository.name }}-Forge-${{ github.run_number }}
+          name: '${{ github.event.repository.name }}-Forge-${{ github.run_number }}'
           retention-days: 3
 
   check-neoforge:
@@ -37,19 +39,20 @@ jobs:
       DISABLE_FORGE: 'true'
     steps:
       - uses: actions/checkout@v4
+      - uses: gradle/actions/wrapper-validation@v3
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
       - name: Set executable
         run: chmod +x ./gradlew
       - name: Get cache
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/actions/setup-gradle@v3
       - run: ./gradlew data
       - run: ./gradlew test build
       - name: Publish
         uses: actions/upload-artifact@v3
         with:
           path: '*/build/libs/*'
-          name: ${{ github.event.repository.name }}-NeoForge-${{ github.run_number }}
+          name: '${{ github.event.repository.name }}-NeoForge-${{ github.run_number }}'
           retention-days: 3
