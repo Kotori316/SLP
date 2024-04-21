@@ -21,7 +21,7 @@ jobs:
       - name: Set executable
         run: chmod +x ./gradlew
       - name: Get cache
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
       - run: ./gradlew data
       - run: ./gradlew test build
       - name: Publish
@@ -44,7 +44,7 @@ jobs:
       - name: Set executable
         run: chmod +x ./gradlew
       - name: Get cache
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
       - run: ./gradlew data
       - run: ./gradlew test build
       - name: Publish
