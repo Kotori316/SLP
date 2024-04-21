@@ -1,6 +1,5 @@
 package com.kotori316.scala_lib;
 
-import net.neoforged.neoforgespi.language.ILifecycleEvent;
 import net.neoforged.neoforgespi.language.IModLanguageProvider;
 import net.neoforged.neoforgespi.language.ModFileScanData;
 import org.apache.logging.log4j.LogManager;
@@ -9,7 +8,6 @@ import org.objectweb.asm.Type;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static net.neoforged.fml.Logging.SCAN;
@@ -39,9 +37,5 @@ public final class ScalaLanguageProvider implements IModLanguageProvider {
                 .collect(Collectors.toMap(ModClassData::modID, Function.identity()));
             scanData.addLanguageLoader(map);
         };
-    }
-
-    @Override
-    public <R extends ILifecycleEvent<R>> void consumeLifecycleEvent(Supplier<R> consumeEvent) {
     }
 }

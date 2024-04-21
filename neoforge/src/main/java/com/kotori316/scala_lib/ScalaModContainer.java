@@ -9,7 +9,6 @@ import net.neoforged.bus.api.EventListener;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModLoadingException;
-import net.neoforged.fml.ModLoadingStage;
 import net.neoforged.fml.event.IModBusEvent;
 import net.neoforged.fml.javafmlmod.AutomaticEventSubscriber;
 import net.neoforged.fml.javafmlmod.FMLModContainer;
@@ -27,7 +26,6 @@ import java.util.stream.Stream;
 
 import static net.neoforged.fml.Logging.LOADING;
 
-@SuppressWarnings("removal")
 public class ScalaModContainer extends ModContainer {
     private static final Logger LOGGER = LogManager.getLogger(ScalaModContainer.class);
 
@@ -44,6 +42,7 @@ public class ScalaModContainer extends ModContainer {
     /**
      * Instance created in {@link ScalaLanguageTarget#loadMod(IModInfo, ModFileScanData, ModuleLayer)}
      */
+    @SuppressWarnings("removal")
     public ScalaModContainer(IModInfo info, String className, ModFileScanData modFileScanResults, ModuleLayer gameLayer) {
         super(info);
         this.className = className;
@@ -51,8 +50,6 @@ public class ScalaModContainer extends ModContainer {
         LOGGER.debug(LOADING, "Creating scala container Class: {}, with classLoader {}", className, getClass().getClassLoader());
         this.scanData = modFileScanResults;
         this.isScalaObject = className.endsWith("$");
-
-        this.activityMap.put(ModLoadingStage.CONSTRUCT, this::constructMod);
 
         this.eventBus = BusBuilder.builder()
             .setExceptionHandler(this::onEventFailed)
@@ -67,10 +64,11 @@ public class ScalaModContainer extends ModContainer {
      * Create class instance and get new instance or object representing the mod.
      * Also, this method injects Automatic Event Subscribers for the mod.
      *
-     * @throws ModLoadingException - thrown if any errors({@link ReflectiveOperationException}) happened.
+     * @throws ModLoadingException thrown if any errors({@link ReflectiveOperationException}) happened.
      */
+    @Override
     @SuppressWarnings("SpellCheckingInspection")
-    private void constructMod() {
+    protected void constructMod() {
         try {
             // Here to avoid NPE of scala object.
             var layer = gameLayer.findModule(this.modInfo.getOwningFile().moduleName()).orElseThrow();
@@ -78,7 +76,7 @@ public class ScalaModContainer extends ModContainer {
             LOGGER.trace(LOADING, "Scala Class Loaded {} with {}.", modClass, modClass.getClassLoader());
         } catch (Throwable e) {
             LOGGER.error(LOADING, "Failed to load class {}", className, e);
-            throw new ModLoadingException(modInfo, ModLoadingStage.CONSTRUCT, "fml.modloading.failedtoloadmodclass", e);
+            throw new ModLoadingException(modInfo, "fml.modloading.failedtoloadmodclass", e);
         }
         try {
             if (isScalaObject) {
@@ -94,7 +92,7 @@ public class ScalaModContainer extends ModContainer {
             }
         } catch (ReflectiveOperationException e) {
             LOGGER.error(LOADING, "Failed to create/get mod instance. ModID: {}, class {}", this.modId, modClass.getName(), e);
-            throw new ModLoadingException(modInfo, ModLoadingStage.CONSTRUCT, "fml.modloading.failedtoloadmod", e, modClass);
+            throw new ModLoadingException(modInfo, "fml.modloading.failedtoloadmod", e, modClass);
         }
 
         try {
@@ -103,7 +101,7 @@ public class ScalaModContainer extends ModContainer {
             LOGGER.trace(LOADING, "Completed Automatic event subscribers for {}", this.modId);
         } catch (Throwable e) {
             LOGGER.error(LOADING, "Failed to register automatic subscribers. ModID: {}, class {}", this.modId, modClass.getName(), e);
-            throw new ModLoadingException(modInfo, ModLoadingStage.CONSTRUCT, "fml.modloading.failedtoloadmod", e, modClass);
+            throw new ModLoadingException(modInfo, "fml.modloading.failedtoloadmod", e, modClass);
         }
     }
 
@@ -126,6 +124,7 @@ public class ScalaModContainer extends ModContainer {
         return modInstance;
     }
 
+    @SuppressWarnings("removal")
     private static net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext createContext(IEventBus bus) {
         try {
             net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext instance = UnsafeHacks.newInstance(net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext.class);

@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 
 import net.neoforged.fml.ModLoadingException;
-import net.neoforged.fml.ModLoadingStage;
 import net.neoforged.neoforgespi.language.IModInfo;
 import net.neoforged.neoforgespi.language.IModLanguageProvider;
 import net.neoforged.neoforgespi.language.ModFileScanData;
@@ -37,6 +36,6 @@ public record ScalaLanguageTarget(String className, String modID)
     }
 
     private static ModLoadingException createMLE(IModInfo info, ReflectiveOperationException e) {
-        return new ModLoadingException(info, ModLoadingStage.CONSTRUCT, "fml.ModLoading.FailedToLoadModClass".toLowerCase(Locale.ROOT), e);
+        return new ModLoadingException(info, "fml.ModLoading.FailedToLoadModClass".toLowerCase(Locale.ROOT), e);
     }
 }
