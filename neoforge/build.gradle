@@ -77,7 +77,7 @@ dependencies {
 jar {
     manifest {
         attributes([
-                "FMLModType"           : "LANGPROVIDER",
+                "FMLModType"           : "LIBRARY",
                 "Automatic-Module-Name": "kotori_scala",
         ])
         attributes([
