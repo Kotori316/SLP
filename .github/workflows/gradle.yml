@@ -30,7 +30,7 @@ jobs:
       - run: ./gradlew data
       - run: ./gradlew test build
       - name: Publish
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: '*/build/libs/*'
           name: '${{ github.event.repository.name }}-Forge-${{ github.run_number }}'
@@ -54,7 +54,7 @@ jobs:
       - run: ./gradlew data
       - run: ./gradlew test build
       - name: Publish
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: '*/build/libs/*'
           name: '${{ github.event.repository.name }}-NeoForge-${{ github.run_number }}'
