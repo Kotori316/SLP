@@ -1,7 +1,7 @@
 [versions]
 minecraft = "1.20.5"
 forge = "1.20.4-49.0.10"
-neoforge = "20.5.0-alpha.1.20.5-rc1.20240420.160012"
+neoforge = "20.5.0-alpha.1.20.5-rc1.20240422.210434"
 # https://ldtteam.jfrog.io/ui/native/parchmentmc-public/org/parchmentmc/data/parchment-1.20.2/
 # https://github.com/ParchmentMC/Parchment
 parchment = "1.20.2-2023.12.10"
@@ -9,7 +9,7 @@ parchment = "1.20.2-2023.12.10"
 scala2 = "2.13.12"
 # https://mvnrepository.com/artifact/org.scala-lang/scala3-library
 scala3 = "3.3.3"
-cats = "2.10.0-kotori"
+cats = "2.10.1-kotori"
 # https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
 jupiter = "5.10.2"
 # https://mvnrepository.com/artifact/org.junit.platform/junit-platform-launcher
