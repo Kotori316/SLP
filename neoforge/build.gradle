@@ -260,6 +260,7 @@ tasks.register("registerVersion", CallVersionFunctionTask.class) {
     functionEndpoint = readVersionFunctionEndpoint(project)
     gameVersion = libs.versions.minecraft.get()
     platform = "neoforge"
+    platformVersion = libs.versions.neoforge.get()
     modName = archivesBaseName
     changelog = "For ${libs.versions.minecraft.get()} with ${libs.versions.scala3.get()}"
     isDryRun = RELEASE_DEBUG
