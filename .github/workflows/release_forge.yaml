@@ -5,105 +5,15 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
     permissions:
       id-token: write
       contents: write
       packages: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: gradle/actions/wrapper-validation@v3
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '21'
-      - run: chmod +x ./gradlew
-      - name: Enable daemon
-        run: sed -i -e 's/org.gradle.daemon=false/org.gradle.daemon=true/' gradle.properties
-      - name: Compile
-        run: ./gradlew testClasses
-      - name: JUnit
-        run: ./gradlew test
-      - uses: google-github-actions/auth@v2
-        with:
-          workload_identity_provider: ${{secrets.GCP_IDENTITY_PROVIDER}}
-          service_account: ${{secrets.GCP_SERVICE_ACCOUNT}}
-      - name: Download Private Key
-        run: gcloud storage cp gs://kotori316-resources/secring.gpg "${HOME}/secring.gpg"
-      - name: Download JKS
-        run: gcloud storage cp gs://kotori316-resources/kotori316_keystore.jks "${HOME}/kotori316_keystore.jks"
-      - name: Download Public Key
-        run: |
-          gcloud storage cp gs://kotori316-resources/pgp_public.pub "${HOME}/pgp_public.pub"
-          gpg --import "${HOME}/pgp_public.pub"
-      - name: Get credentials
-        id: get-secrets
-        uses: google-github-actions/get-secretmanager-secrets@v2
-        with:
-          secrets: |-
-            key_id:kotori316-mods-resources/signing-key-id
-            key_password:kotori316-mods-resources/signing-password
-            jar_password:kotori316-mods-resources/jar-sign-key-password
-            modrinth_token:kotori316-mods-resources/modrinth_token
-            curseforge_token:kotori316-mods-resources/curseforge_token
-            azure_token:kotori316-mods-resources/azure_token
-            cloudflare_s3_endpoint:kotori316-mods-resources/cloudflare_s3_endpoint
-            cloudflare_access_key:kotori316-mods-resources/cloudflare_access_key
-            cloudflare_secret_key:kotori316-mods-resources/cloudflare_secret_key
-      - name: Check version
-        run: ./gradlew checkReleaseVersion
-        env:
-          RELEASE_DEBUG: 'false'
-      - name: Release
-        run: >-
-          ./gradlew
-          -Psigning.secretKeyRingFile="${HOME}/secring.gpg"
-          -Psigning.password="${KEY_PASSWORD}"
-          -Psigning.keyId="${KEY_ID}"
-          -PjarSign.keyLocation="${HOME}/kotori316_keystore.jks"
-          -PjarSign.keyAlias="ko316"
-          -PjarSign.storePass="${JAR_PASSWORD}"
-          -Dorg.gradle.s3.endpoint="${CLOUDFLARE_S3_ENDPOINT}"
-          assemble publishToMavenLocal publish registerVersion curseforge modrinth githubRelease
-        env:
-          RELEASE_DEBUG: 'false'
-          REPO_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          AZURE_TOKEN: ${{steps.get-secrets.outputs.azure_token}}
-          KEY_PASSWORD: ${{steps.get-secrets.outputs.key_password}}
-          KEY_ID: ${{steps.get-secrets.outputs.key_id}}
-          JAR_PASSWORD: ${{steps.get-secrets.outputs.jar_password}}
-          CURSE_TOKEN: ${{steps.get-secrets.outputs.curseforge_token}}
-          MODRINTH_TOKEN: ${{steps.get-secrets.outputs.modrinth_token}}
-          VERSION_FUNCTION_ENDPOINT: ${{ secrets.GCP_VERSION_FUNCTION_ENDPOINT }}
-          SERVICE_ACCOUNT: ${{ secrets.GCP_FUNCTION_EXECUTION_ACCOUNT }}
-          CLOUDFLARE_S3_ENDPOINT: ${{steps.get-secrets.outputs.cloudflare_s3_endpoint}}
-          R2_ACCESS_KEY: ${{steps.get-secrets.outputs.cloudflare_access_key}}
-          R2_SECRET_KEY: ${{steps.get-secrets.outputs.cloudflare_secret_key}}
-      - name: Verify Build Files
-        run: |
-          for f in $(find ./ -name "*.asc") ; do
-            echo "${f:0:-4}"
-            gpg --verify "$f" "${f:0:-4}"
-          done
-      - name: Verify Main Jar
-        run: |
-          for f in $(ls */build/libs/*.jar) ; do
-            echo "$f"
-            jarsigner -verify -keystore "${HOME}/kotori316_keystore.jks" "$f" -strict
-          done
-      - name: Verify Maven Local
-        run: |
-          for f in $(find ~/.m2 -name "*.asc") ; do
-            echo "${f:0:-4}"
-            gpg --verify "$f" "${f:0:-4}"
-          done
-      - name: Upload Artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: SLP-Release-${{ github.run_number }}
-          path: |
-            */build/libs/
-            ~/.m2
-          retention-days: 14
+    # See https://github.com/Kotori316/common-script/blob/main/.github/workflows/release-prod-gradle.yaml
+    uses: 'Kotori316/common-script/.github/workflows/release-prod-gradle.yaml@main'
+    with:
+      sign_check_command: 'assemble publishToMavenLocal'
+      release_command: 'assemble publishToMavenLocal publish registerVersion curseforge modrinth githubRelease'
+      enable_signature_check: true
+      java_version: 21
+    secrets: inherit

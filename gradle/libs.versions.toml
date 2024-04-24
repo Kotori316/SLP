@@ -1,10 +1,10 @@
 [versions]
 minecraft = "1.20.5"
 forge = "1.20.4-49.0.10"
-neoforge = "20.5.0-alpha.1.20.5-rc1.20240422.210434"
+neoforge = "20.5.0-beta"
 # https://ldtteam.jfrog.io/ui/native/parchmentmc-public/org/parchmentmc/data/parchment-1.20.2/
 # https://github.com/ParchmentMC/Parchment
-parchment = "1.20.2-2023.12.10"
+parchment = "1.20.4-2024.04.14"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
 scala2 = "2.13.12"
 # https://mvnrepository.com/artifact/org.scala-lang/scala3-library
