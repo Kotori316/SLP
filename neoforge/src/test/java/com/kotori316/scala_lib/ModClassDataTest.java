@@ -125,6 +125,4 @@ class ModClassDataTest {
         }
     }
 
-    record ModClassDataImpl(String className, String modID) implements ModClassData {
-    }
 }
