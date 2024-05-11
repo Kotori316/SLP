@@ -17,7 +17,7 @@ githubRelease {
     token(project.findProperty("githubToken") as? String ?: System.getenv("REPO_TOKEN") ?: "")
     targetCommitish = project.property("branch") as String
     prerelease = project.version.toString().contains("SNAPSHOT")
-    body = """\
+    body = """
         For Minecraft ${libs.versions.minecraft.get()}
         
         This mod provides language provider, "kotori_scala".
