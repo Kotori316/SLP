@@ -88,15 +88,9 @@ jar {
 tasks.register("normalJar", Jar) {
 }
 
-tasks.register("srcJar", Jar) {
-    from sourceSets.main.allSource
-    archiveClassifier.set("sources")
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
 // Tell the artifact system about our extra jars
 artifacts {
-    archives shadowJar as Object, srcJar
+    archives shadowJar as Object, sourcesJar
 }
 
 tasks.jarJar.configure {
@@ -121,7 +115,7 @@ curseforge {
         addGameVersion("NeoForge")
         mainArtifact(tasks.shadowJar)
         addArtifact(tasks.jar)
-        addArtifact(tasks.srcJar)
+        addArtifact(tasks.sourcesJar)
         addArtifact(tasks.jarJar)
     }
     options {
@@ -138,7 +132,7 @@ modrinth {
     uploadFile = tasks.shadowJar
     additionalFiles = [
             tasks.jar,
-            tasks.srcJar,
+            tasks.sourcesJar,
             tasks.jarJar,
     ]
     gameVersions = [libs.versions.minecraft.get()]
@@ -152,7 +146,6 @@ publishing {
         mavenJava(MavenPublication) {
             artifactId = archivesBaseName.toLowerCase()
             from components.java
-            artifact srcJar
 
             pom {
                 name = archivesBaseName
@@ -169,13 +162,13 @@ publishing {
 }
 
 tasks.register("jksSignJar") {
-    dependsOn(tasks.shadowJar, tasks.jar, tasks.jarJar, tasks.srcJar)
+    dependsOn(tasks.shadowJar, tasks.jar, tasks.jarJar, tasks.sourcesJar)
     boolean executeCondition = project.hasProperty("jarSign.keyAlias") &&
             project.hasProperty("jarSign.keyLocation") &&
             project.hasProperty("jarSign.storePass")
     onlyIf { executeCondition }
     doLast {
-        for (def t : [tasks.jar, tasks.shadowJar, tasks.srcJar, tasks.jarJar]) {
+        for (def t : [tasks.jar, tasks.shadowJar, tasks.sourcesJar, tasks.jarJar]) {
             //noinspection HttpUrlsUsage
             ant.signjar(
                     jar: t.archiveFile.get(),
@@ -196,7 +189,7 @@ tasks.named("assemble") {
 
 signing {
     sign(publishing.publications)
-    sign(tasks.jar, tasks.shadowJar, tasks.srcJar, tasks.jarJar)
+    sign(tasks.jar, tasks.shadowJar, tasks.sourcesJar, tasks.jarJar)
 }
 
 boolean hasGpgSignature = project.hasProperty("signing.keyId") &&
@@ -212,7 +205,7 @@ tasks.withType(Sign).configureEach {
 tasks.withType(AbstractPublishToMaven).configureEach {
     if (hasGpgSignature) {
         it.dependsOn(":neoforge:signJar")
-        it.dependsOn(":neoforge:signSrcJar")
+        it.dependsOn(":neoforge:signSourcesJar")
         it.dependsOn(":neoforge:signJarJar")
         it.dependsOn(":neoforge:signShadowJar")
     }
