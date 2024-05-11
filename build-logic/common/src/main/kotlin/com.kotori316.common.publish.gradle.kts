@@ -76,16 +76,16 @@ tasks.register("registerVersion", CallVersionFunctionTask::class) {
     gameVersion = mc
     platform = project.name
     platformVersion = pfVersion(project.name)
-    modName = provider { ext["archivesBaseName"]!!.toString() }
+    modName = project.provider { project.ext.get("archivesBaseName") as String }
     changelog = project.provider { project.ext.get("generalDescription") as String }
-    homepage = "https://github.com/Kotori316/special-octo-happiness"
+    homepage = "https://www.curseforge.com/minecraft/mc-mods/scalable-cats-force"
     isDryRun = releaseDebug
 }
 
 tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask::class) {
     gameVersion = mc
     platform = project.name
-    modName = provider { ext["archivesBaseName"]!!.toString() }
+    modName = project.provider { project.ext.get("archivesBaseName") as String }
     version = project.version.toString()
     failIfExists = !releaseDebug
 }

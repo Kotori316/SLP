@@ -19,6 +19,8 @@ mockito-inline = "5.2.0"
 
 plugin_cf = "3.0"
 plugin_shadow = "8.+"
+plugin_idea_ext = "1.1.8"
+plugin_ghr = "2.5.2"
 
 [libraries]
 scala2 = { group = "org.scala-lang", name = "scala-library", version.ref = "scala2" }
@@ -36,6 +38,8 @@ mockito_inline = { group = "org.mockito", name = "mockito-inline", version.ref =
 [plugins]
 cf = { id = "com.kotori316.plugin.cf", version.ref = "plugin_cf" }
 shadow = { id = "com.github.johnrengelman.shadow", version.ref = "plugin_shadow" }
+idea = { id = "org.jetbrains.gradle.plugin.idea-ext", version.ref = "plugin_idea_ext" }
+ghr = { id = "com.github.breadmoirai.github-release", version.ref = "plugin_ghr" }
 
 [bundles]
 cats = ["cats-kernel", "cats-core", "cats-free"]

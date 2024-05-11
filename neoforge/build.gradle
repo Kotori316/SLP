@@ -238,3 +238,4 @@ afterEvaluate {
 }
 
 ext["archivesBaseName"] = archivesBaseName
+ext["generalDescription"] = createChangelog()

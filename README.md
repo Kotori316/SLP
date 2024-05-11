@@ -41,7 +41,7 @@ This mod adds Scala library to Minecraft 1.20 with Forge.
       // Add if you need this library. I use a modified version of Cats to avoid some module errors.
       compileOnly(group: 'org.typelevel', name: 'cats-core_3', version: '2.9.2-kotori')
 
-      // The language loader. You can put the jar to the mods dir instead of declaring in `build.gradle`.
+      // The language loader. You can put the jar to the mods dir instead of declaring in `build.gradle.kts`.
       // This file is needed as the scala library will not be loaded in dev environment due to change of classpath by Forge.
       runtimeOnly(group: "com.kotori316", name: "ScalableCatsForce".toLowerCase(), version: "3.3.0-build-2", classifier: "with-library") {
           transitive(false)
