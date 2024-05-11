@@ -27,12 +27,18 @@ githubRelease {
         Cats: ${libs.versions.cats.get()}
         """.trimIndent()
     releaseAssets = files(
-        fileTree(project(":forge").layout.buildDirectory.dir("libs")) {
-            include("*.jar")
-        },
-        fileTree(project(":neoforge").layout.buildDirectory.dir("libs")) {
-            include("*.jar")
-        }
+        *listOfNotNull(
+            findProject(":forge")?.let {
+                fileTree(it.layout.buildDirectory.dir("libs")) {
+                    include("*.jar")
+                }
+            },
+            findProject(":neoforge")?.let {
+                fileTree(it.layout.buildDirectory.dir("libs")) {
+                    include("*.jar")
+                }
+            },
+        ).toTypedArray()
     )
     dryRun = releaseDebug
 }
