@@ -76,11 +76,11 @@ public final class ScalaLanguageProvider implements IModLanguageLoader {
             });
         mods.values().stream()
             // Check mod has only 1 class for each mod id
-            .filter(dataList -> dataList.size() != 1 || dataList.stream().filter(ModClassData::isScalaObj).count() != 1)
+            .filter(dataList -> dataList.size() != 1 && dataList.stream().filter(ModClassData::isScalaObj).count() != 1)
             .forEach(dataList -> {
                 var modId = dataList.getFirst().modID();
                 var classes = dataList.stream().map(ModClassData::className).toList();
-                var issue = ModLoadingIssue.error("Duplicated mod classes for %s, found: %s", modId, classes);
+                var issue = ModLoadingIssue.error("Duplicated mod classes for %s, found: %s".formatted(modId, classes));
                 reporter.addIssue(issue);
             });
     }
