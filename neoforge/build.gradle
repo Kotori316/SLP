@@ -1,18 +1,13 @@
-import com.kotori316.plugin.cf.CallVersionCheckFunctionTask
-import com.kotori316.plugin.cf.CallVersionFunctionTask
-
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 plugins {
-    id "scala"
+    id("com.kotori316.common.java")
+    id("com.kotori316.common.publish")
     id "net.neoforged.gradle.userdev" version "[7.0.26, 8.0)"
-    id "maven-publish"
     id "signing"
     id "com.matthewprenger.cursegradle" version "1.4.0"
     id "com.modrinth.minotaur" version "2.+"
-    id "com.github.johnrengelman.shadow" version "8.1.1"
-    id("com.kotori316.plugin.cf") version("3.+")
 }
 
 version = "${libs.versions.scala3.get()}-build-${project.build_number}"
@@ -44,9 +39,6 @@ runs {
 
 repositories {
     mavenCentral()
-    maven {
-        url = uri("https://prmaven.neoforged.net/NeoForge/pr794")
-    }
 }
 
 dependencies {
@@ -107,17 +99,6 @@ artifacts {
     archives shadowJar as Object, srcJar
 }
 
-shadowJar {
-    def groupNames = ["org.scala-lang", "org.scala-lang.modules", "org.typelevel"]
-    archiveClassifier.set("with-library")
-    dependencies {
-        include(dependency {
-            groupNames.contains(it.moduleGroup)
-        })
-    }
-
-}
-
 tasks.jarJar.configure {
     archiveClassifier.set("jar-jar")
 }
@@ -151,7 +132,7 @@ curseforge {
 }
 
 modrinth {
-    token = project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: ""
+    token = project.findProperty("modrinthToken") as String ?: System.getenv("MODRINTH_TOKEN") ?: ""
     projectId = "scalable-cats-force"
     versionType = "release"
     uploadFile = tasks.shadowJar
@@ -256,21 +237,4 @@ afterEvaluate {
     rootProject.tasks.named("githubRelease").configure { it.dependsOn(":neoforge:assemble") }
 }
 
-tasks.register("registerVersion", CallVersionFunctionTask.class) {
-    functionEndpoint = readVersionFunctionEndpoint(project)
-    gameVersion = libs.versions.minecraft.get()
-    platform = "neoforge"
-    platformVersion = libs.versions.neoforge.get()
-    modName = archivesBaseName
-    changelog = "For ${libs.versions.minecraft.get()} with ${libs.versions.scala3.get()}"
-    isDryRun = RELEASE_DEBUG
-    homepage = "https://www.curseforge.com/minecraft/mc-mods/scalable-cats-force"
-}
-
-tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
-    gameVersion = libs.versions.minecraft.get()
-    platform = "neoforge"
-    modName = archivesBaseName
-    version = project.version as String
-    failIfExists = !RELEASE_DEBUG
-}
+ext["archivesBaseName"] = archivesBaseName

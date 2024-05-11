@@ -1,19 +1,14 @@
-import com.kotori316.plugin.cf.CallVersionCheckFunctionTask
-import com.kotori316.plugin.cf.CallVersionFunctionTask
-
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 plugins {
-    id "scala"
+    id("com.kotori316.common.java")
+    id("com.kotori316.common.publish")
     id "net.minecraftforge.gradle" version "[6.0.16,6.2)"
     id "org.parchmentmc.librarian.forgegradle" version "1.+"
-    id "maven-publish"
     id "signing"
     id "com.matthewprenger.cursegradle" version "1.4.0"
     id "com.modrinth.minotaur" version "2.+"
-    id "com.github.johnrengelman.shadow" version "8.1.1"
-    id("com.kotori316.plugin.cf") version("3.+")
 }
 
 version = "${libs.versions.scala3.get()}-build-${project.build_number}"
@@ -128,17 +123,6 @@ tasks.register("srcJar", Jar) {
 // Tell the artifact system about our extra jars
 artifacts {
     archives shadowJar as Object, srcJar
-}
-
-shadowJar {
-    def groupNames = ["org.scala-lang", "org.scala-lang.modules", "org.typelevel"]
-    archiveClassifier.set("with-library")
-    dependencies {
-        include(dependency {
-            groupNames.contains(it.moduleGroup)
-        })
-    }
-
 }
 
 tasks.jarJar.configure {
@@ -283,20 +267,4 @@ afterEvaluate {
     rootProject.tasks.named("githubRelease").configure { it.dependsOn(":forge:assemble") }
 }
 
-tasks.register("registerVersion", CallVersionFunctionTask.class) {
-    functionEndpoint = readVersionFunctionEndpoint(project)
-    gameVersion = libs.versions.minecraft.get()
-    platform = "forge"
-    modName = archivesBaseName
-    changelog = "For ${libs.versions.minecraft.get()} with ${libs.versions.scala3.get()}"
-    isDryRun = RELEASE_DEBUG
-    homepage = "https://www.curseforge.com/minecraft/mc-mods/scalable-cats-force"
-}
-
-tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask.class) {
-    gameVersion = libs.versions.minecraft.get()
-    platform = "forge"
-    modName = archivesBaseName
-    version = project.version as String
-    failIfExists = !RELEASE_DEBUG
-}
+ext["archivesBaseName"] = archivesBaseName

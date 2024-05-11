@@ -17,6 +17,9 @@ jupiter-platform = "1.10.2"
 mockito-core = "5.11.0"
 mockito-inline = "5.2.0"
 
+plugin_cf = "3.0"
+plugin_shadow = "8.+"
+
 [libraries]
 scala2 = { group = "org.scala-lang", name = "scala-library", version.ref = "scala2" }
 scala3 = { group = "org.scala-lang", name = "scala3-library_3", version.ref = "scala3" }
@@ -29,6 +32,10 @@ jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", v
 jupiter-launcher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "jupiter-platform" }
 mockito_core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito-core" }
 mockito_inline = { group = "org.mockito", name = "mockito-inline", version.ref = "mockito-inline" }
+
+[plugins]
+cf = { id = "com.kotori316.plugin.cf", version.ref = "plugin_cf" }
+shadow = { id = "com.github.johnrengelman.shadow", version.ref = "plugin_shadow" }
 
 [bundles]
 cats = ["cats-kernel", "cats-core", "cats-free"]
