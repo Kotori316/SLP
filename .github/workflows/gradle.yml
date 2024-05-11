@@ -13,7 +13,6 @@ on:
 jobs:
   check-forge:
     runs-on: ubuntu-latest
-    if: false
     env:
       DISABLE_NEO_FORGE: 'true'
     steps:
@@ -28,7 +27,7 @@ jobs:
       - name: Get cache
         uses: gradle/actions/setup-gradle@v3
       - run: ./gradlew data
-      - run: ./gradlew test build
+      - run: ./gradlew test build publishToMavenLocal
       - name: Publish
         uses: actions/upload-artifact@v4
         with:
@@ -52,7 +51,7 @@ jobs:
       - name: Get cache
         uses: gradle/actions/setup-gradle@v3
       - run: ./gradlew data
-      - run: ./gradlew test build
+      - run: ./gradlew test build publishToMavenLocal
       - name: Publish
         uses: actions/upload-artifact@v4
         with:
