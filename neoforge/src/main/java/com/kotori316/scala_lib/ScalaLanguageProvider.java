@@ -30,6 +30,11 @@ public final class ScalaLanguageProvider implements IModLanguageLoader {
     }
 
     @Override
+    public String version() {
+        return getClass().getPackage().getImplementationVersion();
+    }
+
+    @Override
     public ModContainer loadMod(IModInfo info, ModFileScanData modFileScanResults, ModuleLayer layer) throws ModLoadingException {
         var annotatedClasses = modFileScanResults.getAnnotatedBy(Mod.class, ElementType.TYPE)
             .map(data -> {
