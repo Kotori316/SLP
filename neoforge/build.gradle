@@ -42,7 +42,7 @@ repositories {
 }
 
 dependencies {
-    implementation("net.neoforged:neoforge:${libs.versions.neoforge.get()}")
+    implementation(libs.neoforge)
 
     // https://mvnrepository.com/artifact/org.scala-lang/scala-library
     implementation(libs.scala2)

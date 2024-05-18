@@ -73,7 +73,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft("net.minecraftforge:forge:" + libs.versions.forge.get())
+    minecraft(libs.forge)
     implementation(libs.scala2)
     implementation(libs.scala3) { transitive = false }
     implementation(libs.bundles.cats) { transitive = false }
