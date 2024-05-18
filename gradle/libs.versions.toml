@@ -34,6 +34,8 @@ jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", v
 jupiter-launcher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "jupiter-platform" }
 mockito_core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito-core" }
 mockito_inline = { group = "org.mockito", name = "mockito-inline", version.ref = "mockito-inline" }
+forge = { group = "net.minecraftforge", name = "forge", version.ref = "forge" }
+neoforge = { group = "net.neoforged", name = "neoforge", version.ref = "neoforge" }
 
 [plugins]
 cf = { id = "com.kotori316.plugin.cf", version.ref = "plugin_cf" }
