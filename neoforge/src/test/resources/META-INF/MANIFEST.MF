@@ -1,0 +1,7 @@
+FMLModType: LIBRARY
+Specification-Title: DUMMY
+Specification-Vendor: DUMMY
+Specification-Version: DUMMY
+Implementation-Title: DUMMY
+Implementation-Version: DUMMY
+Implementation-Vendor: DUMMY
