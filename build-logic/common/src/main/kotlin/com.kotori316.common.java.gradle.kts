@@ -18,6 +18,7 @@ tasks.withType(JavaCompile::class) {
 val catalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
 repositories {
+    mavenCentral()
     mavenLocal()
     maven {
         name = "Azure-SLP"
