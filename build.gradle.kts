@@ -5,7 +5,7 @@ plugins {
 
 tasks.named("wrapper", Wrapper::class) {
     distributionType = Wrapper.DistributionType.BIN
-    gradleVersion = "8.7"
+    gradleVersion = "8.8"
 }
 
 version = "${libs.versions.scala3.get()}-build-${project.property("build_number")}"
