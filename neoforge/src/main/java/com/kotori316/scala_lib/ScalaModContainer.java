@@ -1,6 +1,5 @@
 package com.kotori316.scala_lib;
 
-import net.minecraftforge.fml.unsafe.UnsafeHacks;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.EventBusErrorMessage;
 import net.neoforged.bus.api.BusBuilder;
@@ -8,11 +7,11 @@ import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.EventListener;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.ModLoadingException;
 import net.neoforged.fml.ModLoadingIssue;
 import net.neoforged.fml.event.IModBusEvent;
 import net.neoforged.fml.javafmlmod.AutomaticEventSubscriber;
-import net.neoforged.fml.javafmlmod.FMLModContainer;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforgespi.language.IModInfo;
 import net.neoforged.neoforgespi.language.ModFileScanData;
@@ -21,7 +20,10 @@ import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static net.neoforged.fml.Logging.LOADING;
@@ -37,7 +39,6 @@ public class ScalaModContainer extends ModContainer {
     private final IEventBus eventBus;
     private List<Class<?>> modClasses;
 
-    @SuppressWarnings("removal")
     public ScalaModContainer(IModInfo info, List<String> entryPoints, ModFileScanData modFileScanResults, ModuleLayer gameLayer) {
         super(info);
         this.entryPoints = entryPoints;
@@ -51,8 +52,6 @@ public class ScalaModContainer extends ModContainer {
             .allowPerPhasePost()
             .markerType(IModBusEvent.class)
             .build();
-        final net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext contextExtension = createContext(getEventBus());
-        this.contextExtension = () -> contextExtension;
     }
 
     /**
@@ -65,20 +64,29 @@ public class ScalaModContainer extends ModContainer {
     @SuppressWarnings("SpellCheckingInspection")
     protected void constructMod() {
         modClasses = new ArrayList<>();
-        for (String entryPoint : entryPoints) {
-            Class<?> modClass;
-            try {
-                // Here to avoid NPE of scala object.
-                var layer = gameLayer.findModule(this.modInfo.getOwningFile().moduleName()).orElseThrow();
-                modClass = Class.forName(layer, entryPoint);
-                LOGGER.trace(LOADING, "Scala Class Loaded {} with {}.", modClass, modClass.getClassLoader());
-            } catch (Throwable e) {
-                LOGGER.error(LOADING, "Failed to load class {}", entryPoint, e);
-                throw new ModLoadingException(ModLoadingIssue.error("fml.modloading.failedtoloadmodclass")
-                    .withAffectedMod(modInfo).withCause(e));
+        var context = ModLoadingContext.get();
+        try {
+            context.setActiveContainer(this);
+            for (String entryPoint : entryPoints) {
+                Class<?> modClass;
+                try {
+                    // Here to avoid NPE of scala object.
+                    var layer = gameLayer.findModule(this.modInfo.getOwningFile().moduleName()).orElseThrow();
+                    modClass = Class.forName(layer, entryPoint);
+                    LOGGER.trace(LOADING, "Scala Class Loaded {} with {}.", modClass, modClass.getClassLoader());
+                } catch (Throwable e) {
+                    LOGGER.error(LOADING, "Failed to load class {}", entryPoint, e);
+                    throw new ModLoadingException(ModLoadingIssue.error("fml.modloading.failedtoloadmodclass")
+                        .withAffectedMod(modInfo).withCause(e));
+                }
+                modClasses.add(modClass);
             }
-            modClasses.add(modClass);
-            var isScalaObject = entryPoint.endsWith("$");
+        } finally {
+            context.setActiveContainer(null);
+        }
+
+        for (Class<?> modClass : modClasses) {
+            var isScalaObject = modClass.getName().endsWith("$");
 
             try {
                 Object modInstance;
@@ -103,7 +111,6 @@ public class ScalaModContainer extends ModContainer {
             }
         }
 
-
         try {
             LOGGER.trace(LOADING, "Injecting Automatic event subscribers for {}", this.modId);
             AutomaticEventSubscriber.inject(this, this.scanData, this.layer);
@@ -122,20 +129,6 @@ public class ScalaModContainer extends ModContainer {
     @Override
     public IEventBus getEventBus() {
         return eventBus;
-    }
-
-    @SuppressWarnings("removal")
-    private static net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext createContext(IEventBus bus) {
-        try {
-            net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext instance = UnsafeHacks.newInstance(net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext.class);
-            FMLModContainer container = UnsafeHacks.newInstance(FMLModContainer.class);
-            UnsafeHacks.setField(FMLModContainer.class.getDeclaredField("eventBus"), container, bus);
-            UnsafeHacks.setField(net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext.class.getDeclaredField("container"), instance, container);
-            return instance;
-        } catch (ReflectiveOperationException e) {
-            LOGGER.fatal("Error happened in creating dummy instance.", e);
-            return null;
-        }
     }
 
     static Map.Entry<Constructor<?>, Object[]> getConstructor(Class<?> modClass, String modId, IEventBus bus, ModContainer container, Dist dist) {
