@@ -18,8 +18,16 @@ tasks.withType(JavaCompile::class) {
 val catalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
 repositories {
-    mavenCentral()
     mavenLocal()
+    maven {
+        name = "Minecraft-Manually"
+        url = uri("https://libraries.minecraft.net/")
+        content {
+            includeGroup("org.lwjgl")
+            includeGroup("com.mojang")
+        }
+    }
+    mavenCentral()
     maven {
         name = "Azure-SLP"
         url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")

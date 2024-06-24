@@ -3,12 +3,12 @@ name: Build Test
 on:
   push:
     branches:
-      - "1.20.5"
+      - "1.21.*"
     tags:
       - "!*"
   pull_request:
     branches:
-      - "1.20.5"
+      - "1.21.*"
 
 jobs:
   check-forge:
