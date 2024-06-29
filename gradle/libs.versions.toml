@@ -1,6 +1,6 @@
 [versions]
 minecraft = "1.20.6"
-forge = "1.20.6-50.1.7"
+forge = "1.20.6-50.1.9"
 neoforge = "20.6.119"
 # https://ldtteam.jfrog.io/ui/native/parchmentmc-public/org/parchmentmc/data/parchment-1.20.2/
 # https://github.com/ParchmentMC/Parchment
