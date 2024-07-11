@@ -76,7 +76,7 @@ public class ScalaModContainer extends ModContainer {
                     LOGGER.trace(LOADING, "Scala Class Loaded {} with {}.", modClass, modClass.getClassLoader());
                 } catch (Throwable e) {
                     LOGGER.error(LOADING, "Failed to load class {}", entryPoint, e);
-                    throw new ModLoadingException(ModLoadingIssue.error("fml.modloading.failedtoloadmodclass")
+                    throw new ModLoadingException(ModLoadingIssue.error("fml.modloadingissue.failedtoloadmodclass")
                         .withAffectedMod(modInfo).withCause(e));
                 }
                 modClasses.add(modClass);
@@ -106,7 +106,7 @@ public class ScalaModContainer extends ModContainer {
                 if (e instanceof InvocationTargetException i) cause = i.getCause();
                 else cause = e;
                 LOGGER.error(LOADING, "Failed to create/get mod instance. ModID: {}, class {}", this.modId, modClass.getName(), cause);
-                throw new ModLoadingException(ModLoadingIssue.error("fml.modloading.failedtoloadmod", cause, modClass)
+                throw new ModLoadingException(ModLoadingIssue.error("fml.modloadingissue.failedtoloadmod", cause, modClass)
                     .withAffectedMod(modInfo).withCause(cause));
             }
         }
@@ -117,7 +117,7 @@ public class ScalaModContainer extends ModContainer {
             LOGGER.trace(LOADING, "Completed Automatic event subscribers for {}", this.modId);
         } catch (Throwable e) {
             LOGGER.error(LOADING, "Failed to register automatic subscribers. ModID: {}, Classes: {}", this.modId, entryPoints, e);
-            throw new ModLoadingException(ModLoadingIssue.error("fml.modloading.failedtoloadmod", e, entryPoints)
+            throw new ModLoadingException(ModLoadingIssue.error("fml.modloadingissue.failedtoloadmod", e, entryPoints)
                 .withAffectedMod(modInfo).withCause(e));
         }
     }
