@@ -76,7 +76,7 @@ public final class ScalaLanguageProvider implements IModLanguageLoader {
             .forEach(modId -> {
                 var data = mods.get(modId);
                 var classes = data.stream().map(ModClassData::className).toList();
-                var issue = ModLoadingIssue.error("fml.modloading.javafml.dangling_entrypoint", modId, classes, file.getFilePath()).withAffectedModFile(file);
+                var issue = ModLoadingIssue.error("fml.modloadingissue.javafml.dangling_entrypoint", modId, classes, file.getFilePath()).withAffectedModFile(file);
                 reporter.addIssue(issue);
             });
         mods.values().stream()
