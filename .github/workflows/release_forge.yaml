@@ -14,7 +14,7 @@ jobs:
     uses: 'Kotori316/common-script/.github/workflows/release-prod-gradle.yaml@main'
     with:
       sign_check_command: 'assemble publishToMavenLocal'
-      release_command: 'assemble publishToMavenLocal publish registerVersion curseforge modrinth githubRelease'
+      release_command: 'assemble publishToMavenLocal publish curseforge modrinth githubRelease registerVersion'
       enable_signature_check: true
       java_version: 21
     secrets: inherit
