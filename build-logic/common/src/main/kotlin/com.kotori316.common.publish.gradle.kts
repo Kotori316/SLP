@@ -34,17 +34,20 @@ fun pfVersion(platform: String): String {
 // configure the maven publication
 publishing {
     repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/Kotori316/SLP")
-            credentials {
-                username = project.findProperty("gpr.user") as? String ?: System.getenv("GITHUB_ACTOR") ?: ""
-                password = project.findProperty("githubToken") as? String ?: System.getenv("REPO_TOKEN") ?: ""
+        if (!releaseDebug) {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/Kotori316/SLP")
+                credentials {
+                    username = project.findProperty("gpr.user") as? String ?: System.getenv("GITHUB_ACTOR") ?: ""
+                    password = project.findProperty("githubToken") as? String ?: System.getenv("REPO_TOKEN") ?: ""
+                }
             }
         }
+
         val u = project.findProperty("maven_username") as? String ?: System.getenv("MAVEN_USERNAME") ?: ""
         val p = project.findProperty("maven_password") as? String ?: System.getenv("MAVEN_PASSWORD") ?: ""
-        if (u != "" && p != "") {
+        if (u != "" && p != "" && !releaseDebug) {
             maven {
                 name = "kotori316-maven"
                 // For users: Use https://maven.kotori316.com to get artifacts
@@ -55,7 +58,7 @@ publishing {
                 }
             }
         }
-        if (u != "" && p != "" && System.getenv("CI") == null) {
+        if (u != "" && p != "") {
             maven {
                 name = "MavenTestGCP"
                 url = uri("https://maven2.kotori316.com/test/maven")
