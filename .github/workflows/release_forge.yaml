@@ -17,4 +17,5 @@ jobs:
       release_command: 'assemble publishToMavenLocal publish curseforge modrinth githubRelease registerVersion'
       enable_signature_check: true
       java_version: 21
+      use_gradle_cache: true
     secrets: inherit
