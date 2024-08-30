@@ -90,6 +90,8 @@ dependencies {
     testImplementation(libs.jupiter.params)
     testRuntimeOnly(libs.jupiter.engine)
     testImplementation(libs.jupiter.launcher)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
 }
 
 jar {

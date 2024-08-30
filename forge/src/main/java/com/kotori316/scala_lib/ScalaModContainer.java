@@ -1,8 +1,12 @@
 package com.kotori316.scala_lib;
 
 import java.lang.reflect.Constructor;
+import java.util.Comparator;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.EventBusErrorMessage;
 import net.minecraftforge.eventbus.api.BusBuilder;
 import net.minecraftforge.eventbus.api.Event;
@@ -15,6 +19,7 @@ import net.minecraftforge.fml.event.IModBusEvent;
 import net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
+import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import net.minecraftforge.unsafe.UnsafeHacks;
@@ -35,6 +40,7 @@ public class ScalaModContainer extends ModContainer {
     private final IEventBus eventBus;
     private Class<?> modClass;
     private Object modInstance;
+    private final FMLJavaModLoadingContext context;
 
     /**
      * Instance created in {@link ScalaLanguageTarget#loadMod(IModInfo, ModFileScanData, ModuleLayer)}
@@ -51,8 +57,8 @@ public class ScalaModContainer extends ModContainer {
 
         this.eventBus = BusBuilder.builder().setExceptionHandler(this::onEventFailed).setTrackPhases(false).markerType(IModBusEvent.class).useModLauncher().build();
         this.configHandler = Optional.of(ce -> this.eventBus.post(ce.self()));
-        final FMLJavaModLoadingContext contextExtension = createContext(getEventBus());
-        this.contextExtension = () -> contextExtension;
+        context = createContext(getEventBus());
+        this.contextExtension = () -> context;
     }
 
     /**
@@ -79,9 +85,9 @@ public class ScalaModContainer extends ModContainer {
                 LOGGER.trace(LOADING, "Scala Mod instance for {} was got. {}", this.modId, modInstance);
             } else {
                 LOGGER.trace(LOADING, "Scala Mod instance for {} is about to create. {}", this.modId, modClass.getName());
-                Constructor<?> constructor = modClass.getDeclaredConstructor();
-                constructor.setAccessible(true);
-                modInstance = constructor.newInstance();
+                Map.Entry<Constructor<?>, Object[]> constructors = getConstructor(modClass, this.modId, getEventBus(), this, FMLLoader.getDist(), context);
+                constructors.getKey().setAccessible(true);
+                modInstance = constructors.getKey().newInstance(constructors.getValue());
                 LOGGER.trace(LOADING, "Scala Mod instance for {} created. {}", this.modId, modInstance);
             }
         } catch (ReflectiveOperationException e) {
@@ -141,6 +147,23 @@ public class ScalaModContainer extends ModContainer {
             LOGGER.fatal("Error happened in creating dummy instance.", e);
             return null;
         }
+    }
+
+    static Map.Entry<Constructor<?>, Object[]> getConstructor(Class<?> modClass, String modId, IEventBus bus, ModContainer container, Dist dist, FMLJavaModLoadingContext context) {
+        var constructors = modClass.getDeclaredConstructors();
+        LOGGER.trace(LOADING, "Found {} constructors for {}", constructors.length, modId);
+        var args = Map.of(
+            IEventBus.class, bus,
+            ModContainer.class, container,
+            Dist.class, dist,
+            FMLJavaModLoadingContext.class, context
+        );
+        var constructor = Stream.of(constructors)
+            .filter(c -> Stream.of(c.getParameterTypes()).allMatch(args::containsKey))
+            .max(Comparator.comparingInt(Constructor::getParameterCount))
+            .orElseThrow(() -> new RuntimeException("No mod constructor with allowed arg types were found for " + modId));
+        var constructorArgs = Stream.of(constructor.getParameterTypes()).map(args::get).toArray();
+        return Map.entry(constructor, constructorArgs);
     }
 
     @Override
