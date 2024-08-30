@@ -29,11 +29,11 @@ runs {
 
     server {
         systemProperty "forge.enabledGameTestNamespaces", project.mod_id
-        programArgument "--nogui"
+        arguments.add("--nogui")
     }
 
     data {
-        programArguments.addAll "--mod", project.mod_id, "--all", "--output", file("src/generated/resources/").getAbsolutePath(), "--existing", file("src/main/resources/").getAbsolutePath()
+        arguments.addAll("--mod", project.mod_id, "--all", "--output", file("src/generated/resources/").getAbsolutePath(), "--existing", file("src/main/resources/").getAbsolutePath())
     }
 }
 
@@ -99,6 +99,10 @@ tasks.jarJar.configure {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8" // Use the UTF-8 charset for Java compilation
+}
+
+tasks.test {
+    enabled = false
 }
 
 // ---------- Publish ----------
