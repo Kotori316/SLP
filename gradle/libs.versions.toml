@@ -9,7 +9,7 @@ parchment = "1.21-2024.07.28"
 scala2 = "2.13.14"
 # https://mvnrepository.com/artifact/org.scala-lang/scala3-library
 scala3 = "3.5.1"
-cats = "2.10.1-kotori"
+cats = "2.12.1-kotori"
 # https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
 jupiter = "5.11.0"
 # https://mvnrepository.com/artifact/org.junit.platform/junit-platform-launcher
