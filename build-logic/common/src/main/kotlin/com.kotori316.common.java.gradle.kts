@@ -29,8 +29,8 @@ repositories {
     }
     mavenCentral()
     maven {
-        name = "Azure-SLP"
-        url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
+        name = "Kotori316"
+        url = uri("https://maven.kotori316.com")
         content {
             includeModule("org.typelevel", "cats-core_3")
             includeModule("org.typelevel", "cats-kernel_3")
