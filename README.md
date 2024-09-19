@@ -23,13 +23,13 @@ This mod adds Scala library to Minecraft 1.20 with Forge.
   ```groovy
   repositories {
       maven {
-          name = "Azure-SLP"
-          url = uri("https://pkgs.dev.azure.com/Kotori316/minecraft/_packaging/mods/maven/v1")
+          name = "kotori316"
+          url = uri("https://maven.kotori316.com")
           content {
-              it.includeModule("com.kotori316", "ScalableCatsForce".toLowerCase())
-              it.includeModule("org.typelevel", "cats-core_3")
-              it.includeModule("org.typelevel", "cats-kernel_3")
-              it.includeModule("org.typelevel", "cats-free_3")
+              includeModule("com.kotori316", "ScalableCatsForce".toLowerCase())
+              includeModule("org.typelevel", "cats-core_3")
+              includeModule("org.typelevel", "cats-kernel_3")
+              includeModule("org.typelevel", "cats-free_3")
           }
       }
   }
