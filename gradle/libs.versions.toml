@@ -6,7 +6,7 @@ neoforge = "21.1.57"
 # https://github.com/ParchmentMC/Parchment
 parchment = "1.21-2024.07.28"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
-scala2 = "2.13.14"
+scala2 = "2.13.15"
 # https://mvnrepository.com/artifact/org.scala-lang/scala3-library
 scala3 = "3.5.1"
 cats = "2.12.1-kotori"
