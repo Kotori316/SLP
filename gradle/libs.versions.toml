@@ -19,7 +19,7 @@ mockito-inline = "5.2.0"
 
 plugin_cf = "3.3"
 plugin_shadow = "8.+"
-plugin_idea_ext = "1.1.8"
+plugin_idea_ext = "1.1.9"
 plugin_ghr = "2.5.2"
 
 [libraries]
