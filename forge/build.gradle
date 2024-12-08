@@ -7,8 +7,7 @@ plugins {
     id "net.minecraftforge.gradle" version "[6.0.16,6.2)"
     id "org.parchmentmc.librarian.forgegradle" version "1.+"
     id "signing"
-    id "com.matthewprenger.cursegradle" version "1.4.0"
-    id "com.modrinth.minotaur" version "2.+"
+    alias(libs.plugins.publish.all)
 }
 
 version = "${libs.versions.scala3.get()}-build-${project.build_number}"
@@ -137,40 +136,37 @@ tasks.withType(JavaCompile).configureEach {
 // ---------- Publish ----------
 final boolean RELEASE_DEBUG = Boolean.parseBoolean(System.getenv("RELEASE_DEBUG") ?: "true")
 
-curseforge {
-    apiKey = project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: ""
-    project {
-        id = "320926"
-        changelogType = "markdown"
-        changelog = createChangelog()
-        releaseType = "release"
-        addGameVersion(libs.versions.minecraft.get())
-        addGameVersion("Forge")
-        mainArtifact(tasks.shadowJar)
-        addArtifact(tasks.jar)
-        addArtifact(tasks.sourcesJar)
-        addArtifact(tasks.jarJar)
-    }
-    options {
-        curseGradleOptions.debug = RELEASE_DEBUG // defaults to false
-        curseGradleOptions.javaVersionAutoDetect = false
-    }
-}
-
-modrinth {
-    token = project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: ""
-    projectId = "scalable-cats-force"
-    versionType = "release"
-    uploadFile = tasks.shadowJar
-    additionalFiles = [
-            tasks.jar,
-            tasks.sourcesJar,
-            tasks.jarJar,
-    ]
-    gameVersions = [libs.versions.minecraft.get()]
-    loaders = ["forge"]
+publishMods {
+    dryRun = RELEASE_DEBUG
+    type = STABLE
+    file = provider { tasks.shadowJar }.flatMap { it.archiveFile }
+    additionalFiles = files(
+            provider { tasks.jar }.flatMap { it.archiveFile },
+            provider { tasks.sourcesJar }.flatMap { it.archiveFile },
+            provider { tasks.jarJar }.flatMap { it.archiveFile },
+    )
+    modLoaders = ["forge"]
+    displayName = "${project.version}-forge"
     changelog = createChangelog()
-    debugMode = RELEASE_DEBUG
+
+    def endVersion = "1.21.4"
+    curseforge {
+        accessToken = (project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: "") as String
+        projectId = "320926"
+        minecraftVersionRange {
+            start = libs.versions.minecraft.get()
+            end = endVersion
+        }
+    }
+    modrinth {
+        accessToken = (project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String
+        projectId = "zr0QMQMo"
+        minecraftVersionRange {
+            start = libs.versions.minecraft.get()
+            end = endVersion
+            includeSnapshots = false
+        }
+    }
 }
 
 publishing {
