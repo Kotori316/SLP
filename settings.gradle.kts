@@ -26,6 +26,7 @@ if (!System.getenv("DISABLE_NEO_FORGE").toBoolean()) {
 if(!System.getenv("DISABLE_EXAMPLE").toBoolean()) {
     if (!System.getenv("DISABLE_FORGE").toBoolean()) {
         include("example:1.21.1-forge")
+        include("example:1.21.3-forge")
     }
     if (!System.getenv("DISABLE_NEO_FORGE").toBoolean()){
         include("example:1.21.1-neoforge")
