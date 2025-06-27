@@ -30,10 +30,12 @@ jobs:
       - run: ./gradlew test build publishToMavenLocal
       - name: Prepare example runs
         run: |
+          set -eux
           echo example/*/run
           mkdir -p example/*/run
+          ls example/*
       - name: Check examples
-        run: ./gradlew runGameTestServer
+        run: ./gradlew runGameTestServer --stacktrace
       - name: Publish
         uses: actions/upload-artifact@v4
         with:
