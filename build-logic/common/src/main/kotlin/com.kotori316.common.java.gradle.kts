@@ -39,6 +39,8 @@ repositories {
     }
 }
 
+val mockitoAgent = configurations.create("mockitoAgent")
+
 dependencies {
     testImplementation(
         platform(
@@ -49,6 +51,7 @@ dependencies {
     )
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    mockitoAgent(catalog.findLibrary("mockito_core").get())
 }
 
 tasks.test {
@@ -56,6 +59,7 @@ tasks.test {
     testLogging {
         events("skipped", "failed", "standardOut", "standardError")
         setExceptionFormat("full")
+        jvmArgs.add("-javaagent:${mockitoAgent.asPath}")
     }
 }
 
