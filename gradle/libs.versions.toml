@@ -40,6 +40,7 @@ mockito_inline = { group = "org.mockito", name = "mockito-inline", version.ref =
 forge = { group = "net.minecraftforge", name = "forge", version.ref = "forge" }
 forge1213 = { group = "net.minecraftforge", name = "forge", version.ref = "forge1213" }
 neoforge = { group = "net.neoforged", name = "neoforge", version.ref = "neoforge" }
+neo1213 = { group = "net.neoforged", name = "neoforge", version.ref = "neo1213" }
 
 [plugins]
 cf = { id = "com.kotori316.plugin.cf", version.ref = "plugin_cf" }
