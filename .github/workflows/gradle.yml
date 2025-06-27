@@ -28,6 +28,10 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
       - run: ./gradlew data
       - run: ./gradlew test build publishToMavenLocal
+      - name: Prepare example runs
+        run: |
+          echo example/*/run
+          mkdir -p example/*/run
       - name: Check examples
         run: ./gradlew runGameTestServer
       - name: Publish
@@ -54,6 +58,10 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
       - run: ./gradlew data --stacktrace
       - run: ./gradlew test build publishToMavenLocal
+      - name: Prepare example runs
+        run: |
+          echo example/*/run
+          mkdir -p example/*/run
       - name: Publish
         uses: actions/upload-artifact@v4
         with:
