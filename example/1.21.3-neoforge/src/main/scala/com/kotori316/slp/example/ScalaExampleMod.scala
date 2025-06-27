@@ -30,7 +30,7 @@ object ScalaExampleMod {
   private class ExampleGameTest {
     @GameTest(batch = MOD_ID, templateNamespace = "minecraft", template = "nether_fossils/fossil_1")
     def gameTest(helper: GameTestHelper): Unit = {
-      ScalaExampleMod.LOGGER.info(s"Running game test in ${SharedConstants.getCurrentVersion.getName}")
+      ScalaExampleMod.LOGGER.info(s"Running game test in ${SharedConstants.getCurrentVersion.getName} NeoForge")
       helper.succeed()
     }
   }
