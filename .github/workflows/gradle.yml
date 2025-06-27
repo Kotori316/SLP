@@ -31,8 +31,9 @@ jobs:
       - name: Prepare example runs
         run: |
           set -eux
-          echo example/*/run
-          mkdir -p example/*/run
+          for d in example/*; do
+            mkdir -p "$d/run"
+          done
           ls example/*
       - name: Check examples
         run: ./gradlew runGameTestServer --stacktrace
