@@ -5,7 +5,7 @@ forge1213 = "1.21.3-53.1.1"
 forge1214 = "1.21.4-54.0.0"
 neoforge = "21.1.180"
 neo1213 = "21.3.59"
-neo1214 = "21.4.0"
+neo1214 = "21.4.141"
 # https://ldtteam.jfrog.io/ui/native/parchmentmc-public/org/parchmentmc/data/parchment-1.20.2/
 # https://github.com/ParchmentMC/Parchment
 parchment = "1.21.1-2024.11.17"
