@@ -59,8 +59,8 @@ tasks.test {
     testLogging {
         events("skipped", "failed", "standardOut", "standardError")
         setExceptionFormat("full")
-        jvmArgs.add("-javaagent:${mockitoAgent.asPath}")
     }
+    jvmArgs.add("-javaagent:${mockitoAgent.asPath}")
 }
 
 fun inGroup(name: String, action: () -> Unit) {
