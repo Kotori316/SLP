@@ -2,8 +2,10 @@
 minecraft = "1.21.1"
 forge = "1.21.1-52.1.1"
 forge1213 = "1.21.3-53.1.1"
+forge1214 = "1.21.4-54.0.0"
 neoforge = "21.1.180"
 neo1213 = "21.3.59"
+neo1214 = "21.4.0"
 # https://ldtteam.jfrog.io/ui/native/parchmentmc-public/org/parchmentmc/data/parchment-1.20.2/
 # https://github.com/ParchmentMC/Parchment
 parchment = "1.21.1-2024.11.17"
@@ -39,8 +41,10 @@ mockito_core = { group = "org.mockito", name = "mockito-core", version.ref = "mo
 mockito_inline = { group = "org.mockito", name = "mockito-inline", version.ref = "mockito-inline" }
 forge = { group = "net.minecraftforge", name = "forge", version.ref = "forge" }
 forge1213 = { group = "net.minecraftforge", name = "forge", version.ref = "forge1213" }
+forge1214 = { group = "net.minecraftforge", name = "forge", version.ref = "forge1214" }
 neoforge = { group = "net.neoforged", name = "neoforge", version.ref = "neoforge" }
 neo1213 = { group = "net.neoforged", name = "neoforge", version.ref = "neo1213" }
+neo1214 = { group = "net.neoforged", name = "neoforge", version.ref = "neo1214" }
 
 [plugins]
 cf = { id = "com.kotori316.plugin.cf", version.ref = "plugin_cf" }
