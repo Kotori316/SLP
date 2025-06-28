@@ -26,6 +26,8 @@ jobs:
         run: chmod +x ./gradlew
       - name: Get cache
         uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
       - run: ./gradlew data
       - run: ./gradlew test build publishToMavenLocal
       - name: Prepare example runs
@@ -59,6 +61,8 @@ jobs:
         run: chmod +x ./gradlew
       - name: Get cache
         uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
       - run: ./gradlew data --stacktrace
       - run: ./gradlew test build publishToMavenLocal
       - name: Prepare example runs
