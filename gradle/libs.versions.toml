@@ -8,7 +8,7 @@ neoforge = "21.1.185"
 neo1213 = "21.3.59"
 neo1214 = "21.4.141"
 neo1215 = "21.5.81"
-neo1216 = "21.6.0-beta"
+neo1216 = "21.6.19-beta"
 # https://ldtteam.jfrog.io/ui/native/parchmentmc-public/org/parchmentmc/data/parchment-1.20.2/
 # https://github.com/ParchmentMC/Parchment
 parchment = "1.21.1-2024.11.17"
