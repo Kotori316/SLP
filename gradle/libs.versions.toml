@@ -15,7 +15,7 @@ parchment = "1.21.1-2024.11.17"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
 scala2 = "2.13.16"
 # https://mvnrepository.com/artifact/org.scala-lang/scala3-library
-scala3 = "3.6.2"
+scala3 = "3.7.1"
 cats = "2.12.1-kotori"
 # https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
 jupiter = "5.13.2"
