@@ -1,0 +1,21 @@
+modLoader = "kotori_scala"
+loaderVersion = "[1.0.0,)"
+license = "ALL RIGHTS RESERVED"
+[[mods]]
+modId = "slp_examples"
+version = "1.0.0"
+displayName = "SLP Examples"
+authors = "Kotori316"
+description = "Examples of SLP"
+[[dependencies.slp_examples]]
+modId = "forge"
+mandatory = true
+versionRange = "[55.0.0, 56)"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.slp_examples]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.21.5, 1.21.6)"
+ordering = "NONE"
+side = "BOTH"
