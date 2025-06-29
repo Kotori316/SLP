@@ -120,7 +120,7 @@ publishMods {
     displayName = "${project.version}-neoforge"
     changelog = createChangelog()
 
-    def endVersion = "1.21.4"
+    def endVersion = project.property("target_latest_minecraft_version")
     curseforge {
         accessToken = (project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN") ?: "") as String
         projectId = "320926"
