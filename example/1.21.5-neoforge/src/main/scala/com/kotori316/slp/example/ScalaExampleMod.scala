@@ -19,7 +19,7 @@ class ScalaExampleMod(modEventBus: IEventBus, container: ModContainer) {
   modEventBus.addListener(this.register)
 
   private def setUp(event: FMLCommonSetupEvent): Unit = {
-    ScalaExampleMod.LOGGER.info(s"Hello from Scala Example Mod(${container.getModId}) on ${event.description()}!")
+    ScalaExampleMod.LOGGER.info(s"Hello from Scala Example Mod(${container.getModId}) on ${event.toString}!")
   }
 
   private def register(event: RegisterEvent): Unit = {
