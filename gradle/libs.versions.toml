@@ -13,7 +13,7 @@ neo1216 = "21.6.19-beta"
 # https://github.com/ParchmentMC/Parchment
 parchment = "1.21.1-2024.11.17"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
-scala2 = "2.13.15"
+scala2 = "2.13.16"
 # https://mvnrepository.com/artifact/org.scala-lang/scala3-library
 scala3 = "3.6.2"
 cats = "2.12.1-kotori"
