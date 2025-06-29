@@ -37,7 +37,7 @@ object ScalaExampleMod {
   final val LOGGER = LoggerFactory.getLogger(MOD_ID)
 
   private def gameTest(helper: GameTestHelper): Unit = {
-    ScalaExampleMod.LOGGER.info(s"Running game test in ${SharedConstants.getCurrentVersion.getName} NeoForge")
+    ScalaExampleMod.LOGGER.info(s"Running game test in ${SharedConstants.getCurrentVersion.name} NeoForge")
     helper.succeed()
   }
 }
