@@ -112,9 +112,11 @@ publishing {
                 url = "https://github.com/Kotori316/SLP"
                 packaging = "jar"
                 withXml {
-                    /*val pomNode = asNode()
-                    pomNode.get("dependencies")
-                        .dependencies."*".findAll() { Node node -> node.parent().remove(node) }*/
+                    val dependencies = asElement().getElementsByTagName("dependencies")
+                    for (i in 0 until dependencies.length) {
+                        val dependency = dependencies.item(i)
+                        dependency.parentNode.removeChild(dependency)
+                    }
                 }
             }
         }
