@@ -34,7 +34,7 @@ minecraft {
                 "slp_examples",
                 "--all",
                 "--output",
-                file("src/main/resources/"),
+                file("run/resources/"),
                 "--existing",
                 file("src/main/resources/")
             )
