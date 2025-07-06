@@ -30,6 +30,7 @@ if(!System.getenv("DISABLE_EXAMPLE").toBoolean()) {
         include("example:1.21.3-forge")
         include("example:1.21.4-forge")
         include("example:1.21.5-forge")
+        include("example:1.21.6-forge")
     }
     if (!System.getenv("DISABLE_NEO_FORGE").toBoolean()){
         include("example:1.21.1-neoforge")

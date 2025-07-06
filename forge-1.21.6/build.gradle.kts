@@ -20,7 +20,7 @@ minecraft {
     mappings(
         mapOf(
             "channel" to "parchment",
-            "version" to "${libs.versions.parchment.get()}-${libs.versions.minecraft.get()}",
+            "version" to "1.21.6-2025.06.29-1.21.6",
         )
     )
 }

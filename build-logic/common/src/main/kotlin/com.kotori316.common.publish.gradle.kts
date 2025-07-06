@@ -10,7 +10,6 @@ plugins {
 
 val catalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
-val mc: String = catalog.findVersion("minecraft").map { it.requiredVersion }.get()
 val releaseDebug: Boolean = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean()
 
 tasks.named("shadowJar", ShadowJar::class) {
@@ -26,7 +25,26 @@ tasks.named("shadowJar", ShadowJar::class) {
 fun pfVersion(platform: String): String {
     return when (platform) {
         "forge" -> catalog.findVersion("forge").map { it.requiredVersion }.get()
+        "forge-1.21.6" -> catalog.findVersion("forge1216").map { it.requiredVersion }.get()
         "neoforge" -> catalog.findVersion("neoforge").map { it.requiredVersion }.get()
+        else -> throw IllegalArgumentException("Unknown platform: $platform")
+    }
+}
+
+fun getPlatform(platform: String): String {
+    return when (platform) {
+        "forge" -> "forge"
+        "forge-1.21.6" -> "forge"
+        "neoforge" -> "neoforge"
+        else -> throw IllegalArgumentException("Unknown platform: $platform")
+    }
+}
+
+fun getMinecraftVersion(platform: String): String {
+    return when (platform) {
+        "forge" -> catalog.findVersion("minecraft").map { it.requiredVersion }.get()
+        "forge-1.21.6" -> "1.21.6"
+        "neoforge" -> catalog.findVersion("minecraft").map { it.requiredVersion }.get()
         else -> throw IllegalArgumentException("Unknown platform: $platform")
     }
 }
@@ -73,8 +91,8 @@ publishing {
 
 tasks.register("registerVersion", CallVersionFunctionTask::class) {
     functionEndpoint = CallVersionFunctionTask.readVersionFunctionEndpoint(project)
-    gameVersion = mc
-    platform = project.name
+    gameVersion = getMinecraftVersion(project.name)
+    platform = getPlatform(project.name)
     platformVersion = pfVersion(project.name)
     modName = project.provider { project.ext.get("archivesBaseName") as String }
     changelog = project.provider { project.ext.get("generalDescription") as String }
@@ -83,8 +101,8 @@ tasks.register("registerVersion", CallVersionFunctionTask::class) {
 }
 
 tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask::class) {
-    gameVersion = mc
-    platform = project.name
+    gameVersion = getMinecraftVersion(project.name)
+    platform = getPlatform(project.name)
     modName = project.provider { project.ext.get("archivesBaseName") as String }
     version = project.version.toString()
     failIfExists = !releaseDebug
