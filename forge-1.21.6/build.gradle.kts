@@ -187,3 +187,10 @@ fun createChangelog(): String {
         """
     return t
 }
+
+afterEvaluate {
+    rootProject.tasks.named("githubRelease") { dependsOn(":forge-1.21.6:assemble") }
+}
+
+ext["archivesBaseName"] = base.archivesName.get()
+ext["generalDescription"] = createChangelog()
