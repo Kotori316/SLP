@@ -40,6 +40,8 @@ jobs:
           ls example/*
       - name: Check examples
         run: ./gradlew runGameTestServer --stacktrace || ./gradlew runGameTestServer --stacktrace
+      - name: Check examples with runData
+        run: ./gradlew runData --stacktrace || ./gradlew runData --stacktrace
       - name: Publish
         uses: actions/upload-artifact@v4
         with:

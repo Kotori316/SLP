@@ -11,11 +11,11 @@ import scala.annotation.static
 
 @Mod(ScalaExampleMod.MOD_ID)
 class ScalaExampleMod(context: FMLJavaModLoadingContext, container: ModContainer) {
-  context.getModEventBus.addListener(this.setUp)
-  context.getModEventBus.addListener(this.registerDataGen)
+  FMLCommonSetupEvent.getBus(context.getModBusGroup).addListener(this.setUp)
+  GatherDataEvent.getBus(context.getModBusGroup).addListener(this.registerDataGen)
 
   private def setUp(event: FMLCommonSetupEvent): Unit = {
-    ScalaExampleMod.LOGGER.info(s"Hello from Scala Example Mod(${container.getModId}) on ${event.description()}!")
+    ScalaExampleMod.LOGGER.info(s"Hello from Scala Example Mod(${container.getModId}) on ${event.getClass.getName}!")
   }
 
   private def registerDataGen(event: GatherDataEvent): Unit = {

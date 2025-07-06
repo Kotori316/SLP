@@ -2,7 +2,7 @@ plugins {
     scala
     idea
     id("net.minecraftforge.gradle") version ("[6.0.24,6.2)")
-    id ("org.parchmentmc.librarian.forgegradle") version ("1.+")
+    id("org.parchmentmc.librarian.forgegradle") version ("1.+")
 }
 
 version = "1.0.0"
@@ -11,10 +11,10 @@ group = "com.kotori316.slp.examples"
 minecraft {
     mappings(
         mapOf(
-           //  "channel" to "parchment",
-           //  "version" to (libs.versions.parchment.get() + "-" + libs.versions.minecraft.get()),
-            "channel" to "official",
-            "version" to "1.21.5",
+            //  "channel" to "parchment",
+            //  "version" to (libs.versions.parchment.get() + "-" + libs.versions.minecraft.get()),
+            "channel" to "parchment",
+            "version" to "1.21.6-2025.06.29-1.21.6",
         )
     )
     reobf = false
@@ -65,10 +65,10 @@ repositories {
 }
 
 dependencies {
-    minecraft(libs.forge1215)
+    minecraft(libs.forge1216)
     compileOnly(libs.scala3)
     // implementation(project(":forge"))
-    runtimeOnly(project(":forge")) {
+    runtimeOnly(project(":forge-1.21.6")) {
         isTransitive = false
     }
     implementation("net.sf.jopt-simple:jopt-simple:5.0.4") {
