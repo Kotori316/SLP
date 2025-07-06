@@ -19,6 +19,7 @@ plugins {
 includeBuild("build-logic")
 if (!System.getenv("DISABLE_FORGE").toBoolean()) {
     include("forge")
+    include("forge-1.21.6")
 }
 if (!System.getenv("DISABLE_NEO_FORGE").toBoolean()) {
     include("neoforge")
