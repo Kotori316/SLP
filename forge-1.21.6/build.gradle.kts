@@ -174,9 +174,9 @@ tasks.withType(AbstractPublishToMaven::class) {
 
 fun createChangelog(): String {
     val t = """
-        For Minecraft ${libs.versions.minecraft.get()}
+        For Minecraft 1.21.6
         
-        Built with forge ${libs.versions.forge.get()}
+        Built with forge ${libs.versions.forge1216.get()}
         
         This mod provides language provider, "kotori_scala".
         
