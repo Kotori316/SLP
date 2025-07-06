@@ -68,11 +68,10 @@ val releaseDebug = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean()
 publishMods {
     dryRun = releaseDebug
     type = STABLE
-    file = tasks.shadowJar.flatMap { it.archiveFile }
+    file = provider { tasks.shadowJar }.flatMap { it.flatMap { t -> t.archiveFile } }
     additionalFiles = files(
-        tasks.jar.flatMap { it.archiveFile },
-        tasks.sourcesJar.flatMap { it.archiveFile },
-        tasks.jarJar.flatMap { it.archiveFile },
+        provider { tasks.jar }.flatMap { it.flatMap { t -> t.archiveFile } },
+        provider { tasks.sourcesJar }.flatMap { it.flatMap { t -> t.archiveFile } },
     )
     modLoaders = listOf("forge")
     displayName = "${project.version}-forge"
@@ -174,7 +173,7 @@ tasks.withType(AbstractPublishToMaven::class) {
 }
 
 fun createChangelog(): String {
-    val t = """\
+    val t = """
         For Minecraft ${libs.versions.minecraft.get()}
         
         Built with forge ${libs.versions.forge.get()}
@@ -184,7 +183,7 @@ fun createChangelog(): String {
         Scala3: ${libs.versions.scala3.get()}
         Scala: ${libs.versions.scala2.get()}
         Cats: ${libs.versions.cats.get()}
-        """
+        """.trimIndent()
     return t
 }
 
