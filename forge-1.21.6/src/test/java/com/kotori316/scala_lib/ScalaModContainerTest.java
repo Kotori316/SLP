@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 
 import java.lang.reflect.Constructor;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -18,7 +19,7 @@ final class ScalaModContainerTest {
     @NotNull
     private static Map.Entry<Constructor<?>, Object[]> getConstructorEntry(Class<?> modClass) {
         return ScalaModContainer.getConstructor(modClass, modClass.getSimpleName(),
-            BusGroup.create("ScalaModContainerTest"), Mockito.mock(ModContainer.class), Dist.DEDICATED_SERVER, Mockito.mock(FMLJavaModLoadingContext.class));
+            BusGroup.create("%s-%s".formatted("ScalaModContainerTest", UUID.randomUUID())), Mockito.mock(ModContainer.class), Dist.DEDICATED_SERVER, Mockito.mock(FMLJavaModLoadingContext.class));
     }
 
     @Test
