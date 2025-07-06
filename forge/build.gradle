@@ -134,7 +134,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 // ---------- Publish ----------
-final boolean RELEASE_DEBUG = Boolean.parseBoolean(System.getenv("RELEASE_DEBUG") ?: "true")
+/*final boolean RELEASE_DEBUG = Boolean.parseBoolean(System.getenv("RELEASE_DEBUG") ?: "true")
 
 publishMods {
     dryRun = RELEASE_DEBUG
@@ -187,7 +187,7 @@ publishing {
             }
         }
     }
-}
+}*/
 
 tasks.register("jksSignJar") {
     dependsOn(tasks.shadowJar, tasks.reobfJar, tasks.reobfJarJar, tasks.sourcesJar)
@@ -255,7 +255,7 @@ def createChangelog() {
 }
 
 afterEvaluate {
-    rootProject.tasks.named("githubRelease").configure { it.dependsOn(":forge:assemble") }
+    // rootProject.tasks.named("githubRelease").configure { it.dependsOn(":forge:assemble") }
 }
 
 ext["archivesBaseName"] = archivesBaseName
