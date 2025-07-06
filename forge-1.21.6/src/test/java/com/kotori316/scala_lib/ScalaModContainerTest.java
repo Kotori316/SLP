@@ -1,7 +1,7 @@
 package com.kotori316.scala_lib;
 
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +18,7 @@ final class ScalaModContainerTest {
     @NotNull
     private static Map.Entry<Constructor<?>, Object[]> getConstructorEntry(Class<?> modClass) {
         return ScalaModContainer.getConstructor(modClass, modClass.getSimpleName(),
-            Mockito.mock(IEventBus.class), Mockito.mock(ModContainer.class), Dist.DEDICATED_SERVER, Mockito.mock(FMLJavaModLoadingContext.class));
+            BusGroup.create("ScalaModContainerTest"), Mockito.mock(ModContainer.class), Dist.DEDICATED_SERVER, Mockito.mock(FMLJavaModLoadingContext.class));
     }
 
     @Test
@@ -33,7 +33,7 @@ final class ScalaModContainerTest {
     void withBus() throws ReflectiveOperationException {
         var modClass = WithBus.class;
         var c = getConstructorEntry(modClass);
-        var expected = modClass.getDeclaredConstructor(IEventBus.class);
+        var expected = modClass.getDeclaredConstructor(BusGroup.class);
         assertEquals(expected.getParameterCount(), c.getValue().length);
         assertEquals(expected, c.getKey());
     }
@@ -53,7 +53,7 @@ final class ScalaModContainerTest {
     }
 
     private static final class WithBus {
-        private WithBus(IEventBus ignored) {
+        private WithBus(BusGroup ignored) {
         }
     }
 
@@ -66,18 +66,18 @@ final class ScalaModContainerTest {
     void with3() throws ReflectiveOperationException {
         var modClass = With3.class;
         var c = getConstructorEntry(modClass);
-        var expected = modClass.getDeclaredConstructor(IEventBus.class, ModContainer.class, Dist.class);
+        var expected = modClass.getDeclaredConstructor(BusGroup.class, ModContainer.class, Dist.class);
         assertEquals(expected.getParameterCount(), c.getValue().length);
         assertEquals(expected, c.getKey());
     }
 
     private static final class With3 {
-        private With3(IEventBus ignored1, ModContainer ignored2, Dist ignored3) {
+        private With3(BusGroup ignored1, ModContainer ignored2, Dist ignored3) {
         }
     }
 
     private static final class With4 {
-        private With4(IEventBus ignored1, ModContainer ignored2, Dist ignored3, FMLJavaModLoadingContext ignored4) {
+        private With4(BusGroup ignored1, ModContainer ignored2, Dist ignored3, FMLJavaModLoadingContext ignored4) {
         }
     }
 
@@ -85,7 +85,7 @@ final class ScalaModContainerTest {
     void with4() throws ReflectiveOperationException {
         var modClass = With4.class;
         var c = getConstructorEntry(modClass);
-        var expected = modClass.getDeclaredConstructor(IEventBus.class, ModContainer.class, Dist.class, FMLJavaModLoadingContext.class);
+        var expected = modClass.getDeclaredConstructor(BusGroup.class, ModContainer.class, Dist.class, FMLJavaModLoadingContext.class);
         assertEquals(expected.getParameterCount(), c.getValue().length);
         assertEquals(expected, c.getKey());
     }

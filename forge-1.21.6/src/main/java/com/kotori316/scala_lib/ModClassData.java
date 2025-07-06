@@ -17,12 +17,12 @@ public interface ModClassData {
         var byModId = targets.stream().collect(Collectors.groupingBy(ModClassData::modID));
         return byModId.values().stream().map(ts -> {
             if (ts.size() == 1) {
-                return ts.get(0);
+                return ts.getFirst();
             } else {
                 var objectData = ts.stream().filter(ModClassData::isScalaObj).toList();
                 if (objectData.size() == 1) {
                     // Ignore anything but a Scala Object.
-                    return objectData.get(0);
+                    return objectData.getFirst();
                 } else {
                     throw new RuntimeException("Exception in loading mods. %s".formatted(targets));
                 }

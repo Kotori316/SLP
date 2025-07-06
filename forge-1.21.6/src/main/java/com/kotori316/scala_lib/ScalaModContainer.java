@@ -1,14 +1,12 @@
 package com.kotori316.scala_lib;
 
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.EventBusErrorMessage;
-import net.minecraftforge.eventbus.api.BusBuilder;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.IEventListener;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
+import net.minecraftforge.eventbus.api.bus.EventBus;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModLoadingException;
 import net.minecraftforge.fml.ModLoadingStage;
+import net.minecraftforge.fml.config.IConfigEvent;
 import net.minecraftforge.fml.event.IModBusEvent;
 import net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -23,7 +21,6 @@ import org.apache.logging.log4j.Logger;
 import java.lang.reflect.Constructor;
 import java.util.Comparator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static net.minecraftforge.fml.Logging.LOADING;
@@ -37,7 +34,7 @@ public class ScalaModContainer extends ModContainer {
 
     private final boolean isScalaObject;
 
-    private final IEventBus eventBus;
+    private final BusGroup eventBusGroup;
     private Class<?> modClass;
     private Object modInstance;
     private final FMLJavaModLoadingContext context;
@@ -55,9 +52,8 @@ public class ScalaModContainer extends ModContainer {
 
         this.activityMap.put(ModLoadingStage.CONSTRUCT, this::constructMod);
 
-        this.eventBus = BusBuilder.builder().setExceptionHandler(this::onEventFailed).setTrackPhases(false).markerType(IModBusEvent.class).useModLauncher().build();
-        this.configHandler = Optional.of(ce -> this.eventBus.post(ce.self()));
-        context = createContext(getEventBus());
+        this.eventBusGroup = BusGroup.create("modBusFor" + info.getModId());
+        context = createContext(getModBusGroup());
         this.contextExtension = () -> context;
     }
 
@@ -71,8 +67,9 @@ public class ScalaModContainer extends ModContainer {
     private void constructMod() {
         try {
             // Here to avoid NPE of scala object.
-            var layer = gameLayer.findModule(this.modInfo.getOwningFile().moduleName()).orElseThrow();
-            modClass = Class.forName(layer, className);
+            var module = gameLayer.findModule(this.modInfo.getOwningFile().moduleName()).orElseThrow();
+            ModuleOpener.openModule(gameLayer, module, this.modInfo.getOwningFile().getFile().getSecureJar());
+            modClass = Class.forName(module, className);
             LOGGER.trace(LOADING, "Scala Class Loaded {} with {}.", modClass, modClass.getClassLoader());
         } catch (Throwable e) {
             LOGGER.error(LOADING, "Failed to load class {}", className, e);
@@ -85,7 +82,7 @@ public class ScalaModContainer extends ModContainer {
                 LOGGER.trace(LOADING, "Scala Mod instance for {} was got. {}", this.modId, modInstance);
             } else {
                 LOGGER.trace(LOADING, "Scala Mod instance for {} is about to create. {}", this.modId, modClass.getName());
-                Map.Entry<Constructor<?>, Object[]> constructors = getConstructor(modClass, this.modId, getEventBus(), this, FMLLoader.getDist(), context);
+                Map.Entry<Constructor<?>, Object[]> constructors = getConstructor(modClass, this.modId, getModBusGroup(), this, FMLLoader.getDist(), context);
                 constructors.getKey().setAccessible(true);
                 modInstance = constructors.getKey().newInstance(constructors.getValue());
                 LOGGER.trace(LOADING, "Scala Mod instance for {} created. {}", this.modId, modInstance);
@@ -105,12 +102,8 @@ public class ScalaModContainer extends ModContainer {
         }
     }
 
-    private void onEventFailed(IEventBus bus, Event event, IEventListener[] listeners, int i, Throwable throwable) {
-        LOGGER.error(new EventBusErrorMessage(event, i, listeners, throwable));
-    }
-
-    public IEventBus getEventBus() {
-        return eventBus;
+    public BusGroup getModBusGroup() {
+        return this.eventBusGroup;
     }
 
     @Override
@@ -124,10 +117,11 @@ public class ScalaModContainer extends ModContainer {
     }
 
     @Override
-    @SuppressWarnings("SpellCheckingInspection")
-    protected void acceptEvent(Event event) {
+    protected <T extends IModBusEvent> void acceptEvent(final T event) {
         LOGGER.trace(LOADING, "Firing event for modid {} : {}", this.modId, event);
         try {
+            @SuppressWarnings("unchecked")
+            var eventBus = (EventBus<T>) IModBusEvent.getBus(eventBusGroup, event.getClass());
             eventBus.post(event);
             LOGGER.trace(LOADING, "Fired event for modid {} : {}", this.modId, event);
         } catch (Throwable e) {
@@ -136,11 +130,17 @@ public class ScalaModContainer extends ModContainer {
         }
     }
 
-    private static FMLJavaModLoadingContext createContext(IEventBus bus) {
+    @Override
+    public void dispatchConfigEvent(IConfigEvent event) {
+        var eventBus = EventBus.create(eventBusGroup, event.self().getClass());
+        eventBus.post(event.self());
+    }
+
+    private static FMLJavaModLoadingContext createContext(BusGroup busGroup) {
         try {
             FMLJavaModLoadingContext instance = UnsafeHacks.newInstance(FMLJavaModLoadingContext.class);
             FMLModContainer container = UnsafeHacks.newInstance(FMLModContainer.class);
-            UnsafeHacks.setField(FMLModContainer.class.getDeclaredField("eventBus"), container, bus);
+            UnsafeHacks.setField(FMLModContainer.class.getDeclaredField("eventBusGroup"), container, busGroup);
             UnsafeHacks.setField(FMLJavaModLoadingContext.class.getDeclaredField("container"), instance, container);
             return instance;
         } catch (ReflectiveOperationException e) {
@@ -149,11 +149,11 @@ public class ScalaModContainer extends ModContainer {
         }
     }
 
-    static Map.Entry<Constructor<?>, Object[]> getConstructor(Class<?> modClass, String modId, IEventBus bus, ModContainer container, Dist dist, FMLJavaModLoadingContext context) {
+    static Map.Entry<Constructor<?>, Object[]> getConstructor(Class<?> modClass, String modId, BusGroup busGroup, ModContainer container, Dist dist, FMLJavaModLoadingContext context) {
         var constructors = modClass.getDeclaredConstructors();
         LOGGER.trace(LOADING, "Found {} constructors for {}", constructors.length, modId);
         var args = Map.of(
-            IEventBus.class, bus,
+            BusGroup.class, busGroup,
             ModContainer.class, container,
             Dist.class, dist,
             FMLJavaModLoadingContext.class, context
