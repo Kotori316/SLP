@@ -18,7 +18,6 @@ plugins {
 
 includeBuild("build-logic")
 if (!System.getenv("DISABLE_FORGE").toBoolean()) {
-    include("forge")
     include("forge-1.21.6")
 }
 if (!System.getenv("DISABLE_NEO_FORGE").toBoolean()) {
@@ -26,6 +25,7 @@ if (!System.getenv("DISABLE_NEO_FORGE").toBoolean()) {
 }
 if(!System.getenv("DISABLE_EXAMPLE").toBoolean()) {
     if (!System.getenv("DISABLE_FORGE").toBoolean()) {
+        include("forge")
         include("example:1.21.1-forge")
         include("example:1.21.3-forge")
         include("example:1.21.4-forge")
