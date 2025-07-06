@@ -27,10 +27,18 @@ minecraft {
             property("forge.logging.console.level", "info")
         }
 
-        // Forge 1.21.5 does not support game test server
-        /*create("gameTestServer") {
-            property("forge.enabledGameTestNamespaces", "slp_examples")
-        }*/
+        // Forge 1.21.5 does not support game test server, so run data generator instead.
+        create("data") {
+            args(
+                "--mod",
+                "slp_examples",
+                "--all",
+                "--output",
+                file("run/resources/"),
+                "--existing",
+                file("src/main/resources/")
+            )
+        }
     }
 }
 
