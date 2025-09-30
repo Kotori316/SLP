@@ -19,9 +19,9 @@ scala2 = "2.13.16"
 scala3 = "3.7.3"
 cats = "2.13.0-kotori"
 # https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
-jupiter = "5.13.4"
+jupiter = "5.14.0"
 # https://mvnrepository.com/artifact/org.junit.platform/junit-platform-launcher
-jupiter-platform = "1.13.4"
+jupiter-platform = "1.14.0"
 mockito-core = "5.20.0"
 mockito-inline = "5.2.0"
 
