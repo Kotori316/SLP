@@ -1,7 +1,7 @@
 plugins {
     scala
     idea
-    id("net.neoforged.moddev") version ("2.0.107")
+    id("net.neoforged.moddev") version ("2.0.110")
 }
 
 version = "1.0.0"
