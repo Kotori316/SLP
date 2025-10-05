@@ -27,6 +27,7 @@ fun pfVersion(platform: String): String {
         "forge" -> catalog.findVersion("forge").map { it.requiredVersion }.get()
         "forge-1.21.6" -> catalog.findVersion("forge1216").map { it.requiredVersion }.get()
         "neoforge" -> catalog.findVersion("neoforge").map { it.requiredVersion }.get()
+        "neoforge-1.21.9" -> catalog.findVersion("neo1219").map { it.requiredVersion }.get()
         else -> throw IllegalArgumentException("Unknown platform: $platform")
     }
 }
@@ -36,6 +37,7 @@ fun getPlatform(platform: String): String {
         "forge" -> "forge"
         "forge-1.21.6" -> "forge"
         "neoforge" -> "neoforge"
+        "neoforge-1.21.9" -> "neoforge"
         else -> throw IllegalArgumentException("Unknown platform: $platform")
     }
 }
@@ -45,6 +47,7 @@ fun getMinecraftVersion(platform: String): String {
         "forge" -> catalog.findVersion("minecraft").map { it.requiredVersion }.get()
         "forge-1.21.6" -> "1.21.6"
         "neoforge" -> catalog.findVersion("minecraft").map { it.requiredVersion }.get()
+        "neoforge-1.21.9" -> "1.21.9"
         else -> throw IllegalArgumentException("Unknown platform: $platform")
     }
 }
