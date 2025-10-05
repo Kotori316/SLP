@@ -1,8 +1,8 @@
 plugins {
     scala
     idea
-    id("net.minecraftforge.gradle") version ("[6.0.24,6.2)")
-    id ("org.parchmentmc.librarian.forgegradle") version ("1.+")
+    alias(libs.plugins.forge.gradle)
+    alias(libs.plugins.parchment.librarian)
 }
 
 version = "1.0.0"

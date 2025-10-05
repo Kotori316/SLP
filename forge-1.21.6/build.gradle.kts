@@ -4,8 +4,8 @@ import java.time.format.DateTimeFormatter
 plugins {
     id("com.kotori316.common.java")
     id("com.kotori316.common.publish")
-    id("net.minecraftforge.gradle") version ("[6.0.16,6.2)")
-    id("org.parchmentmc.librarian.forgegradle") version ("1.+")
+    alias(libs.plugins.forge.gradle)
+    alias(libs.plugins.parchment.librarian)
     signing
     alias(libs.plugins.publish.all)
 }
