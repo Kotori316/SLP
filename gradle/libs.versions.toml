@@ -10,9 +10,10 @@ neo1213 = "21.3.93"
 neo1214 = "21.4.154"
 neo1215 = "21.5.95"
 neo1216 = "21.6.20-beta"
-# https://ldtteam.jfrog.io/ui/native/parchmentmc-public/org/parchmentmc/data/parchment-1.20.2/
+# https://ldtteam.jfrog.io/ui/native/parchmentmc-public/org/parchmentmc/data/
 # https://github.com/ParchmentMC/Parchment
 parchment = "1.21.1-2024.11.17"
+parchment1216 = "1.21.6-2025.06.29-1.21.6"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
 scala2 = "2.13.16"
 # https://mvnrepository.com/artifact/org.scala-lang/scala3-library
