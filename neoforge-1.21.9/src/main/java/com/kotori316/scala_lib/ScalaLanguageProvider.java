@@ -14,6 +14,10 @@ import net.neoforged.neoforgespi.locating.IModFile;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
 import java.lang.annotation.ElementType;
 import java.util.Collection;
 import java.util.function.Predicate;
@@ -31,7 +35,20 @@ public final class ScalaLanguageProvider implements IModLanguageLoader {
 
     @Override
     public String version() {
-        return getClass().getPackage().getImplementationVersion();
+        var versionFromMeta = getClass().getPackage().getImplementationVersion();
+        if (versionFromMeta != null) {
+            return versionFromMeta;
+        }
+        var versionStream = ScalaLanguageProvider.class.getResourceAsStream("/version.txt");
+        if (versionStream == null) {
+            throw new IllegalStateException("Could not find version.txt");
+        }
+        try (var stream = versionStream;
+             var buffer = new BufferedReader(new InputStreamReader(stream))) {
+            return buffer.readLine();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     @Override
