@@ -11,6 +11,7 @@ neo1213 = "21.3.93"
 neo1214 = "21.4.154"
 neo1215 = "21.5.95"
 neo1216 = "21.6.20-beta"
+neo1219 = "21.9.14-beta"
 # https://ldtteam.jfrog.io/ui/native/parchmentmc-public/org/parchmentmc/data/
 # https://github.com/ParchmentMC/Parchment
 parchment = "1.21.1-2024.11.17"
@@ -60,6 +61,7 @@ neo1213 = { group = "net.neoforged", name = "neoforge", version.ref = "neo1213" 
 neo1214 = { group = "net.neoforged", name = "neoforge", version.ref = "neo1214" }
 neo1215 = { group = "net.neoforged", name = "neoforge", version.ref = "neo1215" }
 neo1216 = { group = "net.neoforged", name = "neoforge", version.ref = "neo1216" }
+neo1219 = { group = "net.neoforged", name = "neoforge", version.ref = "neo1219" }
 
 [plugins]
 cf = { id = "com.kotori316.plugin.cf", version.ref = "plugin_cf" }
