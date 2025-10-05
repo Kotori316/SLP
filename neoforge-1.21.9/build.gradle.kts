@@ -1,6 +1,7 @@
 plugins {
     id("com.kotori316.common.java")
     id("com.kotori316.common.publish")
+    id("com.kotori316.common.source")
     alias(libs.plugins.neoforge.moddev)
     signing
     alias(libs.plugins.publish.all)
@@ -39,6 +40,14 @@ dependencies {
     testImplementation(libs.mockito.inline)
 }
 
+tasks.test {
+    useJUnitPlatform()
+}
+
 neoForge {
     version = libs.versions.neo1219.get()
+
+    unitTest {
+        enable()
+    }
 }
