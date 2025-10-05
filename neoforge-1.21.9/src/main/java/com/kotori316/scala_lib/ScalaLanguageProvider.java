@@ -47,7 +47,7 @@ public final class ScalaLanguageProvider implements IModLanguageLoader {
              var buffer = new BufferedReader(new InputStreamReader(stream))) {
             return buffer.readLine();
         } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            throw new UncheckedIOException("Could not read version from version.txt", e);
         }
     }
 
