@@ -33,7 +33,7 @@ repositories {
 
 dependencies {
     compileOnly(libs.scala3)
-    runtimeOnly(project(":neoforge")) {
+    runtimeOnly(project(":neoforge-1.21.9")) {
         isTransitive = false
     }
 }
