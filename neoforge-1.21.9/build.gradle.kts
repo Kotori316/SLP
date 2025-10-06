@@ -89,6 +89,65 @@ artifacts {
     archives(tasks.sourcesJar)
 }
 
+val releaseDebug = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean()
+publishMods {
+    dryRun = releaseDebug
+    type = STABLE
+    file = provider { tasks.shadowJar }.flatMap { it.flatMap { t -> t.archiveFile } }
+    additionalFiles = files(
+        provider { tasks.jar }.flatMap { it.flatMap { t -> t.archiveFile } },
+        provider { tasks.sourcesJar }.flatMap { it.flatMap { t -> t.archiveFile } },
+        // provider { tasks.jarJar }.flatMap { it.flatMap { t -> t.archiveFile } },
+    )
+    modLoaders = listOf("neoforge")
+    displayName = "${project.version}-neoforge"
+    changelog = createChangelog()
+
+    val startVersion = "1.21.9"
+    val endVersion = project.property("target_latest_minecraft_version").toString()
+    curseforge {
+        accessToken = (project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN")
+        ?: "") as String
+        projectId = "320926"
+        minecraftVersionRange {
+            start = startVersion
+            end = endVersion
+        }
+    }
+    modrinth {
+        accessToken = (project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String
+        projectId = "zr0QMQMo"
+        minecraftVersionRange {
+            start = startVersion
+            end = endVersion
+            includeSnapshots = false
+        }
+    }
+}
+
+publishing {
+    publications {
+        create("mavenJava", MavenPublication::class) {
+            artifactId = base.archivesName.get().lowercase()
+            from(components["java"])
+            pom {
+                name = base.archivesName.get()
+                description =
+                    "Scala Loading library build with Minecraft ${libs.versions.minecraft.get()} and NeoForge ${libs.versions.neo1219.get()}"
+                url = "https://github.com/Kotori316/SLP"
+                packaging = "jar"
+                withXml {
+                    val dependencies = asElement().getElementsByTagName("dependencies")
+                    for (i in 0 until dependencies.length) {
+                        val dependency = dependencies.item(i)
+                        dependency.parentNode.removeChild(dependency)
+                    }
+                }
+            }
+        }
+    }
+}
+
 tasks.register("jksSignJar") {
     dependsOn(tasks.shadowJar, tasks.jar, tasks.sourcesJar)
     val executeCondition = project.hasProperty("jarSign.keyAlias") &&
