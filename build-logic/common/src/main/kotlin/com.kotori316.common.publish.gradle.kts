@@ -5,7 +5,7 @@ import com.kotori316.plugin.cf.CallVersionFunctionTask
 plugins {
     id("maven-publish")
     id("com.kotori316.plugin.cf")
-    id("com.github.johnrengelman.shadow")
+    id("com.gradleup.shadow")
 }
 
 val catalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
@@ -17,7 +17,7 @@ tasks.named("shadowJar", ShadowJar::class) {
     archiveClassifier = "with-library"
     dependencies {
         groupNames.forEach { name ->
-            include(dependency("${name}:"))
+            include(dependency("${name}:.*"))
         }
     }
 }
