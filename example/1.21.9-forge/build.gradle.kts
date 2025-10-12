@@ -16,7 +16,7 @@ minecraft {
     mappings(
         mapOf(
             "channel" to "official",
-            "version" to "1.21.9",
+            "version" to "1.21.10",
         )
     )
     reobf = false
