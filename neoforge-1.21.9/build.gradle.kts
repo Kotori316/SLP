@@ -22,14 +22,34 @@ repositories {
 
 dependencies {
     // https://mvnrepository.com/artifact/org.scala-lang/scala-library
-    implementation(libs.scala2)
-    implementation(libs.scala3) { isTransitive = false }
+    implementation(libs.scala2, {
+        jarJar(this) {
+            version {
+                strictly("[${libs.versions.scala2.get()}, 3.0)")
+                prefer(libs.versions.scala2.get())
+            }
+        }
+    })
+    implementation(libs.scala3) {
+        isTransitive = false
+        jarJar(this) {
+            version {
+                strictly("[${libs.versions.scala3.get()}, 4.0)")
+                prefer(libs.versions.scala3.get())
+            }
+        }
+    }
     // https://mvnrepository.com/artifact/org.typelevel/cats-core
-    implementation(libs.bundles.cats) { isTransitive = false }
-
+    implementation(libs.bundles.cats) {
+        isTransitive = false
+        jarJar(this) {
+            version {
+                strictly("[2.0, ${libs.versions.cats.get()}]")
+                prefer(libs.versions.cats.get())
+            }
+        }
+    }
     // Jar in Jar
-    // jarJar(group: "org.scala-lang", name: "scala-library", version: "[${libs.versions.scala2.get()}, 3.0)") { isTransitive = false }
-    // jarJar(group: "org.scala-lang", name: "scala3-library_3", version: "[3.0, ${libs.versions.scala3.get()}]") { isTransitive = false }
     // jarJar(group: "org.typelevel", name: "cats-core_3", version: "[2.0, ${libs.versions.cats.get()}]") { isTransitive = false }
     // jarJar(group: "org.typelevel", name: "cats-kernel_3", version: "[2.0, ${libs.versions.cats.get()}]") { isTransitive = false }
     // jarJar(group: "org.typelevel", name: "cats-free_3", version: "[2.0, ${libs.versions.cats.get()}]") { isTransitive = false }
@@ -55,23 +75,22 @@ neoForge {
     }
 }
 
+val manifestMap = mapOf(
+    "FMLModType" to "LIBRARY",
+    "Automatic-Module-Name" to "kotori_scala",
+    "Specification-Title" to project.name,
+    "Specification-Vendor" to "Kotori316",
+    "Specification-Version" to "1", // We are version 1 of ourselves
+    "Implementation-Title" to project.name,
+    "Implementation-Version" to project.version,
+    "Implementation-Vendor" to "Kotori316",
+    "Implementation-Timestamp" to ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT),
+)
+
 tasks.jar {
     manifest {
-        attributes(
-            "FMLModType" to "LIBRARY",
-            "Automatic-Module-Name" to "kotori_scala",
-        )
-        attributes(
-            "Specification-Title" to project.name,
-            "Specification-Vendor" to "Kotori316",
-            "Specification-Version" to "1", // We are version 1 of ourselves
-            "Implementation-Title" to project.name,
-            "Implementation-Version" to project.version,
-            "Implementation-Vendor" to "Kotori316",
-            "Implementation-Timestamp" to ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT),
-        )
+        attributes(manifestMap)
     }
-    archiveClassifier = "dev"
 }
 
 tasks.processResources {
@@ -82,10 +101,25 @@ tasks.processResources {
     }
 }
 
-tasks.register("normalJar", org.gradle.jvm.tasks.Jar::class) {}
+tasks.shadowJar {
+    enabled = false
+}
+
+tasks.register("normalJar", org.gradle.jvm.tasks.Jar::class) {
+    group = "build"
+}
+
+val devJar = tasks.register("devJar", org.gradle.jvm.tasks.Jar::class) {
+    group = "build"
+    archiveClassifier = "dev"
+    from(sourceSets.main.get().output)
+    manifest {
+        attributes(manifestMap)
+    }
+}
 
 artifacts {
-    archives(tasks.shadowJar)
+    archives(devJar)
     archives(tasks.sourcesJar)
 }
 
