@@ -11,7 +11,7 @@ repositories {
 dependencies {
     mapOf(
         "com.kotori316.plugin.cf" to libs.versions.plugin.cf.get(),
-        "com.github.johnrengelman.shadow" to libs.versions.plugin.shadow.get(),
+        "com.gradleup.shadow" to libs.versions.plugin.shadow.get(),
     ).forEach { (name, version) ->
         implementation(group = name, name = "${name}.gradle.plugin", version = version)
     }

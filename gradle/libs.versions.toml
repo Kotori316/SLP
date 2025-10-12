@@ -5,12 +5,13 @@ forge1213 = "1.21.3-53.1.4"
 forge1214 = "1.21.4-54.1.8"
 forge1215 = "1.21.5-55.1.2"
 forge1216 = "1.21.6-56.0.9"
-forge1219 = "1.21.9-59.0.5"
+forge1219 = "1.21.10-60.0.4"
 neoforge = "21.1.209"
 neo1213 = "21.3.93"
 neo1214 = "21.4.154"
 neo1215 = "21.5.95"
 neo1216 = "21.6.20-beta"
+neo1219 = "21.10.12-beta"
 # https://ldtteam.jfrog.io/ui/native/parchmentmc-public/org/parchmentmc/data/
 # https://github.com/ParchmentMC/Parchment
 parchment = "1.21.1-2024.11.17"
@@ -28,7 +29,7 @@ mockito-core = "5.20.0"
 mockito-inline = "5.2.0"
 
 plugin_cf = "3.4"
-plugin_shadow = "8.+"
+plugin_shadow = "9.2.2"
 plugin_idea_ext = "1.3"
 plugin_ghr = "2.5.2"
 plugin_publish_all = "1.+"
@@ -60,10 +61,11 @@ neo1213 = { group = "net.neoforged", name = "neoforge", version.ref = "neo1213" 
 neo1214 = { group = "net.neoforged", name = "neoforge", version.ref = "neo1214" }
 neo1215 = { group = "net.neoforged", name = "neoforge", version.ref = "neo1215" }
 neo1216 = { group = "net.neoforged", name = "neoforge", version.ref = "neo1216" }
+neo1219 = { group = "net.neoforged", name = "neoforge", version.ref = "neo1219" }
 
 [plugins]
 cf = { id = "com.kotori316.plugin.cf", version.ref = "plugin_cf" }
-shadow = { id = "com.github.johnrengelman.shadow", version.ref = "plugin_shadow" }
+shadow = { id = "com.gradleup.shadow", version.ref = "plugin_shadow" }
 idea = { id = "org.jetbrains.gradle.plugin.idea-ext", version.ref = "plugin_idea_ext" }
 ghr = { id = "com.github.breadmoirai.github-release", version.ref = "plugin_ghr" }
 publish-all = { id = "me.modmuss50.mod-publish-plugin", version.ref = "plugin_publish_all" }

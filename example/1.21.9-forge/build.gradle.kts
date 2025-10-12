@@ -5,6 +5,10 @@ plugins {
     alias(libs.plugins.parchment.librarian)
 }
 
+base {
+    archivesName = "slp_example_1.21.9"
+}
+
 version = "1.0.0"
 group = "com.kotori316.slp.examples"
 
@@ -12,7 +16,7 @@ minecraft {
     mappings(
         mapOf(
             "channel" to "official",
-            "version" to "1.21.9",
+            "version" to "1.21.10",
         )
     )
     reobf = false
