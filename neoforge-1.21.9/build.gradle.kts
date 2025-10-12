@@ -49,10 +49,6 @@ dependencies {
             }
         }
     }
-    // Jar in Jar
-    // jarJar(group: "org.typelevel", name: "cats-core_3", version: "[2.0, ${libs.versions.cats.get()}]") { isTransitive = false }
-    // jarJar(group: "org.typelevel", name: "cats-kernel_3", version: "[2.0, ${libs.versions.cats.get()}]") { isTransitive = false }
-    // jarJar(group: "org.typelevel", name: "cats-free_3", version: "[2.0, ${libs.versions.cats.get()}]") { isTransitive = false }
 
     // Test Dependencies.
     testImplementation(libs.jupiter.api)
@@ -88,6 +84,7 @@ val manifestMap = mapOf(
 )
 
 tasks.jar {
+    archiveClassifier = "with-library" // The "jar" is the target of JarJar
     manifest {
         attributes(manifestMap)
     }
@@ -105,11 +102,11 @@ tasks.shadowJar {
     enabled = false
 }
 
-tasks.register("normalJar", org.gradle.jvm.tasks.Jar::class) {
+tasks.register("normalJar", Jar::class) {
     group = "build"
 }
 
-val devJar = tasks.register("devJar", org.gradle.jvm.tasks.Jar::class) {
+val devJar = tasks.register("devJar", Jar::class) {
     group = "build"
     archiveClassifier = "dev"
     from(sourceSets.main.get().output)
@@ -127,11 +124,10 @@ val releaseDebug = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean()
 publishMods {
     dryRun = releaseDebug
     type = STABLE
-    file = provider { tasks.shadowJar }.flatMap { it.flatMap { t -> t.archiveFile } }
+    file = provider { tasks.jar }.flatMap { it.flatMap { t -> t.archiveFile } }
     additionalFiles = files(
-        provider { tasks.jar }.flatMap { it.flatMap { t -> t.archiveFile } },
+        provider { devJar }.flatMap { it.flatMap { t -> t.archiveFile } },
         provider { tasks.sourcesJar }.flatMap { it.flatMap { t -> t.archiveFile } },
-        // provider { tasks.jarJar }.flatMap { it.flatMap { t -> t.archiveFile } },
     )
     modLoaders = listOf("neoforge")
     displayName = "${project.version}-neoforge"
@@ -183,13 +179,13 @@ publishing {
 }
 
 tasks.register("jksSignJar") {
-    dependsOn(tasks.shadowJar, tasks.jar, tasks.sourcesJar)
+    dependsOn(tasks.jar, devJar, tasks.sourcesJar)
     val executeCondition = project.hasProperty("jarSign.keyAlias") &&
             project.hasProperty("jarSign.keyLocation") &&
             project.hasProperty("jarSign.storePass")
     onlyIf { executeCondition }
     doLast {
-        listOf(tasks.shadowJar, tasks.jar, tasks.sourcesJar).forEach { t ->
+        listOf(tasks.jar, devJar, tasks.sourcesJar).forEach { t ->
             ant.withGroovyBuilder {
                 "signjar"(
                     "jar" to t.get().archiveFile.get(),
@@ -211,7 +207,7 @@ tasks.named("assemble") {
 
 signing {
     sign(publishing.publications)
-    sign(tasks.jar.get(), tasks.shadowJar.get(), tasks.sourcesJar.get())
+    sign(tasks.jar.get(), devJar.get(), tasks.sourcesJar.get())
 }
 
 val hasGpgSignature = project.hasProperty("signing.keyId") &&
@@ -228,7 +224,7 @@ tasks.withType(AbstractPublishToMaven::class) {
     if (hasGpgSignature) {
         dependsOn(":neoforge-1.21.9:signJar")
         dependsOn(":neoforge-1.21.9:signSourcesJar")
-        dependsOn(":neoforge-1.21.9:signShadowJar")
+        dependsOn(":neoforge-1.21.9:signDevJar")
     }
 }
 
@@ -236,7 +232,7 @@ fun createChangelog(): String {
     val t = """
         For Minecraft 1.21.9
         
-        Built with forge ${libs.versions.neo1219.get()}
+        Built with NeoForge ${libs.versions.neo1219.get()}
         
         This mod provides language provider, "kotori_scala".
         
