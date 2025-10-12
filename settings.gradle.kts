@@ -14,6 +14,19 @@ pluginManagement {
 
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version ("1.0.0")
+    id("com.gradle.develocity") version ("4.+")
+}
+
+develocity {
+    buildScan {
+        if (System.getenv("CI").toBoolean()) {
+            termsOfUseUrl = "https://gradle.com/help/legal-terms-of-use"
+            termsOfUseAgree = "yes"
+        }
+        publishing {
+            onlyIf { false }
+        }
+    }
 }
 
 includeBuild("build-logic")
