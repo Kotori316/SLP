@@ -121,6 +121,7 @@ artifacts {
 }
 
 val releaseDebug = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean()
+val startVersion = "1.21.9"
 publishMods {
     dryRun = releaseDebug
     type = STABLE
@@ -133,7 +134,6 @@ publishMods {
     displayName = "${project.version}-neoforge"
     changelog = createChangelog()
 
-    val startVersion = "1.21.9"
     val endVersion = project.property("target_latest_minecraft_version").toString()
     curseforge {
         accessToken = (project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN")
@@ -159,11 +159,13 @@ publishing {
     publications {
         create("mavenJava", MavenPublication::class) {
             artifactId = base.archivesName.get().lowercase()
-            from(components["java"])
+            // from(components["java"])
+            artifact(devJar)
+            artifact(tasks.sourcesJar)
             pom {
                 name = base.archivesName.get()
                 description =
-                    "Scala Loading library build with Minecraft ${libs.versions.minecraft.get()} and NeoForge ${libs.versions.neo1219.get()}"
+                    "Scala Loading library build with Minecraft $startVersion and NeoForge ${libs.versions.neo1219.get()}"
                 url = "https://github.com/Kotori316/SLP"
                 packaging = "jar"
                 withXml {
@@ -230,7 +232,7 @@ tasks.withType(AbstractPublishToMaven::class) {
 
 fun createChangelog(): String {
     val t = """
-        For Minecraft 1.21.9
+        For Minecraft $startVersion
         
         Built with NeoForge ${libs.versions.neo1219.get()}
         

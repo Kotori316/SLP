@@ -65,6 +65,7 @@ tasks {
 }
 
 val releaseDebug = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean()
+val startVersion = "1.21.6"
 publishMods {
     dryRun = releaseDebug
     type = STABLE
@@ -77,7 +78,6 @@ publishMods {
     displayName = "${project.version}-forge"
     changelog = createChangelog()
 
-    val startVersion = "1.21.6"
     val endVersion = project.property("target_latest_minecraft_version").toString()
     curseforge {
         accessToken = (project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN")
@@ -107,7 +107,7 @@ publishing {
             pom {
                 name = base.archivesName.get()
                 description =
-                    "Scala Loading library build with Minecraft ${libs.versions.minecraft.get()} and Forge ${libs.versions.forge.get()}"
+                    "Scala Loading library build with Minecraft $startVersion and Forge ${libs.versions.forge.get()}"
                 url = "https://github.com/Kotori316/SLP"
                 packaging = "jar"
                 withXml {
@@ -174,7 +174,7 @@ tasks.withType(AbstractPublishToMaven::class) {
 
 fun createChangelog(): String {
     val t = """
-        For Minecraft 1.21.6
+        For Minecraft $startVersion
         
         Built with forge ${libs.versions.forge1216.get()}
         
