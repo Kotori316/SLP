@@ -11,7 +11,7 @@ neo1213 = "21.3.94"
 neo1214 = "21.4.155"
 neo1215 = "21.5.95"
 neo1216 = "21.6.20-beta"
-neo1219 = "21.10.29-beta"
+neo1219 = "21.10.31-beta"
 # https://ldtteam.jfrog.io/ui/native/parchmentmc-public/org/parchmentmc/data/
 # https://github.com/ParchmentMC/Parchment
 parchment = "1.21.1-2024.11.17"
