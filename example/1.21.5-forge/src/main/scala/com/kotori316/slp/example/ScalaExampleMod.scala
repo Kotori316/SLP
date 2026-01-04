@@ -1,5 +1,6 @@
 package com.kotori316.slp.example
 
+import net.minecraft.SharedConstants
 import net.minecraftforge.data.event.GatherDataEvent
 import net.minecraftforge.fml.ModContainer
 import net.minecraftforge.fml.common.Mod
@@ -19,6 +20,7 @@ class ScalaExampleMod(context: FMLJavaModLoadingContext, container: ModContainer
   }
 
   private def registerDataGen(event: GatherDataEvent): Unit = {
+    ScalaExampleMod.LOGGER.info(s"Starting data generation in ${SharedConstants.getCurrentVersion.getName} Forge")
     ScalaExampleMod.LOGGER.info("Start data generation for Scala Example Mod. Input: {}", event.getInputs)
   }
 }
