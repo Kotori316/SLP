@@ -45,6 +45,7 @@ if(!System.getenv("DISABLE_EXAMPLE").toBoolean()) {
         include("example:1.21.5-forge")
         include("example:1.21.6-forge")
         include("example:1.21.9-forge")
+        include("example:1.21.11-forge")
     }
     if (!System.getenv("DISABLE_NEO_FORGE").toBoolean()){
         include("neoforge")
@@ -54,5 +55,6 @@ if(!System.getenv("DISABLE_EXAMPLE").toBoolean()) {
         include("example:1.21.5-neoforge")
         include("example:1.21.6-neoforge")
         include("example:1.21.9-neoforge")
+        include("example:1.21.11-neoforge")
     }
 }
