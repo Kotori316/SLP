@@ -63,6 +63,15 @@ jobs:
           java-version: '21'
       - name: Set executable
         run: chmod +x ./gradlew
+      - name: Set memory
+        run: |
+          cat <<EOF >> gradle.properties
+          # CI Memory Settings
+          org.gradle.daemon=false
+          org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=512m
+          org.gradle.parallel=false
+          org.gradle.workers.max=2
+          EOF
       - name: Get cache
         uses: gradle/actions/setup-gradle@v5
         with:
