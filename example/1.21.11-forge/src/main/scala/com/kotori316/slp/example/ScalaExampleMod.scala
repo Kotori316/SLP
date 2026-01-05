@@ -6,6 +6,7 @@ import net.minecraftforge.fml.ModContainer
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
+import net.minecraftforge.versions.forge.ForgeVersion
 import org.slf4j.LoggerFactory
 
 import scala.annotation.static
@@ -20,7 +21,7 @@ class ScalaExampleMod(context: FMLJavaModLoadingContext, container: ModContainer
   }
 
   private def registerDataGen(event: GatherDataEvent): Unit = {
-    ScalaExampleMod.LOGGER.info(s"Starting data generation in ${SharedConstants.getCurrentVersion.name} Forge")
+    ScalaExampleMod.LOGGER.info(s"Starting data generation in ${SharedConstants.getCurrentVersion.name} Forge ${ForgeVersion.getVersion}")
     ScalaExampleMod.LOGGER.info("Start data generation for Scala Example Mod. Input: {}", event.getInputs)
   }
 }

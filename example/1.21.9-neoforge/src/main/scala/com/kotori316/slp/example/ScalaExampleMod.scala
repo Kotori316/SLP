@@ -8,6 +8,7 @@ import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.ModContainer
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent
+import net.neoforged.neoforge.common.NeoForgeVersion
 import net.neoforged.neoforge.registries.RegisterEvent
 import org.slf4j.LoggerFactory
 
@@ -36,8 +37,9 @@ object ScalaExampleMod {
   final val MOD_ID = "slp_examples"
   final val LOGGER = LoggerFactory.getLogger(MOD_ID)
 
+  //noinspection UnstableApiUsage
   private def gameTest(helper: GameTestHelper): Unit = {
-    ScalaExampleMod.LOGGER.info(s"Running game test in ${SharedConstants.getCurrentVersion.name} NeoForge")
+    ScalaExampleMod.LOGGER.info(s"Running game test in ${SharedConstants.getCurrentVersion.name} NeoForge ${NeoForgeVersion.getVersion}")
     helper.succeed()
   }
 }
