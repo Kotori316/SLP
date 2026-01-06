@@ -43,7 +43,7 @@ jobs:
       - name: Check examples with runData
         run: ./gradlew runData --stacktrace || ./gradlew runData --stacktrace
       - name: Publish
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           path: '*/build/libs/*'
           name: '${{ github.event.repository.name }}-Forge-${{ github.run_number }}'
@@ -88,7 +88,7 @@ jobs:
       - name: Check examples
         run: ./gradlew runGameTestServer --stacktrace || ./gradlew runGameTestServer --stacktrace
       - name: Publish
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           path: '*/build/libs/*'
           name: '${{ github.event.repository.name }}-NeoForge-${{ github.run_number }}'
