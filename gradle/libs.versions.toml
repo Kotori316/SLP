@@ -30,7 +30,7 @@ jupiter-platform = "6.0.2"
 mockito-core = "5.21.0"
 mockito-inline = "5.2.0"
 
-plugin_cf = "3.4"
+plugin_cf = "3.5"
 plugin_shadow = "9.2.2"
 plugin_idea_ext = "1.3"
 plugin_ghr = "2.5.2"
