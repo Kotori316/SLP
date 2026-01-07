@@ -19,7 +19,7 @@ neo12111 = "21.11.23-beta"
 parchment = "1.21.1-2024.11.17"
 parchment1216 = "1.21.6-2025.06.29-1.21.6"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
-scala2 = "2.13.17"
+scala2 = "2.13.18"
 # https://mvnrepository.com/artifact/org.scala-lang/scala3-library
 scala3 = "3.7.3"
 cats = "2.13.0-kotori"
