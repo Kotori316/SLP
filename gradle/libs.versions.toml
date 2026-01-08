@@ -21,7 +21,7 @@ parchment1216 = "1.21.6-2025.06.29-1.21.6"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
 scala2 = "2.13.18"
 # https://mvnrepository.com/artifact/org.scala-lang/scala3-library
-scala3 = "3.7.3"
+scala3 = "3.7.4"
 cats = "2.13.0-kotori"
 # https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
 jupiter = "6.0.2"
