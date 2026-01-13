@@ -38,7 +38,7 @@ plugin_publish_all = "1.+"
 plugin_forge_gradle = "[6.0.24,6.2)"
 plugin_parchment_librarian = "1.+"
 plugin_neoforge_userdev = "7.1.20"
-plugin_neoforge_moddev = "2.0.138"
+plugin_neoforge_moddev = "2.0.139"
 
 [libraries]
 scala2 = { group = "org.scala-lang", name = "scala-library", version.ref = "scala2" }
