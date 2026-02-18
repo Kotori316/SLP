@@ -32,7 +32,7 @@ mockito-inline = "5.2.0"
 
 plugin_cf = "3.5"
 plugin_shadow = "9.2.2"
-plugin_idea_ext = "1.4"
+plugin_idea_ext = "1.4.1"
 plugin_ghr = "2.5.2"
 plugin_publish_all = "1.+"
 plugin_forge_gradle = "[6.0.24,6.2)"
