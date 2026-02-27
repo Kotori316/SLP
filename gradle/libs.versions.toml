@@ -27,7 +27,7 @@ cats = "2.13.0-kotori"
 jupiter = "6.0.3"
 # https://mvnrepository.com/artifact/org.junit.platform/junit-platform-launcher
 jupiter-platform = "6.0.3"
-mockito-core = "5.21.0"
+mockito-core = "5.22.0"
 mockito-inline = "5.2.0"
 
 plugin_cf = "3.5"
