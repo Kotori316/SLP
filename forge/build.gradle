@@ -7,55 +7,29 @@ plugins {
     alias(libs.plugins.forge.gradle)
     id "signing"
     alias(libs.plugins.publish.all)
+    id("net.minecraftforge.jarjar") version("0.2.3")
 }
 
 version = "${libs.versions.scala3.get()}-build-${project.build_number}"
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "ScalableCatsForce"
+base {
+    archivesName = "ScalableCatsForce"
+}
 
-jarJar.enable()
+jarJar.register()
 
 minecraft {
     mappings channel: "parchment", version: ((libs.versions.parchment.get() + "-" + libs.versions.minecraft.get()) as String)
-    // copyIdeResources = true
-    runs {
-        client {
-            workingDirectory project.file("Minecraft")
+}
 
-            // Recommended logging data for a userdev environment
-            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
-
-            // Recommended logging level for the console
-            property "forge.logging.console.level", "info"
-            property "mixin.debug", "true"
-
-            mods {
-                "scala-library-object" {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file("run-server")
-
-            // Recommended logging data for a userdev environment
-            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
-
-            // Recommended logging level for the console
-            property "forge.logging.console.level", "info"
-
-            mods {
-                "scala-library-object" {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
+repositories {
+    minecraft.mavenizer(it)
+    maven(fg.forgeMaven)
+    maven(fg.minecraftLibsMaven)
 }
 
 dependencies {
-    minecraft(libs.forge)
+    implementation(minecraft.dependency(libs.forge))
     implementation(libs.scala2)
     implementation(libs.scala3) { transitive = false }
     implementation(libs.bundles.cats) { transitive = false }
@@ -106,11 +80,6 @@ artifacts {
 tasks.jarJar.configure {
     archiveClassifier.set("jar-jar")
 }
-
-reobf {
-    jarJar {}
-}
-tasks.jarJar.finalizedBy("reobfJarJar")
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8" // Use the UTF-8 charset for Java compilation
@@ -241,5 +210,5 @@ afterEvaluate {
     // rootProject.tasks.named("githubRelease").configure { it.dependsOn(":forge:assemble") }
 }
 
-ext["archivesBaseName"] = archivesBaseName
+ext["archivesBaseName"] = base.archivesName.get()
 ext["generalDescription"] = createChangelog()

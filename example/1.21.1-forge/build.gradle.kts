@@ -10,24 +10,22 @@ group = "com.kotori316.slp.examples"
 minecraft {
     mappings(
         mapOf(
-           //  "channel" to "parchment",
-           //  "version" to (libs.versions.parchment.get() + "-" + libs.versions.minecraft.get()),
+            //  "channel" to "parchment",
+            //  "version" to (libs.versions.parchment.get() + "-" + libs.versions.minecraft.get()),
             "channel" to "official",
             "version" to libs.versions.minecraft.get(),
         )
     )
-    reobf = false
-    copyIdeResources = true
 
     runs {
         configureEach {
-            workingDirectory = "./run"
-            property("forge.logging.markers", "REGISTRIES")
-            property("forge.logging.console.level", "info")
+            workingDir = layout.projectDirectory.dir("run")
+            systemProperty("forge.logging.markers", "REGISTRIES")
+            systemProperty("forge.logging.console.level", "info")
         }
 
         create("gameTestServer") {
-            property("forge.enabledGameTestNamespaces", "slp_examples")
+            systemProperty("forge.enabledGameTestNamespaces", "slp_examples")
         }
     }
 }
@@ -42,6 +40,9 @@ repositories {
             includeGroup("com.mojang")
         }
     }
+    minecraft.mavenizer(this)
+    maven(fg.forgeMaven)
+    maven(fg.minecraftLibsMaven)
     mavenCentral()
     maven {
         name = "Kotori316"
@@ -55,7 +56,7 @@ repositories {
 }
 
 dependencies {
-    minecraft(libs.forge)
+    implementation(minecraft.dependency(libs.forge))
     compileOnly(libs.scala3)
     // implementation(project(":forge"))
     runtimeOnly(project(":forge")) {

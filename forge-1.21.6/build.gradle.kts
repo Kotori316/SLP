@@ -24,8 +24,14 @@ minecraft {
     )
 }
 
+repositories {
+    minecraft.mavenizer(this)
+    maven(fg.forgeMaven)
+    maven(fg.minecraftLibsMaven)
+}
+
 dependencies {
-    minecraft(libs.forge1216)
+    implementation(minecraft.dependency(libs.forge1216))
     implementation(libs.scala2)
     implementation(libs.scala3) { isTransitive = false }
     implementation(libs.bundles.cats) { isTransitive = false }
