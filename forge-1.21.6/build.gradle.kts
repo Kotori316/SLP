@@ -5,7 +5,6 @@ plugins {
     id("com.kotori316.common.java")
     id("com.kotori316.common.publish")
     alias(libs.plugins.forge.gradle)
-    alias(libs.plugins.parchment.librarian)
     signing
     alias(libs.plugins.publish.all)
 }

@@ -2,7 +2,6 @@ plugins {
     scala
     idea
     alias(libs.plugins.forge.gradle)
-    alias(libs.plugins.parchment.librarian)
 }
 
 version = "1.0.0"

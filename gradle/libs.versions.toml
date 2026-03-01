@@ -35,8 +35,7 @@ plugin_shadow = "9.2.2"
 plugin_idea_ext = "1.4.1"
 plugin_ghr = "2.5.2"
 plugin_publish_all = "1.+"
-plugin_forge_gradle = "[6.0.24,6.2)"
-plugin_parchment_librarian = "1.+"
+plugin_forge_gradle = "7.0.6"
 plugin_neoforge_userdev = "7.1.20"
 plugin_neoforge_moddev = "2.0.140"
 
@@ -74,7 +73,6 @@ idea = { id = "org.jetbrains.gradle.plugin.idea-ext", version.ref = "plugin_idea
 ghr = { id = "com.github.breadmoirai.github-release", version.ref = "plugin_ghr" }
 publish-all = { id = "me.modmuss50.mod-publish-plugin", version.ref = "plugin_publish_all" }
 forge-gradle = { id = "net.minecraftforge.gradle", version.ref = "plugin_forge_gradle" }
-parchment-librarian = { id = "org.parchmentmc.librarian.forgegradle", version.ref = "plugin_parchment_librarian" }
 neoforge-userdev = { id = "net.neoforged.gradle.userdev", version.ref = "plugin_neoforge_userdev" }
 neoforge-moddev = { id = "net.neoforged.moddev", version.ref = "plugin_neoforge_moddev" }
 
