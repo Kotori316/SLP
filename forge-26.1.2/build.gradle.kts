@@ -1,9 +1,7 @@
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-
 plugins {
     id("com.kotori316.common.java")
     id("com.kotori316.common.publish")
+    id("com.kotori316.common.version")
     alias(libs.plugins.forge.gradle)
     signing
     alias(libs.plugins.publish.all)

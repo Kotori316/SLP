@@ -1,10 +1,8 @@
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-
 plugins {
     id("com.kotori316.common.java")
     id("com.kotori316.common.publish")
     id("com.kotori316.common.source")
+    id("com.kotori316.common.version")
     alias(libs.plugins.neoforge.moddev)
     signing
     alias(libs.plugins.publish.all)
@@ -15,10 +13,6 @@ version = "${project.property("modVersion")}-mc${minecraftVersion}-${libs.versio
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 base {
     archivesName = "ScalableCatsForce-NeoForge"
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
@@ -40,7 +34,6 @@ dependencies {
             }
         }
     }
-    // https://mvnrepository.com/artifact/org.typelevel/cats-core
     implementation(libs.bundles.cats) {
         isTransitive = false
         jarJar(this) {
@@ -60,65 +53,12 @@ dependencies {
     testImplementation(libs.mockito.inline)
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
-
 neoForge {
     version = libs.versions.neo260102.get()
 
     unitTest {
         enable()
     }
-}
-
-val manifestMap = mapOf(
-    "FMLModType" to "LIBRARY",
-    "Automatic-Module-Name" to "kotori_scala",
-    "Specification-Title" to project.name,
-    "Specification-Vendor" to "Kotori316",
-    "Specification-Version" to "1", // We are version 1 of ourselves
-    "Implementation-Title" to project.name,
-    "Implementation-Version" to project.version,
-    "Implementation-Vendor" to "Kotori316",
-    "Implementation-Timestamp" to ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT),
-)
-
-tasks.jar {
-    archiveClassifier = "with-library" // The "jar" is the target of JarJar
-    manifest {
-        attributes(manifestMap)
-    }
-}
-
-tasks.processResources {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    inputs.property("version", project.version)
-    filesMatching("version.txt") {
-        expand("version" to project.version)
-    }
-}
-
-tasks.shadowJar {
-    enabled = false
-}
-
-tasks.register("normalJar", Jar::class) {
-    group = "build"
-}
-
-val devJar = tasks.register("devJar", Jar::class) {
-    group = "build"
-    archiveClassifier = "dev"
-    from(sourceSets.main.get().output)
-    manifest {
-        attributes(manifestMap)
-    }
-}
-
-artifacts {
-    archives(devJar)
-    archives(tasks.sourcesJar)
 }
 
 val releaseDebug = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean()
@@ -128,7 +68,6 @@ publishMods {
     type = STABLE
     file = provider { tasks.jar }.flatMap { it.flatMap { t -> t.archiveFile } }
     additionalFiles = files(
-        provider { devJar }.flatMap { it.flatMap { t -> t.archiveFile } },
         provider { tasks.sourcesJar }.flatMap { it.flatMap { t -> t.archiveFile } },
     )
     modLoaders = listOf("neoforge")
@@ -161,7 +100,7 @@ publishing {
         create("mavenJava", MavenPublication::class) {
             artifactId = base.archivesName.get().lowercase()
             // from(components["java"])
-            artifact(devJar)
+            // artifact(devJar)
             artifact(tasks.sourcesJar)
             pom {
                 name = base.archivesName.get()
@@ -182,13 +121,13 @@ publishing {
 }
 
 tasks.register("jksSignJar") {
-    dependsOn(tasks.jar, devJar, tasks.sourcesJar)
+    dependsOn(tasks.jar, tasks.sourcesJar)
     val executeCondition = project.hasProperty("jarSign.keyAlias") &&
             project.hasProperty("jarSign.keyLocation") &&
             project.hasProperty("jarSign.storePass")
     onlyIf { executeCondition }
     doLast {
-        listOf(tasks.jar, devJar, tasks.sourcesJar).forEach { t ->
+        listOf(tasks.jar, tasks.sourcesJar).forEach { t ->
             ant.withGroovyBuilder {
                 "signjar"(
                     "jar" to t.get().archiveFile.get(),

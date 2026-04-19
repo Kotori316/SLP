@@ -1,3 +1,6 @@
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+
 plugins {
     id("scala")
     id("java-library")
@@ -52,6 +55,33 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     mockitoAgent(catalog.findLibrary("mockito_core").get())
+}
+
+val manifestMap = mapOf(
+    "FMLModType" to "LIBRARY",
+    "Automatic-Module-Name" to "kotori_scala",
+    "Specification-Title" to project.name,
+    "Specification-Vendor" to "Kotori316",
+    "Specification-Version" to "1", // We are version 1 of ourselves
+    "Implementation-Title" to project.name,
+    "Implementation-Version" to project.version,
+    "Implementation-Vendor" to "Kotori316",
+    "Implementation-Timestamp" to ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT),
+)
+
+tasks.jar {
+    archiveClassifier = "dev"
+    manifest {
+        attributes(manifestMap)
+    }
+}
+
+tasks.processResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    inputs.property("version", project.version)
+    filesMatching("version.txt") {
+        expand("version" to project.version)
+    }
 }
 
 tasks.test {
