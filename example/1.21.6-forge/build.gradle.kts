@@ -2,7 +2,6 @@ plugins {
     scala
     idea
     alias(libs.plugins.forge.gradle)
-    alias(libs.plugins.parchment.librarian)
 }
 
 version = "1.0.0"
@@ -17,14 +16,12 @@ minecraft {
             "version" to "1.21.6-2025.06.29-1.21.6",
         )
     )
-    reobf = false
-    copyIdeResources = true
 
     runs {
         configureEach {
-            workingDirectory = "./run"
-            property("forge.logging.markers", "REGISTRIES")
-            property("forge.logging.console.level", "info")
+            workingDir = layout.projectDirectory.dir("run")
+            systemProperty("forge.logging.markers", "REGISTRIES")
+            systemProperty("forge.logging.console.level", "info")
         }
 
         // Forge 1.21.5 does not support game test server, so run data generator instead.
@@ -52,6 +49,9 @@ repositories {
             includeGroup("com.mojang")
         }
     }
+    minecraft.mavenizer(this)
+    maven(fg.forgeMaven)
+    maven(fg.minecraftLibsMaven)
     mavenCentral()
     maven {
         name = "Kotori316"
@@ -65,7 +65,7 @@ repositories {
 }
 
 dependencies {
-    minecraft(libs.forge1216)
+    implementation(minecraft.dependency(libs.forge1216))
     compileOnly(libs.scala3)
     // implementation(project(":forge"))
     runtimeOnly(project(":forge-1.21.6")) {

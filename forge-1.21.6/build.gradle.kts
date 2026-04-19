@@ -5,7 +5,6 @@ plugins {
     id("com.kotori316.common.java")
     id("com.kotori316.common.publish")
     alias(libs.plugins.forge.gradle)
-    alias(libs.plugins.parchment.librarian)
     signing
     alias(libs.plugins.publish.all)
 }
@@ -25,8 +24,14 @@ minecraft {
     )
 }
 
+repositories {
+    minecraft.mavenizer(this)
+    maven(fg.forgeMaven)
+    maven(fg.minecraftLibsMaven)
+}
+
 dependencies {
-    minecraft(libs.forge1216)
+    implementation(minecraft.dependency(libs.forge1216))
     implementation(libs.scala2)
     implementation(libs.scala3) { isTransitive = false }
     implementation(libs.bundles.cats) { isTransitive = false }

@@ -2,7 +2,6 @@ plugins {
     scala
     idea
     alias(libs.plugins.forge.gradle)
-    alias(libs.plugins.parchment.librarian)
 }
 
 version = "1.0.0"
@@ -17,18 +16,16 @@ minecraft {
             "version" to "1.21.4",
         )
     )
-    reobf = false
-    copyIdeResources = true
 
     runs {
         configureEach {
-            workingDirectory = "./run"
-            property("forge.logging.markers", "REGISTRIES")
-            property("forge.logging.console.level", "info")
+            workingDir = layout.projectDirectory.dir("run")
+            systemProperty("forge.logging.markers", "REGISTRIES")
+            systemProperty("forge.logging.console.level", "info")
         }
 
         create("gameTestServer") {
-            property("forge.enabledGameTestNamespaces", "slp_examples")
+            systemProperty("forge.enabledGameTestNamespaces", "slp_examples")
         }
     }
 }
@@ -43,6 +40,9 @@ repositories {
             includeGroup("com.mojang")
         }
     }
+    minecraft.mavenizer(this)
+    maven(fg.forgeMaven)
+    maven(fg.minecraftLibsMaven)
     mavenCentral()
     maven {
         name = "Kotori316"
@@ -56,7 +56,7 @@ repositories {
 }
 
 dependencies {
-    minecraft(libs.forge1214)
+    implementation(minecraft.dependency(libs.forge1214))
     compileOnly(libs.scala3)
     // implementation(project(":forge"))
     runtimeOnly(project(":forge")) {

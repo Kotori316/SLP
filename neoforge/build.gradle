@@ -11,7 +11,9 @@ plugins {
 
 version = "${libs.versions.scala3.get()}-build-${project.build_number}"
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "ScalableCatsForce-NeoForge"
+base {
+    archivesName = "ScalableCatsForce-NeoForge"
+}
 
 // jarJar.enable()
 
@@ -229,5 +231,5 @@ afterEvaluate {
     rootProject.tasks.named("githubRelease").configure { it.dependsOn(":neoforge:assemble") }
 }
 
-ext["archivesBaseName"] = archivesBaseName
+ext["archivesBaseName"] = base.archivesName.get()
 ext["generalDescription"] = createChangelog()
