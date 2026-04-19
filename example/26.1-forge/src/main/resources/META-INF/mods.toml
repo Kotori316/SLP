@@ -10,12 +10,12 @@ description = "Examples of SLP"
 [[dependencies.slp_examples]]
 modId = "forge"
 mandatory = true
-versionRange = "[61.0.0, 62)"
+versionRange = "[64.0.0, 65)"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.slp_examples]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.21.11, 1.21.12)"
+versionRange = "[26.1.0, 26.2.0)"
 ordering = "NONE"
 side = "BOTH"

@@ -38,7 +38,7 @@ if (!System.getenv("DISABLE_NEO_FORGE").toBoolean()) {
 }
 if(!System.getenv("DISABLE_EXAMPLE").toBoolean()) {
     if (!System.getenv("DISABLE_FORGE").toBoolean()) {
-        // include("example:1.21.11-forge")
+        include("example:26.1-forge")
     }
     if (!System.getenv("DISABLE_NEO_FORGE").toBoolean()){
         // include("example:1.21.11-neoforge")

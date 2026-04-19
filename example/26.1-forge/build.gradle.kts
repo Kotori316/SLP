@@ -5,20 +5,13 @@ plugins {
 }
 
 base {
-    archivesName = "slp_example_1.21.11"
+    archivesName = "slp_example_26.1.2"
 }
 
 version = "1.0.0"
 group = "com.kotori316.slp.examples"
 
 minecraft {
-    mappings(
-        mapOf(
-            "channel" to "official",
-            "version" to "1.21.11",
-        )
-    )
-
     runs {
         configureEach {
             workingDir = layout.projectDirectory.dir("run")
@@ -67,16 +60,11 @@ repositories {
 }
 
 dependencies {
-    implementation(minecraft.dependency(libs.forge12111))
+    implementation(minecraft.dependency(libs.forge260102))
     compileOnly(libs.scala3)
     // implementation(project(":forge"))
-    runtimeOnly(project(":forge-1.21.6")) {
+    runtimeOnly(project(":forge-26.1.2")) {
         isTransitive = false
-    }
-    implementation("net.sf.jopt-simple:jopt-simple:5.0.4") {
-        version {
-            strictly("5.0.4")
-        }
     }
 }
 
