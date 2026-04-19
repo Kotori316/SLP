@@ -6,7 +6,7 @@ neo260102="26.1.2.10-beta"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
 scala2 = "2.13.18"
 # https://mvnrepository.com/artifact/org.scala-lang/scala3-library
-scala3 = "3.7.4"
+scala3 = "3.8.3"
 cats = "2.13.0-kotori"
 # https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
 jupiter = "6.0.3"
