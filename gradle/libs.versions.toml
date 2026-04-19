@@ -21,6 +21,7 @@ plugin_idea_ext = "1.4.1"
 plugin_ghr = "2.5.2"
 plugin_publish_all = "1.1.0"
 plugin_forge_gradle = "7.0.20"
+plugin_forge_jarjar = "0.2.3"
 plugin_neoforge_moddev = "2.0.141"
 
 [libraries]
@@ -47,6 +48,7 @@ idea = { id = "org.jetbrains.gradle.plugin.idea-ext", version.ref = "plugin_idea
 ghr = { id = "com.github.breadmoirai.github-release", version.ref = "plugin_ghr" }
 publish-all = { id = "me.modmuss50.mod-publish-plugin", version.ref = "plugin_publish_all" }
 forge-gradle = { id = "net.minecraftforge.gradle", version.ref = "plugin_forge_gradle" }
+forge-jarjar = { id = "net.minecraftforge.jarjar", version.ref = "plugin_forge_jarjar" }
 neoforge-moddev = { id = "net.neoforged.moddev", version.ref = "plugin_neoforge_moddev" }
 
 [bundles]

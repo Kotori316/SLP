@@ -9,6 +9,7 @@ plugins {
 }
 
 val minecraftVersion = "26.1.2"
+val neoVersion = libs.versions.neo260102.get()
 version = "${project.property("modVersion")}-mc${minecraftVersion}-${libs.versions.scala3.get()}"
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 base {
@@ -54,7 +55,7 @@ dependencies {
 }
 
 neoForge {
-    version = libs.versions.neo260102.get()
+    version = neoVersion
 
     unitTest {
         enable()
@@ -62,7 +63,6 @@ neoForge {
 }
 
 val releaseDebug = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean()
-val startVersion = "1.21.9"
 publishMods {
     dryRun = releaseDebug
     type = STABLE
@@ -74,24 +74,16 @@ publishMods {
     displayName = "${project.version}-neoforge"
     changelog = createChangelog()
 
-    val endVersion = project.property("target_latest_minecraft_version").toString()
     curseforge {
         accessToken = (project.findProperty("curseforge_additional-enchanted-miner_key") ?: System.getenv("CURSE_TOKEN")
         ?: "") as String
-        projectId = "320926"
-        minecraftVersionRange {
-            start = startVersion
-            end = endVersion
-        }
+        projectId = project.property("curseId").toString()
+        minecraftVersions = listOf(minecraftVersion)
     }
     modrinth {
         accessToken = (project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String
-        projectId = "zr0QMQMo"
-        minecraftVersionRange {
-            start = startVersion
-            end = endVersion
-            includeSnapshots = false
-        }
+        projectId = project.property("modrinthId").toString()
+        minecraftVersions = listOf(minecraftVersion)
     }
 }
 
@@ -99,13 +91,11 @@ publishing {
     publications {
         create("mavenJava", MavenPublication::class) {
             artifactId = base.archivesName.get().lowercase()
-            // from(components["java"])
-            // artifact(devJar)
-            artifact(tasks.sourcesJar)
+            from(components["java"])
             pom {
                 name = base.archivesName.get()
                 description =
-                    "Scala Loading library build with Minecraft $startVersion and NeoForge ${libs.versions.neo260102.get()}"
+                    "Scala Loading library build with Minecraft $minecraftVersion and NeoForge $neoVersion"
                 url = "https://github.com/Kotori316/SLP"
                 packaging = "jar"
                 withXml {
@@ -163,9 +153,9 @@ tasks.withType(Sign::class) {
 
 fun createChangelog(): String {
     val t = """
-        For Minecraft $startVersion
+        For Minecraft $minecraftVersion
         
-        Built with NeoForge ${libs.versions.neo260102.get()}
+        Built with NeoForge $neoVersion
         
         This mod provides language provider, "kotori_scala".
         

@@ -70,10 +70,32 @@ val manifestMap = mapOf(
 )
 
 tasks.jar {
+    manifest {
+        attributes(manifestMap)
+    }
+}
+
+val devJar by tasks.registering(Jar::class) {
     archiveClassifier = "dev"
     manifest {
         attributes(manifestMap)
     }
+    from(sourceSets.main.get().output)
+}
+tasks.assemble {
+    dependsOn(devJar)
+}
+
+val devJarElements = configurations.create("devJarElements") {
+    isCanBeResolved = false
+    isCanBeConsumed = true
+    outgoing.artifact(devJar)
+    attributes {
+        attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
+    }
+}
+(components["java"] as AdhocComponentWithVariants).addVariantsFromConfiguration(devJarElements) {
+    mapToMavenScope("runtime")
 }
 
 tasks.processResources {

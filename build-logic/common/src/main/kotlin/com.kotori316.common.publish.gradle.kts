@@ -1,21 +1,19 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar.Companion.shadowJar
-
 plugins {
     id("maven-publish")
     id("com.kotori316.plugin.cf")
-    id("com.gradleup.shadow")
+    // id("com.gradleup.shadow")
 }
 
 val releaseDebug: Boolean = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean()
 
-tasks.shadowJar {
-    archiveClassifier = "with-library"
-    dependencies {
-        include(dependency("org.scala-lang:.*"))
-        include(dependency("org.scala-lang.modules:.*"))
-        include(dependency("org.typelevel:.*"))
-    }
-}
+//tasks.shadowJar {
+//    archiveClassifier = "with-library"
+//    dependencies {
+//        include(dependency("org.scala-lang:.*"))
+//        include(dependency("org.scala-lang.modules:.*"))
+//        include(dependency("org.typelevel:.*"))
+//    }
+//}
 
 // configure the maven publication
 publishing {
