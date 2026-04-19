@@ -34,7 +34,7 @@ if (!System.getenv("DISABLE_FORGE").toBoolean()) {
     include("forge-26.1.2")
 }
 if (!System.getenv("DISABLE_NEO_FORGE").toBoolean()) {
-    // include("neoforge-1.21.9")
+    include("neoforge-26.1.2")
 }
 if(!System.getenv("DISABLE_EXAMPLE").toBoolean()) {
     if (!System.getenv("DISABLE_FORGE").toBoolean()) {

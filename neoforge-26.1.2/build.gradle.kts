@@ -10,7 +10,8 @@ plugins {
     alias(libs.plugins.publish.all)
 }
 
-version = "${libs.versions.scala3.get()}-build-${project.property("build_number")}"
+val minecraftVersion = "26.1.2"
+version = "${project.property("modVersion")}-mc${minecraftVersion}-${libs.versions.scala3.get()}"
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 base {
     archivesName = "ScalableCatsForce-NeoForge"
@@ -64,7 +65,7 @@ tasks.test {
 }
 
 neoForge {
-    version = libs.versions.neo1219.get()
+    version = libs.versions.neo260102.get()
 
     unitTest {
         enable()
@@ -165,7 +166,7 @@ publishing {
             pom {
                 name = base.archivesName.get()
                 description =
-                    "Scala Loading library build with Minecraft $startVersion and NeoForge ${libs.versions.neo1219.get()}"
+                    "Scala Loading library build with Minecraft $startVersion and NeoForge ${libs.versions.neo260102.get()}"
                 url = "https://github.com/Kotori316/SLP"
                 packaging = "jar"
                 withXml {
@@ -209,7 +210,6 @@ tasks.named("assemble") {
 
 signing {
     sign(publishing.publications)
-    sign(tasks.jar.get(), devJar.get(), tasks.sourcesJar.get())
 }
 
 val hasGpgSignature = project.hasProperty("signing.keyId") &&
@@ -222,19 +222,11 @@ tasks.withType(Sign::class) {
     }
 }
 
-tasks.withType(AbstractPublishToMaven::class) {
-    if (hasGpgSignature) {
-        dependsOn(":neoforge-1.21.9:signJar")
-        dependsOn(":neoforge-1.21.9:signSourcesJar")
-        dependsOn(":neoforge-1.21.9:signDevJar")
-    }
-}
-
 fun createChangelog(): String {
     val t = """
         For Minecraft $startVersion
         
-        Built with NeoForge ${libs.versions.neo1219.get()}
+        Built with NeoForge ${libs.versions.neo260102.get()}
         
         This mod provides language provider, "kotori_scala".
         
@@ -246,7 +238,6 @@ fun createChangelog(): String {
 }
 
 afterEvaluate {
-    rootProject.tasks.named("githubRelease") { dependsOn(":neoforge-1.21.9:assemble") }
 }
 
 ext["archivesBaseName"] = base.archivesName.get()
