@@ -5,15 +5,15 @@ plugins {
 }
 
 base {
-    archivesName = "slp_example_1.21.11"
+    archivesName = "slp_example_26.1"
 }
 
 version = "1.0.0"
 group = "com.kotori316.slp.examples"
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 neoForge {
-    version = libs.versions.neo12111.get()
+    version = libs.versions.neo260102.get()
 
     runs {
         create("gameTestServer") {
@@ -37,7 +37,7 @@ repositories {
 
 dependencies {
     implementation(libs.scala3)
-    runtimeOnly(project(":neoforge-1.21.9")) {
+    runtimeOnly(project(":neoforge-26.1.2")) {
         isTransitive = false
     }
 }

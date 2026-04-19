@@ -41,6 +41,6 @@ if(!System.getenv("DISABLE_EXAMPLE").toBoolean()) {
         include("example:26.1-forge")
     }
     if (!System.getenv("DISABLE_NEO_FORGE").toBoolean()){
-        // include("example:1.21.11-neoforge")
+         include("example:26.1-neoforge")
     }
 }

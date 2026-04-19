@@ -83,3 +83,5 @@ sourceSets.forEach {
 tasks.compileScala {
     dependsOn(tasks.processResources)
 }
+
+tasks.register("runGameTestServer")
