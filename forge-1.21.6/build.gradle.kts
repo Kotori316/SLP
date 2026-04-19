@@ -123,7 +123,7 @@ publishing {
 }
 
 tasks.register("jksSignJar") {
-    dependsOn(tasks.shadowJar, tasks["reobfJar"], tasks.sourcesJar)
+    dependsOn(tasks.shadowJar, tasks.jar, tasks.sourcesJar)
     val executeCondition = project.hasProperty("jarSign.keyAlias") &&
             project.hasProperty("jarSign.keyLocation") &&
             project.hasProperty("jarSign.storePass")
