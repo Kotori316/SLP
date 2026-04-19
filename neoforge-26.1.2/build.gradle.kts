@@ -54,6 +54,10 @@ dependencies {
     testImplementation(libs.mockito.inline)
 }
 
+tasks.jar {
+    archiveClassifier = "all"
+}
+
 neoForge {
     version = neoVersion
 
@@ -110,14 +114,14 @@ publishing {
     }
 }
 
-tasks.register("jksSignJar") {
-    dependsOn(tasks.jar, tasks.sourcesJar)
+val jksSignJar = tasks.register("jksSignJar") {
+    dependsOn(tasks.jar, tasks.jarJar, tasks.sourcesJar, tasks.devJar)
     val executeCondition = project.hasProperty("jarSign.keyAlias") &&
             project.hasProperty("jarSign.keyLocation") &&
             project.hasProperty("jarSign.storePass")
     onlyIf { executeCondition }
     doLast {
-        listOf(tasks.jar, tasks.sourcesJar).forEach { t ->
+        listOf(tasks.jar, tasks.sourcesJar, tasks.devJar).forEach { t ->
             ant.withGroovyBuilder {
                 "signjar"(
                     "jar" to t.get().archiveFile.get(),
@@ -133,8 +137,8 @@ tasks.register("jksSignJar") {
     }
 }
 
-tasks.named("assemble") {
-    dependsOn("jksSignJar")
+tasks.assemble {
+    dependsOn(jksSignJar)
 }
 
 signing {
@@ -164,9 +168,6 @@ fun createChangelog(): String {
         Cats: ${libs.versions.cats.get()}
         """.trimIndent()
     return t
-}
-
-afterEvaluate {
 }
 
 ext["archivesBaseName"] = base.archivesName.get()
