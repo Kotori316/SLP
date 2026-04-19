@@ -11,6 +11,8 @@ base {
 version = "1.0.0"
 group = "com.kotori316.slp.examples"
 
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+
 minecraft {
     runs {
         configureEach {
@@ -59,13 +61,16 @@ repositories {
     }
 }
 
+val forgeJarJarOutput: Provider<RegularFile> = project(":forge-26.1.2").tasks
+    .named("jarJar", org.gradle.jvm.tasks.Jar::class)
+    .flatMap { it.archiveFile }
+
 dependencies {
     implementation(minecraft.dependency(libs.forge260102))
     compileOnly(libs.scala3)
-    // implementation(project(":forge"))
-    runtimeOnly(project(":forge-26.1.2")) {
-        isTransitive = false
-    }
+    // Use the jarJar fat jar at runtime so Forge can find kotori_scala with the correct version
+    // and load the bundled scala/cats jars via JarJar
+    runtimeOnly(files(forgeJarJarOutput))
 }
 
 sourceSets.forEach {

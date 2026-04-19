@@ -168,3 +168,4 @@ fun createChangelog(): String {
 
 ext["archivesBaseName"] = base.archivesName.get()
 ext["generalDescription"] = createChangelog()
+

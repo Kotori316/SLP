@@ -64,7 +64,6 @@ val manifestMap = mapOf(
     "Specification-Vendor" to "Kotori316",
     "Specification-Version" to "1", // We are version 1 of ourselves
     "Implementation-Title" to project.name,
-    "Implementation-Version" to project.version,
     "Implementation-Vendor" to "Kotori316",
     "Implementation-Timestamp" to ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT),
 )
@@ -72,6 +71,8 @@ val manifestMap = mapOf(
 tasks.jar {
     manifest {
         attributes(manifestMap)
+        // Use provider so the version is resolved at task execution time (after the project version is set)
+        attributes(mapOf("Implementation-Version" to provider { project.version }))
     }
 }
 
@@ -79,6 +80,7 @@ val devJar by tasks.registering(Jar::class) {
     archiveClassifier = "dev"
     manifest {
         attributes(manifestMap)
+        attributes(mapOf("Implementation-Version" to provider { project.version }))
     }
     from(sourceSets.main.get().output)
 }
