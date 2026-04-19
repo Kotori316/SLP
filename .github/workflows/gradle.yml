@@ -17,16 +17,16 @@ jobs:
     env:
       DISABLE_NEO_FORGE: 'true'
     steps:
-      - uses: actions/checkout@v6
-      - uses: gradle/actions/wrapper-validation@v5
-      - uses: actions/setup-java@v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: gradle/actions/wrapper-validation@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
+      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           distribution: 'temurin'
           java-version: '25'
       - name: Set executable
         run: chmod +x ./gradlew
       - name: Get cache
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
         with:
           cache-read-only: ${{ github.event_name == 'pull_request' }}
       - run: ./gradlew data
@@ -43,7 +43,7 @@ jobs:
       - name: Check examples with runData
         run: ./gradlew runData --stacktrace || ./gradlew runData --stacktrace
       - name: Publish
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           path: '*/build/libs/*'
           name: '${{ github.event.repository.name }}-Forge-${{ github.run_number }}'
@@ -55,9 +55,9 @@ jobs:
     env:
       DISABLE_FORGE: 'true'
     steps:
-      - uses: actions/checkout@v6
-      - uses: gradle/actions/wrapper-validation@v5
-      - uses: actions/setup-java@v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: gradle/actions/wrapper-validation@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
+      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           distribution: 'temurin'
           java-version: '25'
@@ -73,7 +73,7 @@ jobs:
           org.gradle.workers.max=2
           EOF
       - name: Get cache
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
         with:
           cache-read-only: ${{ github.event_name == 'pull_request' }}
       - run: ./gradlew data --stacktrace
@@ -88,7 +88,7 @@ jobs:
       - name: Check examples
         run: ./gradlew runGameTestServer --stacktrace || ./gradlew runGameTestServer --stacktrace
       - name: Publish
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           path: '*/build/libs/*'
           name: '${{ github.event.repository.name }}-NeoForge-${{ github.run_number }}'
