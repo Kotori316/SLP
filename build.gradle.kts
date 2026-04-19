@@ -18,7 +18,7 @@ githubRelease {
     targetCommitish = project.property("branch") as String
     prerelease = project.version.toString().contains("SNAPSHOT")
     body = """
-        For Minecraft ${libs.versions.minecraft.get()}
+        For Minecraft
         
         This mod provides language provider, "kotori_scala".
         

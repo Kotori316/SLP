@@ -1,23 +1,8 @@
 [versions]
-minecraft = "1.21.1"
-forge = "1.21.1-52.1.14"
-forge1213 = "1.21.3-53.1.10"
-forge1214 = "1.21.4-54.1.16"
-forge1215 = "1.21.5-55.1.10"
-forge1216 = "1.21.6-56.0.9"
-forge1219 = "1.21.10-60.1.9"
 forge12111 = "1.21.11-61.1.5"
-neoforge = "21.1.226"
-neo1213 = "21.3.96"
-neo1214 = "21.4.157"
-neo1215 = "21.5.97"
-neo1216 = "21.6.20-beta"
-neo1219 = "21.10.64"
 neo12111 = "21.11.42"
-# https://ldtteam.jfrog.io/ui/native/parchmentmc-public/org/parchmentmc/data/
-# https://github.com/ParchmentMC/Parchment
-parchment = "1.21.1-2024.11.17"
-parchment1216 = "1.21.6-2025.06.29-1.21.6"
+forge260102="26.1.2-64.0.1"
+neo260102="26.1.2.10-beta"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
 scala2 = "2.13.18"
 # https://mvnrepository.com/artifact/org.scala-lang/scala3-library
@@ -34,9 +19,8 @@ plugin_cf = "3.5"
 plugin_shadow = "9.4.1"
 plugin_idea_ext = "1.4.1"
 plugin_ghr = "2.5.2"
-plugin_publish_all = "1.+"
-plugin_forge_gradle = "7.0.6"
-plugin_neoforge_userdev = "7.1.22"
+plugin_publish_all = "1.1.0"
+plugin_forge_gradle = "7.0.20"
 plugin_neoforge_moddev = "2.0.141"
 
 [libraries]
@@ -51,20 +35,10 @@ jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", v
 jupiter-launcher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "jupiter-platform" }
 mockito_core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito-core" }
 mockito_inline = { group = "org.mockito", name = "mockito-inline", version.ref = "mockito-inline" }
-forge = { group = "net.minecraftforge", name = "forge", version.ref = "forge" }
-forge1213 = { group = "net.minecraftforge", name = "forge", version.ref = "forge1213" }
-forge1214 = { group = "net.minecraftforge", name = "forge", version.ref = "forge1214" }
-forge1215 = { group = "net.minecraftforge", name = "forge", version.ref = "forge1215" }
-forge1216 = { group = "net.minecraftforge", name = "forge", version.ref = "forge1216" }
-forge1219 = { group = "net.minecraftforge", name = "forge", version.ref = "forge1219" }
 forge12111 = { group = "net.minecraftforge", name = "forge", version.ref = "forge12111" }
-neoforge = { group = "net.neoforged", name = "neoforge", version.ref = "neoforge" }
-neo1213 = { group = "net.neoforged", name = "neoforge", version.ref = "neo1213" }
-neo1214 = { group = "net.neoforged", name = "neoforge", version.ref = "neo1214" }
-neo1215 = { group = "net.neoforged", name = "neoforge", version.ref = "neo1215" }
-neo1216 = { group = "net.neoforged", name = "neoforge", version.ref = "neo1216" }
-neo1219 = { group = "net.neoforged", name = "neoforge", version.ref = "neo1219" }
 neo12111 = { group = "net.neoforged", name = "neoforge", version.ref = "neo12111" }
+forge260102 = { group = "net.minecraftforge", name = "forge", version.ref = "forge260102" }
+neo260102 = { group = "net.neoforged", name = "neoforge", version.ref = "neo260102" }
 
 [plugins]
 cf = { id = "com.kotori316.plugin.cf", version.ref = "plugin_cf" }
@@ -73,7 +47,6 @@ idea = { id = "org.jetbrains.gradle.plugin.idea-ext", version.ref = "plugin_idea
 ghr = { id = "com.github.breadmoirai.github-release", version.ref = "plugin_ghr" }
 publish-all = { id = "me.modmuss50.mod-publish-plugin", version.ref = "plugin_publish_all" }
 forge-gradle = { id = "net.minecraftforge.gradle", version.ref = "plugin_forge_gradle" }
-neoforge-userdev = { id = "net.neoforged.gradle.userdev", version.ref = "plugin_neoforge_userdev" }
 neoforge-moddev = { id = "net.neoforged.moddev", version.ref = "plugin_neoforge_moddev" }
 
 [bundles]

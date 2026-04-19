@@ -7,7 +7,7 @@ pluginManagement {
         maven { url = uri("https://maven.parchmentmc.org") }
         maven {
             name = "Kotori316 Plugin"
-            url = uri("https://storage.googleapis.com/kotori316-maven-storage/maven/")
+            url = uri("https://maven.kotori316.com")
         }
     }
 }
@@ -31,16 +31,16 @@ develocity {
 
 includeBuild("build-logic")
 if (!System.getenv("DISABLE_FORGE").toBoolean()) {
-    include("forge-1.21.6")
+    include("forge-26.1.2")
 }
 if (!System.getenv("DISABLE_NEO_FORGE").toBoolean()) {
-    include("neoforge-1.21.9")
+    // include("neoforge-1.21.9")
 }
 if(!System.getenv("DISABLE_EXAMPLE").toBoolean()) {
     if (!System.getenv("DISABLE_FORGE").toBoolean()) {
-        include("example:1.21.11-forge")
+        // include("example:1.21.11-forge")
     }
     if (!System.getenv("DISABLE_NEO_FORGE").toBoolean()){
-        include("example:1.21.11-neoforge")
+        // include("example:1.21.11-neoforge")
     }
 }
