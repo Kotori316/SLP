@@ -19,6 +19,7 @@ tasks.register("registerVersion", CallVersionFunctionTask::class) {
 }
 
 tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask::class) {
+    description = "Check if the version is already registered for ${getPlatform(project.name)} ${pfVersion(project.name)}"
     gameVersion = getMinecraftVersion(project.name)
     platform = getPlatform(project.name)
     modName = project.provider { project.ext.get("archivesBaseName") as String }
@@ -28,30 +29,23 @@ tasks.register("checkReleaseVersion", CallVersionCheckFunctionTask::class) {
 
 fun pfVersion(platform: String): String {
     return when (platform) {
-        "forge" -> catalog.findVersion("forge").map { it.requiredVersion }.get()
-        "forge-1.21.6" -> catalog.findVersion("forge1216").map { it.requiredVersion }.get()
-        "neoforge" -> catalog.findVersion("neoforge").map { it.requiredVersion }.get()
-        "neoforge-1.21.9" -> catalog.findVersion("neo1219").map { it.requiredVersion }.get()
+        "forge-26.1.2" -> catalog.findVersion("forge260102").map { it.requiredVersion }.get()
+        "neoforge-26.1.2" -> catalog.findVersion("neo260102").map { it.requiredVersion }.get()
         else -> throw IllegalArgumentException("Unknown platform: $platform")
     }
 }
 
 fun getPlatform(platform: String): String {
-    return when (platform) {
-        "forge" -> "forge"
-        "forge-1.21.6" -> "forge"
-        "neoforge" -> "neoforge"
-        "neoforge-1.21.9" -> "neoforge"
+    return when {
+        platform.matches(Regex("neoforge-.*")) -> "neoforge"
+        platform.matches(Regex("forge-.*")) -> "forge"
         else -> throw IllegalArgumentException("Unknown platform: $platform")
     }
 }
 
 fun getMinecraftVersion(platform: String): String {
-    return when (platform) {
-        "forge" -> catalog.findVersion("minecraft").map { it.requiredVersion }.get()
-        "forge-1.21.6" -> "1.21.6"
-        "neoforge" -> catalog.findVersion("minecraft").map { it.requiredVersion }.get()
-        "neoforge-1.21.9" -> "1.21.9"
-        else -> throw IllegalArgumentException("Unknown platform: $platform")
-    }
+    val versionPattern = Regex("""(?:neo)?forge-(\d+\.\d+\.\d+)""")
+    val match = versionPattern.find(platform)
+        ?: throw IllegalArgumentException("Unknown platform: $platform")
+    return match.groupValues[1]
 }

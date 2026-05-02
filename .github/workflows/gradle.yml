@@ -29,7 +29,7 @@ jobs:
         uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6.1.0
         with:
           cache-read-only: ${{ github.event_name == 'pull_request' }}
-      - run: ./gradlew data
+      - run: ./gradlew data checkReleaseVersion
       - run: ./gradlew test build publishToMavenLocal --scan
       - name: Prepare example runs
         run: |
@@ -76,7 +76,7 @@ jobs:
         uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6.1.0
         with:
           cache-read-only: ${{ github.event_name == 'pull_request' }}
-      - run: ./gradlew data --stacktrace
+      - run: ./gradlew data checkReleaseVersion --stacktrace
       - run: ./gradlew test build publishToMavenLocal --scan
       - name: Prepare example runs
         run: |
