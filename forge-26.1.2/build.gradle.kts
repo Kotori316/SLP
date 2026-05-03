@@ -56,6 +56,7 @@ dependencies {
 }
 
 val releaseDebug = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean()
+val publishVersion = "${project.version}-forge"
 publishMods {
     dryRun = releaseDebug
     type = STABLE
@@ -64,7 +65,8 @@ publishMods {
         provider { tasks.sourcesJar }.flatMap { it.flatMap { t -> t.archiveFile } },
     )
     modLoaders = listOf("forge")
-    displayName = "${project.version}-forge"
+    version = publishVersion
+    displayName = publishVersion
     changelog = createChangelog()
 
     curseforge {

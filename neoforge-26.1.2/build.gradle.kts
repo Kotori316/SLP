@@ -58,6 +58,7 @@ neoForge {
 }
 
 val releaseDebug = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean()
+val publishVersion = "${project.version}-neoforge"
 publishMods {
     dryRun = releaseDebug
     type = STABLE
@@ -66,7 +67,8 @@ publishMods {
         provider { tasks.sourcesJar }.flatMap { it.flatMap { t -> t.archiveFile } },
     )
     modLoaders = listOf("neoforge")
-    displayName = "${project.version}-neoforge"
+    version = publishVersion
+    displayName = publishVersion
     changelog = createChangelog()
 
     curseforge {

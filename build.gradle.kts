@@ -8,7 +8,7 @@ tasks.named("wrapper", Wrapper::class) {
     gradleVersion = "9.5.0"
 }
 
-version = "${libs.versions.scala.get()}-build-${project.property("build_number")}"
+version = "${project.property("modVersion")}"
 
 val releaseDebug = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean()
 githubRelease {
