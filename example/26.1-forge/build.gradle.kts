@@ -13,6 +13,10 @@ group = "com.kotori316.slp.examples"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
+scala {
+    scalaVersion = libs.versions.scala.get()
+}
+
 minecraft {
     runs {
         configureEach {
