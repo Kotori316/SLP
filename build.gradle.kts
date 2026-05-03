@@ -8,7 +8,7 @@ tasks.named("wrapper", Wrapper::class) {
     gradleVersion = "9.5.0"
 }
 
-version = "${libs.versions.scala3.get()}-build-${project.property("build_number")}"
+version = "${libs.versions.scala.get()}-build-${project.property("build_number")}"
 
 val releaseDebug = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean()
 githubRelease {
@@ -22,8 +22,7 @@ githubRelease {
         
         This mod provides language provider, "kotori_scala".
         
-        Scala3: ${libs.versions.scala3.get()}
-        Scala: ${libs.versions.scala2.get()}
+        Scala: ${libs.versions.scala.get()}
         Cats: ${libs.versions.cats.get()}
         """.trimIndent()
     releaseAssets = files(

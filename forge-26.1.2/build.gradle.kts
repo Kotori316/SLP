@@ -10,7 +10,7 @@ plugins {
 
 val minecraftVersion = "26.1.2"
 val forgeVersion = libs.versions.forge260102.get()
-version = "${project.property("modVersion")}-mc${minecraftVersion}-${libs.versions.scala3.get()}"
+version = "${project.property("modVersion")}-mc${minecraftVersion}-${libs.versions.scala.get()}"
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 base {
     archivesName = "ScalableCatsForce"
@@ -31,19 +31,12 @@ jarJar {
 
 dependencies {
     implementation(minecraft.dependency(libs.forge260102))
-    implementation(libs.scala2)
-    implementation(libs.scala3) { isTransitive = false }
+    implementation(libs.scala)
     implementation(libs.bundles.cats) { isTransitive = false }
-    "jarJar"(libs.scala2) {
+    "jarJar"(libs.scala) {
         jarJar.configure(this) {
-            setVersion(libs.versions.scala2.get())
-            setRange("[${libs.versions.scala2.get()},3.0)")
-        }
-    }
-    "jarJar"(libs.scala3) {
-        jarJar.configure(this) {
-            setVersion(libs.versions.scala3.get())
-            setRange("[${libs.versions.scala3.get()},4.0)")
+            setVersion(libs.versions.scala.get())
+            setRange("[${libs.versions.scala.get()},4.0)")
         }
     }
     "jarJar"(libs.bundles.cats) {
@@ -159,8 +152,7 @@ fun createChangelog(): String {
         
         This mod provides language provider, "kotori_scala".
         
-        Scala3: ${libs.versions.scala3.get()}
-        Scala: ${libs.versions.scala2.get()}
+        Scala: ${libs.versions.scala.get()}
         Cats: ${libs.versions.cats.get()}
         """.trimIndent()
     return t

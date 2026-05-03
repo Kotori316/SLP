@@ -36,7 +36,7 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.scala3)
+    implementation(libs.scala)
     runtimeOnly(project(":neoforge-26.1.2")) {
         isTransitive = false
     }

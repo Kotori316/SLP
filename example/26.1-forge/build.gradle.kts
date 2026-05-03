@@ -67,7 +67,7 @@ val forgeJarJarOutput: Provider<RegularFile> = project(":forge-26.1.2").tasks
 
 dependencies {
     implementation(minecraft.dependency(libs.forge260102))
-    compileOnly(libs.scala3)
+    compileOnly(libs.scala)
     // Use the jarJar fat jar at runtime so Forge can find kotori_scala with the correct version
     // and load the bundled scala/cats jars via JarJar
     runtimeOnly(files(forgeJarJarOutput))

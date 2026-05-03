@@ -4,9 +4,7 @@ neo12111 = "21.11.42"
 forge260102="26.1.2-64.0.6"
 neo260102="26.1.2.10-beta"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
-scala2 = "2.13.18"
-# https://mvnrepository.com/artifact/org.scala-lang/scala3-library
-scala3 = "3.8.3"
+scala = "3.8.3"
 cats = "2.13.0-kotori"
 # https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
 jupiter = "6.0.3"
@@ -25,8 +23,7 @@ plugin_forge_jarjar = "0.2.3"
 plugin_neoforge_moddev = "2.0.141"
 
 [libraries]
-scala2 = { group = "org.scala-lang", name = "scala-library", version.ref = "scala2" }
-scala3 = { group = "org.scala-lang", name = "scala3-library_3", version.ref = "scala3" }
+scala = { group = "org.scala-lang", name = "scala-library", version.ref = "scala" }
 cats-kernel = { group = "org.typelevel", name = "cats-kernel_3", version.ref = "cats" }
 cats-core = { group = "org.typelevel", name = "cats-core_3", version.ref = "cats" }
 cats-free = { group = "org.typelevel", name = "cats-free_3", version.ref = "cats" }

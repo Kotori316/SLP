@@ -10,7 +10,7 @@ plugins {
 
 val minecraftVersion = "26.1.2"
 val neoVersion = libs.versions.neo260102.get()
-version = "${project.property("modVersion")}-mc${minecraftVersion}-${libs.versions.scala3.get()}"
+version = "${project.property("modVersion")}-mc${minecraftVersion}-${libs.versions.scala.get()}"
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 base {
     archivesName = "ScalableCatsForce-NeoForge"
@@ -18,23 +18,14 @@ base {
 
 dependencies {
     // https://mvnrepository.com/artifact/org.scala-lang/scala-library
-    implementation(libs.scala2, {
+    implementation(libs.scala, {
         jarJar(this) {
             version {
-                strictly("[${libs.versions.scala2.get()}, 3.0)")
-                prefer(libs.versions.scala2.get())
+                strictly("[${libs.versions.scala.get()}, 4.0)")
+                prefer(libs.versions.scala.get())
             }
         }
     })
-    implementation(libs.scala3) {
-        isTransitive = false
-        jarJar(this) {
-            version {
-                strictly("[${libs.versions.scala3.get()}, 4.0)")
-                prefer(libs.versions.scala3.get())
-            }
-        }
-    }
     implementation(libs.bundles.cats) {
         isTransitive = false
         jarJar(this) {
@@ -163,8 +154,7 @@ fun createChangelog(): String {
         
         This mod provides language provider, "kotori_scala".
         
-        Scala3: ${libs.versions.scala3.get()}
-        Scala: ${libs.versions.scala2.get()}
+        Scala: ${libs.versions.scala.get()}
         Cats: ${libs.versions.cats.get()}
         """.trimIndent()
     return t
