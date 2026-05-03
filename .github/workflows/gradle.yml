@@ -30,7 +30,7 @@ jobs:
         with:
           cache-read-only: ${{ github.event_name == 'pull_request' }}
       - run: ./gradlew data checkReleaseVersion
-      - run: ./gradlew test build publishToMavenLocal --scan
+      - run: ./gradlew test build publishToMavenLocal checkBinaryContent --scan
       - name: Prepare example runs
         run: |
           set -eux
@@ -77,7 +77,7 @@ jobs:
         with:
           cache-read-only: ${{ github.event_name == 'pull_request' }}
       - run: ./gradlew data checkReleaseVersion --stacktrace
-      - run: ./gradlew test build publishToMavenLocal --scan
+      - run: ./gradlew test build publishToMavenLocal checkBinaryContent --scan
       - name: Prepare example runs
         run: |
           set -eux
