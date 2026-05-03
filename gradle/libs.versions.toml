@@ -24,6 +24,7 @@ plugin_neoforge_moddev = "2.0.141"
 
 [libraries]
 scala = { group = "org.scala-lang", name = "scala-library", version.ref = "scala" }
+scala3 = { group = "org.scala-lang", name = "scala3-library_3", version.ref = "scala" }
 cats-kernel = { group = "org.typelevel", name = "cats-kernel_3", version.ref = "cats" }
 cats-core = { group = "org.typelevel", name = "cats-core_3", version.ref = "cats" }
 cats-free = { group = "org.typelevel", name = "cats-free_3", version.ref = "cats" }

@@ -12,10 +12,6 @@ version = "1.0.0"
 group = "com.kotori316.slp.examples"
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
-scala {
-    scalaVersion = libs.versions.scala.get()
-}
-
 neoForge {
     version = libs.versions.neo260102.get()
 
@@ -40,7 +36,7 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.scala)
+    compileOnly(libs.scala3)
     runtimeOnly(project(":neoforge-26.1.2")) {
         isTransitive = false
     }

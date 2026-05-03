@@ -13,10 +13,6 @@ group = "com.kotori316.slp.examples"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
-scala {
-    scalaVersion = libs.versions.scala.get()
-}
-
 minecraft {
     runs {
         configureEach {
@@ -71,7 +67,7 @@ val forgeJarJarOutput: Provider<RegularFile> = project(":forge-26.1.2").tasks
 
 dependencies {
     implementation(minecraft.dependency(libs.forge260102))
-    compileOnly(libs.scala)
+    compileOnly(libs.scala3)
     // Use the jarJar fat jar at runtime so Forge can find kotori_scala with the correct version
     // and load the bundled scala/cats jars via JarJar
     runtimeOnly(files(forgeJarJarOutput))
@@ -90,9 +86,4 @@ tasks.compileScala {
 
 tasks.register("runGameTestServer") {
     description = "Dummy task"
-}
-
-configurations.runtimeClasspath {
-    exclude(group = "org.scala-lang", module = "scala-library")
-    exclude(group = "org.scala-lang", module = "scala3-library_3")
 }
