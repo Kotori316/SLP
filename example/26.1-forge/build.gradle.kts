@@ -88,4 +88,11 @@ tasks.compileScala {
     dependsOn(tasks.processResources)
 }
 
-tasks.register("runGameTestServer")
+tasks.register("runGameTestServer") {
+    description = "Dummy task"
+}
+
+configurations.runtimeClasspath {
+    exclude(group = "org.scala-lang", module = "scala-library")
+    exclude(group = "org.scala-lang", module = "scala3-library_3")
+}
