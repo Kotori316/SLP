@@ -12,7 +12,11 @@ on:
 
 jobs:
   check-forge:
-    runs-on: ubuntu-24.04-arm
+    strategy:
+      matrix:
+        os: ${{ github.event_name == 'pull_request' && fromJSON('["ubuntu-24.04-arm"]') || fromJSON('["ubuntu-24.04-arm", "ubuntu-latest", "windows-latest"]') }}
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 100
     env:
       DISABLE_NEO_FORGE: 'true'
@@ -24,6 +28,7 @@ jobs:
           distribution: 'temurin'
           java-version: '25'
       - name: Set executable
+        if: runner.os != 'Windows'
         run: chmod +x ./gradlew
       - name: Get cache
         uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6.1.0
@@ -34,6 +39,7 @@ jobs:
         env:
           DISABLE_EXAMPLE: true
       - name: Prepare example runs
+        shell: bash
         run: |
           set -eux
           for d in example/*; do
@@ -45,6 +51,7 @@ jobs:
       - name: Check examples with runData
         run: ./gradlew runData --stacktrace || ./gradlew runData --stacktrace
       - name: Publish
+        if: ${{ matrix.os == 'ubuntu-24.04-arm' && github.event_name == 'push' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           path: '*/build/libs/*'
@@ -52,7 +59,11 @@ jobs:
           retention-days: 3
 
   check-neoforge:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: ${{ github.event_name == 'pull_request' && fromJSON('["ubuntu-24.04-arm"]') || fromJSON('["ubuntu-24.04-arm", "ubuntu-latest", "windows-latest"]') }}
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 100
     env:
       DISABLE_FORGE: 'true'
@@ -64,8 +75,10 @@ jobs:
           distribution: 'temurin'
           java-version: '25'
       - name: Set executable
+        if: runner.os != 'Windows'
         run: chmod +x ./gradlew
       - name: Set memory
+        shell: bash
         run: |
           cat <<EOF >> gradle.properties
           # CI Memory Settings
@@ -83,6 +96,7 @@ jobs:
         env:
           DISABLE_EXAMPLE: true
       - name: Prepare example runs
+        shell: bash
         run: |
           set -eux
           for d in example/*; do
@@ -92,6 +106,7 @@ jobs:
       - name: Check examples
         run: ./gradlew runGameTestServer --stacktrace || ./gradlew runGameTestServer --stacktrace
       - name: Publish
+        if: ${{ matrix.os == 'ubuntu-24.04-arm' && github.event_name == 'push' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           path: '*/build/libs/*'
