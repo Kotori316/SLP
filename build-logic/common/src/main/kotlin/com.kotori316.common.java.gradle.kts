@@ -117,6 +117,58 @@ tasks.test {
     jvmArgs.add("-javaagent:${mockitoAgent.asPath}")
 }
 
+tasks.register("checkBinaryContent") {
+    group = "verification"
+    description = "Checks if the built JAR contains nested Scala JARs (JarInJar)."
+    dependsOn(tasks.jar)
+    tasks.findByName("jarJar")?.let { dependsOn(it) }
+
+    doLast {
+        var anyCheckPassed = false
+
+        val jarJarTask = tasks.findByName("jarJar") as? AbstractArchiveTask
+        val filesToCheck: List<Pair<File, String>> = listOfNotNull(
+            jarJarTask?.let { it.archiveFile.get().asFile to "jarJar" },
+            tasks.jar.get().archiveFile.get().asFile to "jar",
+        )
+
+        for ((file, label) in filesToCheck) {
+            if (!file.exists()) {
+                println("$label: ${file.name} does not exist, skipping.")
+                continue
+            }
+            val scalaJars = project.zipTree(file).matching {
+                include("META-INF/jarjar/scala*.jar")
+            }.files
+
+            if (scalaJars.isEmpty()) {
+                println("$label: no scala*.jar found in META-INF/jars/ of ${file.name}, skipping.")
+                continue
+            }
+
+            scalaJars.forEach { scalaJar ->
+                var count = 0
+                project.zipTree(scalaJar).visit {
+                    val path = relativePath.pathString
+                    if (!isDirectory && path.startsWith("scala/") && (path.endsWith(".class") || path.endsWith(".tasty"))) {
+                        count++
+                    }
+                }
+                if (count < 5) {
+                    throw GradleException("${scalaJar.name}: found $count scala/.class/.tasty file(s) inside META-INF/jarjar/, expected at least 5")
+                }
+                println("Verified ${scalaJar.name} ($label): Found $count files in 'scala/' directory.")
+            }
+            anyCheckPassed = true
+        }
+
+        if (!anyCheckPassed) {
+            throw GradleException("No Scala JarInJar content found: no scala*.jar in META-INF/jars/ of any checked JAR")
+        }
+        println("All binary checks passed successfully!")
+    }
+}
+
 tasks.register("data") {
     doLast {
         println(
