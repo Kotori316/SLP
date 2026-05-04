@@ -1,6 +1,4 @@
 [versions]
-forge12111 = "1.21.11-61.1.5"
-neo12111 = "21.11.42"
 forge260102="26.1.2-64.0.6"
 neo260102="26.1.2.10-beta"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
@@ -34,8 +32,6 @@ jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", v
 jupiter-launcher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "jupiter-platform" }
 mockito_core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito-core" }
 mockito_inline = { group = "org.mockito", name = "mockito-inline", version.ref = "mockito-inline" }
-forge12111 = { group = "net.minecraftforge", name = "forge", version.ref = "forge12111" }
-neo12111 = { group = "net.neoforged", name = "neoforge", version.ref = "neo12111" }
 forge260102 = { group = "net.minecraftforge", name = "forge", version.ref = "forge260102" }
 neo260102 = { group = "net.neoforged", name = "neoforge", version.ref = "neo260102" }
 
