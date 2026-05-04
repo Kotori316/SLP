@@ -8,6 +8,8 @@ plugins {
     alias(libs.plugins.publish.all)
 }
 
+evaluationDependsOn(":common")
+
 val minecraftVersion = "26.1.2"
 val neoVersion = libs.versions.neo260102.get()
 version = "${project.property("modVersion")}-mc${minecraftVersion}-${libs.versions.scala.get()}"
@@ -35,6 +37,8 @@ dependencies {
             }
         }
     }
+    compileOnly(project(":common"))
+    testCompileOnly(project(":common"))
 
     // Test Dependencies.
     testImplementation(libs.jupiter.api)
@@ -43,6 +47,10 @@ dependencies {
     testImplementation(libs.jupiter.launcher)
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.inline)
+}
+
+tasks.compileJava {
+    source(project(":common").sourceSets.main.get().allJava)
 }
 
 tasks.jar {

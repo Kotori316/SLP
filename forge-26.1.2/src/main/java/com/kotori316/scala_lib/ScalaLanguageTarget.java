@@ -1,5 +1,6 @@
 package com.kotori316.scala_lib;
 
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.ModLoadingException;
 import net.minecraftforge.fml.ModLoadingStage;
 import net.minecraftforge.forgespi.language.IModInfo;
@@ -8,12 +9,13 @@ import net.minecraftforge.forgespi.language.ModFileScanData;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
+import java.util.Set;
 
 import static com.kotori316.scala_lib.ScalaLanguageProvider.LOGGER;
 import static net.minecraftforge.fml.Logging.LOADING;
 
 public record ScalaLanguageTarget(String className, String modID)
-    implements IModLanguageProvider.IModLanguageLoader, ModClassData {
+    implements IModLanguageProvider.IModLanguageLoader, ModClassData<Dist> {
 
     @Override
     @SuppressWarnings("unchecked")
@@ -38,5 +40,10 @@ public record ScalaLanguageTarget(String className, String modID)
 
     private static ModLoadingException createMLE(IModInfo info, ReflectiveOperationException e) {
         return new ModLoadingException(info, ModLoadingStage.CONSTRUCT, "fml.ModLoading.FailedToLoadModClass".toLowerCase(Locale.ROOT), e);
+    }
+
+    @Override
+    public Set<Dist> availableDistSet() {
+        return Set.of();
     }
 }

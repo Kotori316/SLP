@@ -30,6 +30,7 @@ develocity {
 }
 
 includeBuild("build-logic")
+include("common")
 if (!System.getenv("DISABLE_FORGE").toBoolean()) {
     include("forge-26.1.2")
 }

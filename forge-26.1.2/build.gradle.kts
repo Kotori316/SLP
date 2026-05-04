@@ -8,6 +8,8 @@ plugins {
     alias(libs.plugins.publish.all)
 }
 
+evaluationDependsOn(":common")
+
 val minecraftVersion = "26.1.2"
 val forgeVersion = libs.versions.forge260102.get()
 version = "${project.property("modVersion")}-mc${minecraftVersion}-${libs.versions.scala.get()}"
@@ -31,6 +33,7 @@ jarJar {
 
 dependencies {
     implementation(minecraft.dependency(libs.forge260102))
+    compileOnly(project(":common"))
     implementation(libs.scala)
     implementation(libs.bundles.cats) { isTransitive = false }
     "jarJar"(libs.scala) {
@@ -53,6 +56,10 @@ dependencies {
     testImplementation(libs.jupiter.launcher)
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.inline)
+}
+
+tasks.compileJava {
+    source(project(":common").sourceSets.main.get().allJava)
 }
 
 val releaseDebug = (System.getenv("RELEASE_DEBUG") ?: "true").toBoolean()

@@ -58,7 +58,7 @@ public final class ScalaLanguageProvider implements IModLanguageLoader {
                 var clazz = data.clazz();
                 var id = (String) data.annotationData().get("value");
                 var dist = data.annotationData().get("dist");
-                return ModClassData.of(clazz, id, AutomaticEventSubscriber.getSides(dist));
+                return ModClassDataImpl.of(clazz, id, AutomaticEventSubscriber.getSides(dist));
             }).toList();
         var modClasses = ModClassData.findInstance(
                 annotatedClasses,
@@ -85,7 +85,7 @@ public final class ScalaLanguageProvider implements IModLanguageLoader {
                 var id = (String) data.annotationData().get("value");
                 var dist = data.annotationData().get("dist");
 
-                return ModClassData.of(clazz, id, AutomaticEventSubscriber.getSides(dist));
+                return ModClassDataImpl.of(clazz, id, AutomaticEventSubscriber.getSides(dist));
             })
             .peek(a -> LOGGER.debug(SCAN, "Found @Mod class {} with id {}", a.className(), a.modID()))
             .collect(Collectors.groupingBy(ModClassData::modID));
