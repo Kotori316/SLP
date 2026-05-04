@@ -17,15 +17,11 @@ repositories {
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:${libs.versions.jupiter.platform.get()}"))
+    testImplementation(platform("org.junit:junit-bom:${libs.versions.jupiter.api.get()}"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.test {
     useJUnitPlatform()
-    testLogging {
-        events("skipped", "failed", "standardOut", "standardError")
-        setExceptionFormat("full")
-    }
 }

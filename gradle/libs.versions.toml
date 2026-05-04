@@ -7,7 +7,7 @@ neo260102="26.1.2.10-beta"
 scala = "3.8.3"
 cats = "2.13.0-kotori"
 # https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
-jupiter = "6.0.3"
+jupiter-api = "6.0.3"
 # https://mvnrepository.com/artifact/org.junit.platform/junit-platform-launcher
 jupiter-platform = "6.0.3"
 mockito-core = "5.23.0"
@@ -28,9 +28,9 @@ scala3 = { group = "org.scala-lang", name = "scala3-library_3", version.ref = "s
 cats-kernel = { group = "org.typelevel", name = "cats-kernel_3", version.ref = "cats" }
 cats-core = { group = "org.typelevel", name = "cats-core_3", version.ref = "cats" }
 cats-free = { group = "org.typelevel", name = "cats-free_3", version.ref = "cats" }
-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "jupiter" }
-jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-params", version.ref = "jupiter" }
-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "jupiter" }
+jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "jupiter-api" }
+jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-params", version.ref = "jupiter-api" }
+jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "jupiter-api" }
 jupiter-launcher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "jupiter-platform" }
 mockito_core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito-core" }
 mockito_inline = { group = "org.mockito", name = "mockito-inline", version.ref = "mockito-inline" }

@@ -48,7 +48,7 @@ dependencies {
     testImplementation(
         platform(
             "org.junit:junit-bom:${
-                catalog.findVersion("jupiter").map { it.requiredVersion }.get()
+                catalog.findVersion("jupiter-api").map { it.requiredVersion }.get()
             }"
         )
     )
@@ -170,10 +170,15 @@ tasks.register("checkBinaryContent") {
 }
 
 tasks.register("data") {
+    description = "Prints some data about the environment."
     doLast {
         println(
             "Java: ${System.getProperty("java.version")} JVM: ${System.getProperty("java.vm.version")}" +
                     "(${System.getProperty("java.vendor")}) Arch: ${System.getProperty("os.arch")}"
         )
+        val jarJarTask = tasks.findByName("jarJar")
+        println("jarJar: ${(jarJarTask as? AbstractArchiveTask)?.archiveFile?.get()?.asFile?.name} $jarJarTask")
+        val jarTask = tasks.findByName("jar") as? AbstractArchiveTask
+        println("jar: ${jarTask?.archiveFile?.get()?.asFile?.name}")
     }
 }

@@ -38,7 +38,6 @@ dependencies {
         }
     }
     compileOnly(project(":common"))
-    testCompileOnly(project(":common"))
 
     // Test Dependencies.
     testImplementation(libs.jupiter.api)
