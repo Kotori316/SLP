@@ -2,7 +2,7 @@
 forge260102="26.1.2-64.0.9"
 neo260102="26.1.2.75"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
-scala = "3.8.3"
+scala = "3.8.4"
 cats = "2.13.0-kotori"
 # https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
 jupiter-api = "6.1.0"
