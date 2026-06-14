@@ -41,7 +41,7 @@ This mod adds a Scala library to Minecraft 26.1.2 with Forge and NeoForge.
       implementation('org.typelevel:cats-kernel_3:2.13.0')
 
       // The language loader. You can put the jar to the mods dir instead of declaring in `build.gradle.kts`.
-      runtimeOnly("com.kotori316:scalablecatsforce:4.0.5-mc26.1.2-3.8.4:dev") {
+      runtimeOnly("com.kotori316:scalablecatsforce:5.0.0-mc26.1.2-3.8.4:dev") {
           transitive(false)
       }
   }
