@@ -100,6 +100,8 @@ publishMods {
         ?: "") as String
         projectId = project.property("curseId").toString()
         minecraftVersions = listOf(minecraftVersion)
+        client = true
+        server = true
     }
     modrinth {
         accessToken = (project.findProperty("modrinthToken") ?: System.getenv("MODRINTH_TOKEN") ?: "") as String
