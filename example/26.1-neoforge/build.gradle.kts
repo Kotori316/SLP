@@ -43,3 +43,10 @@ dependencies {
         isTransitive = false
     }
 }
+
+// compileScala emits the source set's resources (e.g. META-INF/neoforge.mods.toml) into its own
+// output dir in addition to processResources, so the source set output carries two identical copies.
+// Drop the duplicate when assembling the jar (the copies are byte-identical, so EXCLUDE is lossless).
+tasks.jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
