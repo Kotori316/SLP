@@ -26,7 +26,10 @@ This mod adds a Scala library to Minecraft 26.1.2 with Forge and NeoForge.
           name = "kotori316"
           url = uri("https://maven.kotori316.com")
           content {
-              includeModule("com.kotori316", "ScalableCatsForce".toLowerCase())
+              // The artifact id differs by loader: "scalablecatsforce" for Forge,
+              // "scalablecatsforce-neoforge" for NeoForge.
+              includeModule("com.kotori316", "scalablecatsforce")
+              includeModule("com.kotori316", "scalablecatsforce-neoforge")
           }
       }
   }
@@ -41,14 +44,24 @@ This mod adds a Scala library to Minecraft 26.1.2 with Forge and NeoForge.
       implementation('org.typelevel:cats-kernel_3:2.13.0')
 
       // The language loader. You can put the jar to the mods dir instead of declaring in `build.gradle.kts`.
+      // Pick the artifact for your loader (the version below is shared by both).
+      // Forge:
       runtimeOnly("com.kotori316:scalablecatsforce:5.0.0-mc26.1.2-3.8.4:dev") {
           transitive(false)
       }
+      // NeoForge:
+      // runtimeOnly("com.kotori316:scalablecatsforce-neoforge:5.0.0-mc26.1.2-3.8.4:dev") {
+      //     transitive(false)
+      // }
   }
   ```
 
   * **If the Minecraft client doesn't launch with an exception to modules, change scala dependency from "implementation"
     to "compileOnly" and add slp mod in the mods directory.**
+  * The published artifact id depends on the loader: `com.kotori316:scalablecatsforce` (Forge) and
+    `com.kotori316:scalablecatsforce-neoforge` (NeoForge). Available versions are listed in their Maven metadata:
+    * Forge: https://maven.kotori316.com/com/kotori316/scalablecatsforce/maven-metadata.xml
+    * NeoForge: https://maven.kotori316.com/com/kotori316/scalablecatsforce-neoforge/maven-metadata.xml
   * Change the library version if needed.
     * See detail pages in CurseForge or Modrinth to get which library version is included in the Jar file.
   * From 26.1.2 version, SLP includes Scala 3.8.4
