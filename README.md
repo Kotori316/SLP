@@ -67,6 +67,15 @@ In this section, I note some points you should care.
   in `BlockPos` and `Vec3i`, and the return types are different. So, the compiler can't determine which method to call.
   To resolve this issue, specify the return type as follows. `val offsetPos: BlockPos = pos.relative(direction)`
 
+3. On Forge, do not import the per-primitive Cats convenience packages
+   `cats.kernel.instances.{byte, char, short, int, long, float, double, boolean}` directly.
+
+* These packages are named after Java reserved words, so the Forge jar drops them (see the API section). Code such as
+  `import cats.kernel.instances.int.*` compiles against the official Cats but throws `NoClassDefFoundError:
+  cats/kernel/instances/int/package$` at runtime on Forge. The instances are still available via `cats.implicits.*`,
+  `cats.syntax.*`, `cats.kernel.instances.all.*`, or `cats.kernel.instances.<Type>Instances` (e.g.
+  `cats.kernel.instances.IntInstances`). NeoForge bundles the jars as-is and is unaffected.
+
 ## API
 
 * [Scala](https://www.scala-lang.org/) - [GitHub](https://github.com/scala/scala) - is licenced under

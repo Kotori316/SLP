@@ -38,10 +38,12 @@ jarJar {
 // (cats.kernel.instances.{byte,char,short,int,long,float,double,boolean}). These are legal in
 // Scala but Forge's securejarhandler rejects them while building the module layer at boot
 // ("Invalid package name: 'byte' is not a Java identifier"), before any mod/coremod/mixin runs.
-// NeoForge's fork tolerates them, but Forge does not. These packages only contain
-// `import cats.kernel.instances.byte.*` convenience shims and are referenced by nothing inside
-// cats-core/kernel/free, so we drop them from the bundled jar to make it JPMS-valid. Instances
-// remain available via cats.implicits.*, cats.syntax.*, and cats.kernel.instances.<Type>Instances.
+// NeoForge's fork tolerates them, but Forge does not. These packages only contain `package object`
+// convenience shims (for `import cats.kernel.instances.byte.*`). No class header references them, so
+// dropping them does not break class loading; a few kernel companions (Eq$, Semigroup$, SortedSetOrder,
+// ...) do reference them, but only in method-body forwarders that normal implicit resolution never picks.
+// So we drop them from the bundled jar to make it JPMS-valid. Instances remain available via
+// cats.implicits.*, cats.syntax.*, cats.kernel.instances.all.*, and cats.kernel.instances.<Type>Instances.
 tasks.named("jarJar", org.gradle.jvm.tasks.Jar::class) {
     doLast {
         stripReservedCatsPackages(archiveFile.get().asFile)
