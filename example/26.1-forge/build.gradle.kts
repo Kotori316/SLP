@@ -50,15 +50,6 @@ repositories {
     maven(fg.forgeMaven)
     maven(fg.minecraftLibsMaven)
     mavenCentral()
-    maven {
-        name = "Kotori316"
-        url = uri("https://maven.kotori316.com")
-        content {
-            includeModule("org.typelevel", "cats-core_3")
-            includeModule("org.typelevel", "cats-kernel_3")
-            includeModule("org.typelevel", "cats-free_3")
-        }
-    }
 }
 
 val forgeJarJarOutput: Provider<RegularFile> = project(":forge-26.1.2").tasks
