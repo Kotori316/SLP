@@ -37,6 +37,8 @@ repositories {
 
 dependencies {
     compileOnly(libs.scala3)
+    // Cats is provided at runtime by the SLP jar (JarInJar). Only needed for compilation here.
+    compileOnly(libs.bundles.cats) { isTransitive = false }
     runtimeOnly(project(":neoforge-26.1.2")) {
         isTransitive = false
     }
