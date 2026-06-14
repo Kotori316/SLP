@@ -27,9 +27,6 @@ This mod adds a Scala library to Minecraft 26.1.2 with Forge and NeoForge.
           url = uri("https://maven.kotori316.com")
           content {
               includeModule("com.kotori316", "ScalableCatsForce".toLowerCase())
-              includeModule("org.typelevel", "cats-core_3")
-              includeModule("org.typelevel", "cats-kernel_3")
-              includeModule("org.typelevel", "cats-free_3")
           }
       }
   }
@@ -38,12 +35,13 @@ This mod adds a Scala library to Minecraft 26.1.2 with Forge and NeoForge.
       // Add Forge or NeoForge dependency as the platform requires
   
       // Scala, no need to add Scala2 dependency since 3.8.3
-      implementation('org.scala-lang:scala3-library_3:3.8.3')
-      // Add if you need this library. I use a modified version of Cats to avoid some module errors.
-      implementation('org.typelevel:cats-kernel_3:2.13.0-kotori')
+      implementation('org.scala-lang:scala3-library_3:3.8.4')
+      // Add if you need this library.
+      // the runtime copy is bundled in the SLP jar.
+      implementation('org.typelevel:cats-kernel_3:2.13.0')
 
       // The language loader. You can put the jar to the mods dir instead of declaring in `build.gradle.kts`.
-      runtimeOnly("com.kotori316:scalablecatsforce:4.0.4-mc26.1.2-3.8.3:dev") {
+      runtimeOnly("com.kotori316:scalablecatsforce:4.0.5-mc26.1.2-3.8.4:dev") {
           transitive(false)
       }
   }
@@ -53,7 +51,7 @@ This mod adds a Scala library to Minecraft 26.1.2 with Forge and NeoForge.
     to "compileOnly" and add slp mod in the mods directory.**
   * Change the library version if needed.
     * See detail pages in CurseForge or Modrinth to get which library version is included in the Jar file.
-  * From 26.1.2 version, SLP includes Scala 3.8.3
+  * From 26.1.2 version, SLP includes Scala 3.8.4
 
 ### Limitations
 
@@ -69,13 +67,24 @@ In this section, I note some points you should care.
   in `BlockPos` and `Vec3i`, and the return types are different. So, the compiler can't determine which method to call.
   To resolve this issue, specify the return type as follows. `val offsetPos: BlockPos = pos.relative(direction)`
 
+3. On Forge, do not import the per-primitive Cats convenience packages
+   `cats.kernel.instances.{byte, char, short, int, long, float, double, boolean}` directly.
+
+* These packages are named after Java reserved words, so the Forge jar drops them (see the API section). Code such as
+  `import cats.kernel.instances.int.*` compiles against the official Cats but throws `NoClassDefFoundError:
+  cats/kernel/instances/int/package$` at runtime on Forge. The instances are still available via `cats.implicits.*`,
+  `cats.syntax.*`, `cats.kernel.instances.all.*`, or `cats.kernel.instances.<Type>Instances` (e.g.
+  `cats.kernel.instances.IntInstances`). NeoForge bundles the jars as-is and is unaffected.
+
 ## API
 
 * [Scala](https://www.scala-lang.org/) - [GitHub](https://github.com/scala/scala) - is licenced under
   the [Apache License, Version 2.0](https://www.scala-lang.org/license/).
 * [Cats](https://typelevel.org/cats/) - [GitHub](https://github.com/typelevel/cats) - is licenced under
-  the [Licence](https://github.com/typelevel/cats/blob/master/COPYING).
-  * SLP uses [modified version of Cats](https://github.com/Kotori316/cats) to avoid module error.
+  the [License](https://github.com/typelevel/cats/blob/master/COPYING).
+  * SLP bundles the official Cats. NeoForge uses the jars as-is. The Forge jar removes the
+    Java-reserved-word packages (e.g. `cats.kernel.instances.byte`) from `cats-kernel`, because Forge's
+    module system rejects them while building the module layer at boot.
 
 [curse_forge]: https://www.curseforge.com/minecraft/mc-mods/scalable-cats-force
 [Modrinth]: https://modrinth.com/mod/scalable-cats-force
