@@ -27,9 +27,6 @@ This mod adds a Scala library to Minecraft 26.1.2 with Forge and NeoForge.
           url = uri("https://maven.kotori316.com")
           content {
               includeModule("com.kotori316", "ScalableCatsForce".toLowerCase())
-              includeModule("org.typelevel", "cats-core_3")
-              includeModule("org.typelevel", "cats-kernel_3")
-              includeModule("org.typelevel", "cats-free_3")
           }
       }
   }
@@ -39,8 +36,9 @@ This mod adds a Scala library to Minecraft 26.1.2 with Forge and NeoForge.
   
       // Scala, no need to add Scala2 dependency since 3.8.3
       implementation('org.scala-lang:scala3-library_3:3.8.3')
-      // Add if you need this library. I use a modified version of Cats to avoid some module errors.
-      implementation('org.typelevel:cats-kernel_3:2.13.0-kotori')
+      // Add if you need this library.
+      // the runtime copy is bundled in the SLP jar.
+      implementation('org.typelevel:cats-kernel_3:2.13.0')
 
       // The language loader. You can put the jar to the mods dir instead of declaring in `build.gradle.kts`.
       runtimeOnly("com.kotori316:scalablecatsforce:4.0.4-mc26.1.2-3.8.3:dev") {
@@ -74,8 +72,10 @@ In this section, I note some points you should care.
 * [Scala](https://www.scala-lang.org/) - [GitHub](https://github.com/scala/scala) - is licenced under
   the [Apache License, Version 2.0](https://www.scala-lang.org/license/).
 * [Cats](https://typelevel.org/cats/) - [GitHub](https://github.com/typelevel/cats) - is licenced under
-  the [Licence](https://github.com/typelevel/cats/blob/master/COPYING).
-  * SLP uses [modified version of Cats](https://github.com/Kotori316/cats) to avoid module error.
+  the [License](https://github.com/typelevel/cats/blob/master/COPYING).
+  * SLP bundles the official Cats. NeoForge uses the jars as-is. The Forge jar removes the
+    Java-reserved-word packages (e.g. `cats.kernel.instances.byte`) from `cats-kernel`, because Forge's
+    module system rejects them while building the module layer at boot.
 
 [curse_forge]: https://www.curseforge.com/minecraft/mc-mods/scalable-cats-force
 [Modrinth]: https://modrinth.com/mod/scalable-cats-force
