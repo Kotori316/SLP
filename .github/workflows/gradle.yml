@@ -112,3 +112,9 @@ jobs:
           path: '*/build/libs/*'
           name: '${{ github.event.repository.name }}-NeoForge-${{ github.run_number }}'
           retention-days: 3
+
+  check-actions:
+    # See https://github.com/Kotori316/common-script/blob/v2.0.3/.github/workflows/check-action.yaml
+    uses: 'Kotori316/common-script/.github/workflows/check-action.yaml@cc63e8610e21a91ed102150d078b10d216e02b76' # v2.0.3
+    permissions:
+      contents: read
