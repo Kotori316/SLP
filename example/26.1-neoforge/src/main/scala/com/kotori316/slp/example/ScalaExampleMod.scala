@@ -21,6 +21,7 @@ class ScalaExampleMod(modEventBus: IEventBus, container: ModContainer) {
 
   private def setUp(event: FMLCommonSetupEvent): Unit = {
     ScalaExampleMod.LOGGER.info(s"Hello from Scala Example Mod(${container.getModId}) on ${event.toString}!")
+    ScalaExampleMod.LOGGER.info(s"Cats works on startup: ${ScalaExampleMod.catsDemo}")
   }
 
   private def register(event: RegisterEvent): Unit = {
@@ -37,9 +38,31 @@ object ScalaExampleMod {
   final val MOD_ID = "slp_examples"
   final val LOGGER = LoggerFactory.getLogger(MOD_ID)
 
+  /**
+   * Exercises classes from all three bundled Cats modules to confirm the official
+   * Cats binary loads correctly inside the (Neo)Forge module layer at runtime.
+   *   - cats-core:   [[cats.data.NonEmptyList]]
+   *   - cats-kernel: [[cats.kernel.Monoid]] (via the `combineAll` syntax)
+   *   - cats-free:   [[cats.free.Free]]
+   */
+  private def catsDemo: String = {
+    import cats.Id
+    import cats.arrow.FunctionK
+    import cats.data.NonEmptyList
+    import cats.free.Free
+    import cats.implicits.*
+
+    val nel = NonEmptyList.of(1, 2, 3)
+    val sum = nel.toList.combineAll
+    val program = Free.pure[Id, Int](sum).map(_ + nel.head)
+    val freeResult = program.foldMap(FunctionK.id[Id])
+    s"NonEmptyList=${nel.toList.mkString(",")}, Monoid sum=$sum, Free result=$freeResult"
+  }
+
   //noinspection UnstableApiUsage
   private def gameTest(helper: GameTestHelper): Unit = {
     ScalaExampleMod.LOGGER.info(s"Running game test in ${SharedConstants.getCurrentVersion.name} NeoForge ${NeoForgeVersion.getVersion}")
+    ScalaExampleMod.LOGGER.info(s"Cats works in game test: ${ScalaExampleMod.catsDemo}")
     helper.succeed()
   }
 }
