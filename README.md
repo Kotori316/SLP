@@ -35,13 +35,13 @@ This mod adds a Scala library to Minecraft 26.1.2 with Forge and NeoForge.
       // Add Forge or NeoForge dependency as the platform requires
   
       // Scala, no need to add Scala2 dependency since 3.8.3
-      implementation('org.scala-lang:scala3-library_3:3.8.3')
+      implementation('org.scala-lang:scala3-library_3:3.8.4')
       // Add if you need this library.
       // the runtime copy is bundled in the SLP jar.
       implementation('org.typelevel:cats-kernel_3:2.13.0')
 
       // The language loader. You can put the jar to the mods dir instead of declaring in `build.gradle.kts`.
-      runtimeOnly("com.kotori316:scalablecatsforce:4.0.4-mc26.1.2-3.8.3:dev") {
+      runtimeOnly("com.kotori316:scalablecatsforce:4.0.5-mc26.1.2-3.8.4:dev") {
           transitive(false)
       }
   }
@@ -51,7 +51,7 @@ This mod adds a Scala library to Minecraft 26.1.2 with Forge and NeoForge.
     to "compileOnly" and add slp mod in the mods directory.**
   * Change the library version if needed.
     * See detail pages in CurseForge or Modrinth to get which library version is included in the Jar file.
-  * From 26.1.2 version, SLP includes Scala 3.8.3
+  * From 26.1.2 version, SLP includes Scala 3.8.4
 
 ### Limitations
 
