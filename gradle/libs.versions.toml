@@ -1,5 +1,5 @@
 [versions]
-forge260102="26.1.2-64.0.9"
+forge260102="26.1.2-64.0.10"
 neo260102="26.1.2.76"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
 scala = "3.8.4"
