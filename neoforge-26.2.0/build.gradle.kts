@@ -10,7 +10,7 @@ plugins {
 
 evaluationDependsOn(":common")
 
-val minecraftVersion = "26.2.0"
+val minecraftVersion = "26.2"
 val neoVersion = libs.versions.neo262000.get()
 version = "${project.property("modVersion")}-mc${minecraftVersion}-${libs.versions.scala.get()}"
 group = "com.kotori316" // http://maven.apache.org/guides/mini/guide-naming-conventions.html

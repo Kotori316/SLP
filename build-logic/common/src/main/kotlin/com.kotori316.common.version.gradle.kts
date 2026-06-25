@@ -1,7 +1,5 @@
 import com.kotori316.plugin.cf.CallVersionCheckFunctionTask
 import com.kotori316.plugin.cf.CallVersionFunctionTask
-import org.gradle.api.artifacts.VersionCatalogsExtension
-import kotlin.IllegalArgumentException
 
 val catalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
@@ -31,6 +29,8 @@ fun pfVersion(platform: String): String {
     return when (platform) {
         "forge-26.1.2" -> catalog.findVersion("forge260102").map { it.requiredVersion }.get()
         "neoforge-26.1.2" -> catalog.findVersion("neo260102").map { it.requiredVersion }.get()
+        "forge-26.2.0" -> catalog.findVersion("forge262000").map { it.requiredVersion }.get()
+        "neoforge-26.2.0" -> catalog.findVersion("neo262000").map { it.requiredVersion }.get()
         else -> throw IllegalArgumentException("Unknown platform: $platform")
     }
 }
@@ -44,8 +44,8 @@ fun getPlatform(platform: String): String {
 }
 
 fun getMinecraftVersion(platform: String): String {
-    val versionPattern = Regex("""(?:neo)?forge-(\d+\.\d+\.\d+)""")
+    val versionPattern = Regex("""(?:neo)?forge-(\d+\.\d+(?:\.\d+)?)""")
     val match = versionPattern.find(platform)
         ?: throw IllegalArgumentException("Unknown platform: $platform")
-    return match.groupValues[1]
+    return match.groupValues[1].removeSuffix(".0")
 }
