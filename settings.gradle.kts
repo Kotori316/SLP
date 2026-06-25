@@ -33,15 +33,19 @@ includeBuild("build-logic")
 include("common")
 if (!System.getenv("DISABLE_FORGE").toBoolean()) {
     include("forge-26.1.2")
+    include("forge-26.2.0")
 }
 if (!System.getenv("DISABLE_NEO_FORGE").toBoolean()) {
     include("neoforge-26.1.2")
+    include("neoforge-26.2.0")
 }
 if(!System.getenv("DISABLE_EXAMPLE").toBoolean()) {
     if (!System.getenv("DISABLE_FORGE").toBoolean()) {
         include("example:26.1-forge")
+        include("example:26.2-forge")
     }
     if (!System.getenv("DISABLE_NEO_FORGE").toBoolean()){
          include("example:26.1-neoforge")
+        include("example:26.2-neoforge")
     }
 }
