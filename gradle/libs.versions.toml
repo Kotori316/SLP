@@ -1,6 +1,8 @@
 [versions]
 forge260102="26.1.2-64.0.10"
 neo260102="26.1.2.76"
+forge262000 = "26.2-65.0.0"
+neo262000 = "26.2.0.7-beta"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
 scala = "3.8.4"
 # https://mvnrepository.com/artifact/org.typelevel/cats-core
@@ -35,6 +37,8 @@ mockito_core = { group = "org.mockito", name = "mockito-core", version.ref = "mo
 mockito_inline = { group = "org.mockito", name = "mockito-inline", version.ref = "mockito-inline" }
 forge260102 = { group = "net.minecraftforge", name = "forge", version.ref = "forge260102" }
 neo260102 = { group = "net.neoforged", name = "neoforge", version.ref = "neo260102" }
+forge262000 = { group = "net.minecraftforge", name = "forge", version.ref = "forge262000" }
+neo262000 = { group = "net.neoforged", name = "neoforge", version.ref = "neo262000" }
 
 [plugins]
 cf = { id = "com.kotori316.plugin.cf", version.ref = "plugin_cf" }
