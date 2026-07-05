@@ -67,7 +67,8 @@ tasks.jar {
     }
 }
 
-val devJar by tasks.registering(Jar::class) {
+val devJar = tasks.register("devJar", Jar::class) {
+    description = "Jar for development"
     archiveClassifier = "dev"
     manifest {
         attributes(manifestMap)
