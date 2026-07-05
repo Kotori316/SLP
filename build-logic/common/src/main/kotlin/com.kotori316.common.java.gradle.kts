@@ -60,6 +60,7 @@ val manifestMap = mapOf(
 )
 
 tasks.jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes(manifestMap)
         // Use provider so the version is resolved at task execution time (after the project version is set)
