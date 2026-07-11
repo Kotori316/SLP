@@ -71,6 +71,7 @@ tasks.jar {
 val devJar = tasks.register("devJar", Jar::class) {
     description = "Jar for development"
     archiveClassifier = "dev"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes(manifestMap)
         attributes(mapOf("Implementation-Version" to provider { project.version }))
