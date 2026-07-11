@@ -121,7 +121,7 @@ class ModClassDataTest {
         }
     }
 
-    record ModClassDataImpl(String className, String modID) implements ModClassData<String > {
+    record ModClassDataImpl(String className, String modID) implements ModClassData<String> {
         @Override
         public Set<String> availableDistSet() {
             return Set.of();
