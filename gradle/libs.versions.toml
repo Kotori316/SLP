@@ -1,7 +1,7 @@
 [versions]
 forge260102="26.1.2-64.0.11"
 neo260102="26.1.2.78"
-forge262000 = "26.2-65.0.3"
+forge262000 = "26.2-65.0.4"
 neo262000 = "26.2.0.12-beta"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
 scala = "3.8.4"
