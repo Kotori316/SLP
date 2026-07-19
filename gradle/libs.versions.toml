@@ -21,7 +21,7 @@ plugin_ghr = "2.5.2"
 plugin_publish_all = "2.1.1"
 plugin_forge_gradle = "7.0.31"
 plugin_forge_jarjar = "0.2.3"
-plugin_neoforge_moddev = "2.0.141"
+plugin_neoforge_moddev = "2.0.142"
 
 [libraries]
 scala = { group = "org.scala-lang", name = "scala-library", version.ref = "scala" }
