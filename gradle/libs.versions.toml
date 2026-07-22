@@ -15,7 +15,7 @@ mockito-core = "5.23.0"
 mockito-inline = "5.2.0"
 
 plugin_cf = "4.0"
-plugin_shadow = "9.6.0"
+plugin_shadow = "9.6.1"
 plugin_idea_ext = "1.4.1"
 plugin_ghr = "2.5.2"
 plugin_publish_all = "2.1.1"
