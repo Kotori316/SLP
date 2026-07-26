@@ -2,7 +2,7 @@
 forge260102="26.1.2-64.0.14"
 neo260102="26.1.2.84"
 forge262000 = "26.2-65.0.9"
-neo262000 = "26.2.0.28-beta"
+neo262000 = "26.2.0.30-beta"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
 scala = "3.8.4"
 # https://mvnrepository.com/artifact/org.typelevel/cats-core
