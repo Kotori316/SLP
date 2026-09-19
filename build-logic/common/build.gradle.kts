@@ -13,6 +13,6 @@ dependencies {
         "com.kotori316.plugin.cf" to libs.versions.plugin.cf.get(),
         "com.gradleup.shadow" to libs.versions.plugin.shadow.get(),
     ).forEach { (name, version) ->
-        implementation(group = name, name = "${name}.gradle.plugin", version = version)
+        implementation("$name:${name}.gradle.plugin:$version")
     }
 }
