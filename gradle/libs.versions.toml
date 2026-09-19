@@ -3,6 +3,7 @@ forge260102="26.1.2-64.1.3"
 neo260102="26.1.2.109"
 forge262000 = "26.2-65.1.3"
 neo262000 = "26.2.0.88"
+neo263000 = "26.3.0.6-beta"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
 scala = "3.9.0"
 # https://mvnrepository.com/artifact/org.typelevel/cats-core
@@ -39,6 +40,7 @@ forge260102 = { group = "net.minecraftforge", name = "forge", version.ref = "for
 neo260102 = { group = "net.neoforged", name = "neoforge", version.ref = "neo260102" }
 forge262000 = { group = "net.minecraftforge", name = "forge", version.ref = "forge262000" }
 neo262000 = { group = "net.neoforged", name = "neoforge", version.ref = "neo262000" }
+neo263000 = { group = "net.neoforged", name = "neoforge", version.ref = "neo263000" }
 
 [plugins]
 cf = { id = "com.kotori316.plugin.cf", version.ref = "plugin_cf" }

@@ -31,6 +31,7 @@ fun pfVersion(platform: String): String {
         "neoforge-26.1.2" -> catalog.findVersion("neo260102").map { it.requiredVersion }.get()
         "forge-26.2.0" -> catalog.findVersion("forge262000").map { it.requiredVersion }.get()
         "neoforge-26.2.0" -> catalog.findVersion("neo262000").map { it.requiredVersion }.get()
+        "neoforge-26.3.0" -> catalog.findVersion("neo263000").map { it.requiredVersion }.get()
         else -> throw IllegalArgumentException("Unknown platform: $platform")
     }
 }
