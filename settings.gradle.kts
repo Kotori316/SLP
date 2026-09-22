@@ -34,6 +34,7 @@ include("common")
 if (!System.getenv("DISABLE_FORGE").toBoolean()) {
     include("forge-26.1.2")
     include("forge-26.2.0")
+    include("forge-26.3.0")
 }
 if (!System.getenv("DISABLE_NEO_FORGE").toBoolean()) {
     include("neoforge-26.1.2")
@@ -44,6 +45,7 @@ if(!System.getenv("DISABLE_EXAMPLE").toBoolean()) {
     if (!System.getenv("DISABLE_FORGE").toBoolean()) {
         include("example:26.1-forge")
         include("example:26.2-forge")
+        include("example:26.3-forge")
     }
     if (!System.getenv("DISABLE_NEO_FORGE").toBoolean()){
          include("example:26.1-neoforge")

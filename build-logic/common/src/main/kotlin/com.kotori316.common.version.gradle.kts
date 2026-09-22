@@ -1,5 +1,9 @@
 import com.kotori316.plugin.cf.CallVersionCheckFunctionTask
 import com.kotori316.plugin.cf.CallVersionFunctionTask
+import org.gradle.api.artifacts.VersionCatalogsExtension
+import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.register
 
 val catalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
@@ -31,6 +35,7 @@ fun pfVersion(platform: String): String {
         "neoforge-26.1.2" -> catalog.findVersion("neo260102").map { it.requiredVersion }.get()
         "forge-26.2.0" -> catalog.findVersion("forge262000").map { it.requiredVersion }.get()
         "neoforge-26.2.0" -> catalog.findVersion("neo262000").map { it.requiredVersion }.get()
+        "forge-26.3.0" -> catalog.findVersion("forge263000").map { it.requiredVersion }.get()
         "neoforge-26.3.0" -> catalog.findVersion("neo263000").map { it.requiredVersion }.get()
         else -> throw IllegalArgumentException("Unknown platform: $platform")
     }
