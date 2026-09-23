@@ -18,14 +18,22 @@ public interface ModClassData<DIST> {
     }
 
     static <D, T extends ModClassData<D>> List<T> findInstance(Collection<T> targets) {
-        return findInstance(targets, t -> {
-            throw new RuntimeException("Exception in loading mods. %s".formatted(targets));
-        });
+        return findInstance(targets, false);
     }
 
-    static <D, T extends ModClassData<D>> List<T> findInstance(Collection<T> targets, Consumer<Collection<T>> onError) {
+    static <D, T extends ModClassData<D>> List<T> findInstance(Collection<T> targets, boolean acceptMultipleTargets) {
+        return findInstanceByModId(targets, _ -> {
+            throw new RuntimeException("Exception in loading mods. %s".formatted(targets));
+        }, acceptMultipleTargets);
+    }
+
+    static <D, T extends ModClassData<D>> List<T> findInstanceByModId(Collection<T> targets, Consumer<Collection<T>> onError, boolean acceptMultipleTargets) {
         var byModId = targets.stream().collect(Collectors.groupingBy(ModClassData::modID));
         return byModId.values().stream().<T>mapMulti((ts, c) -> {
+            if (acceptMultipleTargets) {
+                ts.forEach(c);
+                return;
+            }
             if (ts.size() == 1) {
                 c.accept(ts.getFirst());
             } else {
