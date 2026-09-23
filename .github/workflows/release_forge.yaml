@@ -161,7 +161,6 @@ jobs:
           -PjarSign.storePass="${SIGN_STORE_PASS}"
           -Dorg.gradle.s3.endpoint="${CLOUDFLARE_S3_ENDPOINT}"
           assemble publishToMavenLocal publish publishMods registerVersion githubRelease
-        #  assemble publishToMavenLocal publish publishMods registerVersion githubRelease
         env:
           RELEASE_DEBUG: false
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
