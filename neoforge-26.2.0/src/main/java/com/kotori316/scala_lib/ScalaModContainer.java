@@ -21,15 +21,14 @@ import org.apache.logging.log4j.Logger;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import static net.neoforged.fml.Logging.LOADING;
 
 public class ScalaModContainer extends ModContainer {
     private static final Logger LOGGER = LogManager.getLogger(ScalaModContainer.class);
+    private static final ConstructorSelector CONSTRUCTOR_SELECTOR = new ConstructorSelector(msg -> LOGGER.trace(LOADING, "{}", msg));
 
     private final List<String> entryPoints;
     private final Module layer;
@@ -93,7 +92,11 @@ public class ScalaModContainer extends ModContainer {
                     LOGGER.trace(LOADING, "Scala Mod instance for {} was got. {}", this.modId, modInstance);
                 } else {
                     LOGGER.trace(LOADING, "Scala Mod instance for {} is about to create. {}", this.modId, modClass.getName());
-                    Map.Entry<Constructor<?>, Object[]> constructors = getConstructor(modClass, this.modId, getEventBus(), this, FMLLoader.getCurrent().getDist());
+                    Map.Entry<Constructor<?>, Object[]> constructors = CONSTRUCTOR_SELECTOR.select(modClass, this.modId, Map.of(
+                        IEventBus.class, getEventBus(),
+                        ModContainer.class, this,
+                        Dist.class, FMLLoader.getCurrent().getDist()
+                    ));
                     constructors.getKey().setAccessible(true);
                     modInstance = constructors.getKey().newInstance(constructors.getValue());
                     LOGGER.trace(LOADING, "Scala Mod instance for {} created. {}", this.modId, modInstance);
@@ -127,22 +130,6 @@ public class ScalaModContainer extends ModContainer {
     @Override
     public IEventBus getEventBus() {
         return eventBus;
-    }
-
-    static Map.Entry<Constructor<?>, Object[]> getConstructor(Class<?> modClass, String modId, IEventBus bus, ModContainer container, Dist dist) {
-        var constructors = modClass.getDeclaredConstructors();
-        LOGGER.trace(LOADING, "Found {} constructors for {}", constructors.length, modId);
-        var args = Map.of(
-            IEventBus.class, bus,
-            ModContainer.class, container,
-            Dist.class, dist
-        );
-        var constructor = Stream.of(constructors)
-            .filter(c -> Stream.of(c.getParameterTypes()).allMatch(args::containsKey))
-            .max(Comparator.comparingInt(Constructor::getParameterCount))
-            .orElseThrow(() -> new RuntimeException("No mod constructor with allowed arg types were found for " + modId));
-        var constructorArgs = Stream.of(constructor.getParameterTypes()).map(args::get).toArray();
-        return Map.entry(constructor, constructorArgs);
     }
 
     @Override

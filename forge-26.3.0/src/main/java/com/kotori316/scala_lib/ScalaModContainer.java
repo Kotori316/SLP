@@ -19,14 +19,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Constructor;
-import java.util.Comparator;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import static net.minecraftforge.fml.Logging.LOADING;
 
 public class ScalaModContainer extends ModContainer {
     private static final Logger LOGGER = LogManager.getLogger(ScalaModContainer.class);
+    private static final ConstructorSelector CONSTRUCTOR_SELECTOR = new ConstructorSelector(msg -> LOGGER.trace(LOADING, "{}", msg));
 
     private final String className;
     private final ModuleLayer gameLayer;
@@ -82,7 +81,12 @@ public class ScalaModContainer extends ModContainer {
                 LOGGER.trace(LOADING, "Scala Mod instance for {} was got. {}", this.modId, modInstance);
             } else {
                 LOGGER.trace(LOADING, "Scala Mod instance for {} is about to create. {}", this.modId, modClass.getName());
-                Map.Entry<Constructor<?>, Object[]> constructors = getConstructor(modClass, this.modId, getModBusGroup(), this, FMLLoader.getDist(), context);
+                Map.Entry<Constructor<?>, Object[]> constructors = CONSTRUCTOR_SELECTOR.select(modClass, this.modId, Map.of(
+                    BusGroup.class, getModBusGroup(),
+                    ModContainer.class, this,
+                    Dist.class, FMLLoader.getDist(),
+                    FMLJavaModLoadingContext.class, context
+                ));
                 constructors.getKey().setAccessible(true);
                 modInstance = constructors.getKey().newInstance(constructors.getValue());
                 LOGGER.trace(LOADING, "Scala Mod instance for {} created. {}", this.modId, modInstance);
@@ -147,23 +151,6 @@ public class ScalaModContainer extends ModContainer {
             LOGGER.fatal("Error happened in creating dummy instance.", e);
             return null;
         }
-    }
-
-    static Map.Entry<Constructor<?>, Object[]> getConstructor(Class<?> modClass, String modId, BusGroup busGroup, ModContainer container, Dist dist, FMLJavaModLoadingContext context) {
-        var constructors = modClass.getDeclaredConstructors();
-        LOGGER.trace(LOADING, "Found {} constructors for {}", constructors.length, modId);
-        var args = Map.of(
-            BusGroup.class, busGroup,
-            ModContainer.class, container,
-            Dist.class, dist,
-            FMLJavaModLoadingContext.class, context
-        );
-        var constructor = Stream.of(constructors)
-            .filter(c -> Stream.of(c.getParameterTypes()).allMatch(args::containsKey))
-            .max(Comparator.comparingInt(Constructor::getParameterCount))
-            .orElseThrow(() -> new RuntimeException("No mod constructor with allowed arg types were found for " + modId));
-        var constructorArgs = Stream.of(constructor.getParameterTypes()).map(args::get).toArray();
-        return Map.entry(constructor, constructorArgs);
     }
 
     @Override
