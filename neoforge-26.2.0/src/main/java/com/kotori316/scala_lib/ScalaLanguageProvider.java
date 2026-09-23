@@ -62,7 +62,8 @@ public final class ScalaLanguageProvider implements IModLanguageLoader {
             }).toList();
         var modClasses = ModClassData.findInstance(
                 annotatedClasses,
-                t -> LOGGER.error("Error in loading {}. No acceptable class found", t)
+                t -> LOGGER.error("Error in loading {}. No acceptable class found", t),
+                true
             ).stream()
             .filter(d -> d.availableDistSet().contains(FMLLoader.getCurrent().getDist()))
             .map(ModClassData::className)

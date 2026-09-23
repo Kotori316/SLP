@@ -33,7 +33,7 @@ public final class ScalaLanguageProvider implements IModLanguageProvider {
                     var id = (String) data.annotationData().get("value");
                     return new ScalaLanguageTarget(className, id);
                 }).toList();
-            var targets = ModClassData.findInstance(annotatedClasses);
+            var targets = ModClassData.findInstance(annotatedClasses, true);
             var map = targets.stream()
                 .peek(a -> LOGGER.debug(SCAN, "Found @Mod class {} with id {}", a.className(), a.modID()))
                 .collect(Collectors.toMap(ModClassData::modID, Function.identity()));

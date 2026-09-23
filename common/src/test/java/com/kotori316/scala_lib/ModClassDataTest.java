@@ -2,9 +2,13 @@ package com.kotori316.scala_lib;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -83,41 +87,55 @@ class ModClassDataTest {
         }
 
         @Test
-        void duplication1() {
-            var targets = List.of(
+        void classAndObjAllowDuplication() {
+            var targets = Set.of(
+                new ModClassDataImpl("com.kotori316.test.Mod1$", "test1"),
                 new ModClassDataImpl("com.kotori316.test.Mod1", "test1"),
-                new ModClassDataImpl("com.kotori316.test.Mod1", "test1")
+                new ModClassDataImpl("com.kotori316.test.Mod1_other", "test1")
             );
+            var result = Set.copyOf(assertDoesNotThrow(() -> ModClassData.findInstance(targets, true)));
+            assertEquals(targets, result);
+        }
+
+        static Stream<Collection<ModClassDataImpl>> duplicationTestCases() {
+            return Stream.of(
+                List.of(
+                    new ModClassDataImpl("com.kotori316.test.Mod1", "test1"),
+                    new ModClassDataImpl("com.kotori316.test.Mod1", "test1")
+                ),
+                Set.of(
+                    new ModClassDataImpl("com.kotori316.test.Mod1", "test1"),
+                    new ModClassDataImpl("com.kotori316.test.Mod2", "test1")
+                ),
+                Set.of(
+                    new ModClassDataImpl("com.kotori316.test.Mod1", "test1"),
+                    new ModClassDataImpl("com.kotori316.test.Mod2", "test1"),
+                    new ModClassDataImpl("com.kotori316.test.Mod3", "test1")
+                ),
+                Set.of(
+                    new ModClassDataImpl("com.kotori316.test.Mod1", "test1"),
+                    new ModClassDataImpl("com.kotori316.test.Mod2", "test2"),
+                    new ModClassDataImpl("com.kotori316.test.Mod3", "test1")
+                )
+            );
+        }
+
+        @ParameterizedTest
+        @MethodSource("duplicationTestCases")
+        void duplication(Collection<ModClassDataImpl> targets) {
             assertThrows(RuntimeException.class, () -> ModClassData.findInstance(targets));
         }
 
-        @Test
-        void duplication2() {
-            var targets = Set.of(
-                new ModClassDataImpl("com.kotori316.test.Mod1", "test1"),
-                new ModClassDataImpl("com.kotori316.test.Mod2", "test1")
-            );
-            assertThrows(RuntimeException.class, () -> ModClassData.findInstance(targets));
+        @ParameterizedTest
+        @MethodSource("duplicationTestCases")
+        void disAllowDuplication(Collection<ModClassDataImpl> targets) {
+            assertThrows(RuntimeException.class, () -> ModClassData.findInstance(targets, false));
         }
 
-        @Test
-        void duplication3() {
-            var targets = Set.of(
-                new ModClassDataImpl("com.kotori316.test.Mod1", "test1"),
-                new ModClassDataImpl("com.kotori316.test.Mod2", "test1"),
-                new ModClassDataImpl("com.kotori316.test.Mod3", "test1")
-            );
-            assertThrows(RuntimeException.class, () -> ModClassData.findInstance(targets));
-        }
-
-        @Test
-        void duplication4() {
-            var targets = Set.of(
-                new ModClassDataImpl("com.kotori316.test.Mod1", "test1"),
-                new ModClassDataImpl("com.kotori316.test.Mod2", "test2"),
-                new ModClassDataImpl("com.kotori316.test.Mod3", "test1")
-            );
-            assertThrows(RuntimeException.class, () -> ModClassData.findInstance(targets));
+        @ParameterizedTest
+        @MethodSource("duplicationTestCases")
+        void allowDuplication(Collection<ModClassDataImpl> targets) {
+            assertDoesNotThrow(() -> ModClassData.findInstance(targets, true));
         }
     }
 
