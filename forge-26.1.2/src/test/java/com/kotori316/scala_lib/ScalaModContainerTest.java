@@ -16,10 +16,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class ScalaModContainerTest {
 
+    private static final ConstructorSelector SELECTOR = new ConstructorSelector(_ -> {
+    });
+
     @NotNull
     private static Map.Entry<Constructor<?>, Object[]> getConstructorEntry(Class<?> modClass) {
-        return ScalaModContainer.getConstructor(modClass, modClass.getSimpleName(),
-            BusGroup.create("%s-%s".formatted("ScalaModContainerTest", UUID.randomUUID())), Mockito.mock(ModContainer.class), Dist.DEDICATED_SERVER, Mockito.mock(FMLJavaModLoadingContext.class));
+        return SELECTOR.select(modClass, modClass.getSimpleName(), Map.of(
+            BusGroup.class, BusGroup.create("%s-%s".formatted("ScalaModContainerTest", UUID.randomUUID())),
+            ModContainer.class, Mockito.mock(ModContainer.class),
+            Dist.class, Dist.DEDICATED_SERVER,
+            FMLJavaModLoadingContext.class, Mockito.mock(FMLJavaModLoadingContext.class)
+        ));
     }
 
     @Test

@@ -14,10 +14,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class FindConstructorTest {
 
+    private static final ConstructorSelector SELECTOR = new ConstructorSelector(_ -> {
+    });
+
     @NotNull
     private static Map.Entry<Constructor<?>, Object[]> getConstructorEntry(Class<?> modClass) {
-        return ScalaModContainer.getConstructor(modClass, modClass.getSimpleName(),
-            Mockito.mock(IEventBus.class), Mockito.mock(ModContainer.class), Dist.DEDICATED_SERVER);
+        return SELECTOR.select(modClass, modClass.getSimpleName(), Map.of(
+            IEventBus.class, Mockito.mock(IEventBus.class),
+            ModContainer.class, Mockito.mock(ModContainer.class),
+            Dist.class, Dist.DEDICATED_SERVER
+        ));
     }
 
     @Test
