@@ -25,19 +25,6 @@ githubRelease {
         Scala: ${libs.versions.scala.get()}
         Cats: ${libs.versions.cats.get()}
         """.trimIndent()
-    releaseAssets = files(
-        *listOfNotNull(
-            findProject(":forge")?.let {
-                fileTree(it.layout.buildDirectory.dir("libs")) {
-                    include("*.jar")
-                }
-            },
-            findProject(":neoforge")?.let {
-                fileTree(it.layout.buildDirectory.dir("libs")) {
-                    include("*.jar")
-                }
-            },
-        ).toTypedArray()
-    )
+    releaseAssets = files()
     dryRun = releaseDebug
 }

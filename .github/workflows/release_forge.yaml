@@ -2,21 +2,254 @@ name: Release Forge
 
 on:
   workflow_dispatch:
+    inputs:
+      all:
+        description: 'All platforms (ignores the individual checkboxes below)'
+        type: boolean
+        default: false
+      forge_26_1:
+        description: '26.1 - Forge'
+        type: boolean
+        default: false
+      forge_26_2:
+        description: '26.2 - Forge'
+        type: boolean
+        default: false
+      forge_26_3:
+        description: '26.3 - Forge'
+        type: boolean
+        default: false
+      neoforge_26_1:
+        description: '26.1 - NeoForge'
+        type: boolean
+        default: false
+      neoforge_26_2:
+        description: '26.2 - NeoForge'
+        type: boolean
+        default: false
+      neoforge_26_3:
+        description: '26.3 - NeoForge'
+        type: boolean
+        default: false
 
 jobs:
   release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      DISABLE_EXAMPLE: true
+      INCLUDE_FORGE_26_1_2: ${{ inputs.all || inputs.forge_26_1 }}
+      INCLUDE_FORGE_26_2_0: ${{ inputs.all || inputs.forge_26_2 }}
+      INCLUDE_FORGE_26_3_0: ${{ inputs.all || inputs.forge_26_3 }}
+      INCLUDE_NEOFORGE_26_1_2: ${{ inputs.all || inputs.neoforge_26_1 }}
+      INCLUDE_NEOFORGE_26_2_0: ${{ inputs.all || inputs.neoforge_26_2 }}
+      INCLUDE_NEOFORGE_26_3_0: ${{ inputs.all || inputs.neoforge_26_3 }}
     permissions:
       id-token: write
       contents: write
       packages: write
       attestations: write
       artifact-metadata: write
-      # See https://github.com/Kotori316/common-script/blob/v2/.github/workflows/release-prod-gradle.yaml
-    uses: 'Kotori316/common-script/.github/workflows/release-prod-gradle.yaml@f68c456ce9aa44130e67f05234bc68db848e9a54' # v2.0.5
-    with:
-      sign_check_command: 'assemble publishToMavenLocal'
-      release_command: 'assemble publishToMavenLocal publish publishMods githubRelease registerVersion'
-      enable_signature_check: true
-      java_version: '25'
-      use_gradle_cache: true
-    secrets: inherit
+    steps:
+      - name: Check at least one target selected
+        if: >-
+          inputs.all != true &&
+          inputs.forge_26_1 != true && inputs.forge_26_2 != true && inputs.forge_26_3 != true &&
+          inputs.neoforge_26_1 != true && inputs.neoforge_26_2 != true && inputs.neoforge_26_3 != true
+        run: |
+          echo "::error::No release target selected. Check at least one platform, or 'all'."
+          exit 1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: gradle/actions/wrapper-validation@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
+        with:
+          cache-disabled: false
+          cache-read-only: true
+      - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        with:
+          workload_identity_provider: ${{ secrets.GCP_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+      - name: Set executable
+        run: chmod +x ./gradlew
+      - name: Check release version
+        run: ./gradlew checkReleaseVersion
+        env:
+          RELEASE_DEBUG: false
+          VERSION_FUNCTION_ENDPOINT: ${{ secrets.GCP_VERSION_FUNCTION_ENDPOINT }}
+          SERVICE_ACCOUNT: ${{ secrets.GCP_FUNCTION_EXECUTION_ACCOUNT }}
+      - name: Create Temporary Directory
+        id: tmp-dir
+        run: |
+          TMP_DIR="$(mktemp -d)"
+          echo "path=${TMP_DIR}" >> "$GITHUB_OUTPUT"
+      - name: Download signing keys
+        run: |
+          gcloud storage cp gs://kotori316-resources/secring.gpg "${SIGNING_SECRET_KEY_RING_FILE}"
+          gcloud storage cp gs://kotori316-resources/kotori316_keystore.jks "${SIGN_KEY_LOCATION}"
+          gcloud storage cp gs://kotori316-resources/pgp_public.pub "${PUBLIC_KEY_LOCATION}"
+          gpg --import "${PUBLIC_KEY_LOCATION}"
+        env:
+          SIGNING_SECRET_KEY_RING_FILE: "${{ steps.tmp-dir.outputs.path }}/secring.gpg"
+          SIGN_KEY_LOCATION: "${{ steps.tmp-dir.outputs.path }}/kotori316_keystore.jks"
+          PUBLIC_KEY_LOCATION: "${{ steps.tmp-dir.outputs.path }}/pgp_public.pub"
+      - name: Get credentials
+        id: get-secrets
+        uses: google-github-actions/get-secretmanager-secrets@bc9c54b29fdffb8a47776820a7d26e77b379d262 # v3.0.0
+        with:
+          secrets: |-
+            key_id:kotori316-mods-resources/signing-key-id
+            key_password:kotori316-mods-resources/signing-password
+            jar_password:kotori316-mods-resources/jar-sign-key-password
+            modrinth_token:kotori316-mods-resources/modrinth_token
+            curseforge_token:kotori316-mods-resources/curseforge_token
+            cloudflare_s3_endpoint:kotori316-mods-resources/cloudflare_s3_endpoint
+            cloudflare_access_key:kotori316-mods-resources/cloudflare_access_key
+            cloudflare_secret_key:kotori316-mods-resources/cloudflare_secret_key
+            repolisite-publisher-name:kotori316-mods-resources/repolisite-publisher-name
+            repolisite-publisher-password:kotori316-mods-resources/repolisite-publisher-password
+      - name: Check build with sign arguments
+        run: >-
+          ./gradlew
+          -Psigning.secretKeyRingFile="${SIGNING_SECRET_KEY_RING_FILE}"
+          -Psigning.password="${SIGNING_PASSWORD}"
+          -Psigning.keyId="${SIGNING_KEY_ID}"
+          -PjarSign.keyLocation="${SIGN_KEY_LOCATION}"
+          -PjarSign.keyAlias="${SIGN_KEY_ALIAS}"
+          -PjarSign.storePass="${SIGN_STORE_PASS}"
+          assemble publishToMavenLocal
+        env:
+          SIGNING_SECRET_KEY_RING_FILE: "${{ steps.tmp-dir.outputs.path }}/secring.gpg"
+          SIGNING_KEY_ID: ${{ steps.get-secrets.outputs.key_id }}
+          SIGNING_PASSWORD: ${{ steps.get-secrets.outputs.key_password }}
+          SIGN_KEY_LOCATION: "${{ steps.tmp-dir.outputs.path }}/kotori316_keystore.jks"
+          SIGN_KEY_ALIAS: "ko316"
+          SIGN_STORE_PASS: ${{ steps.get-secrets.outputs.jar_password }}
+      - name: Verify
+        run: |
+          find ./ -name "*.asc" | while IFS= read -r f; do
+            echo "::group::Build ${f:0:-4}"
+            gpg --verify "$f" "${f:0:-4}"
+            echo "::endgroup::"
+          done
+          find . ! -name '*deobf.jar' ! -name '*sources.jar' ! -name '*common.jar' ! -name '*dev.jar' ! -path '*/common/*' -path '*/build/libs/*' -name '*.jar' | while IFS= read -r f; do
+            echo "::group::Jar sign ${f}"
+            jarsigner -verify -keystore "${SIGN_KEY_LOCATION}" "$f"
+            echo "::endgroup::"
+          done
+          find ~/.m2 -name "*.asc" | while IFS= read -r f; do
+            echo "::group::${f:0:-4}"
+            echo "${f:0:-4}"
+            gpg --verify "$f" "${f:0:-4}"
+            echo "::endgroup::"
+          done
+        env:
+          SIGN_KEY_LOCATION: "${{ steps.tmp-dir.outputs.path }}/kotori316_keystore.jks"
+      - name: Up maven server
+        run: curl -sS -i https://maven2.kotori316.com/api/status/health
+      - name: Release
+        run: >-
+          ./gradlew
+          -Psigning.secretKeyRingFile="${SIGNING_SECRET_KEY_RING_FILE}"
+          -Psigning.password="${SIGNING_PASSWORD}"
+          -Psigning.keyId="${SIGNING_KEY_ID}"
+          -PjarSign.keyLocation="${SIGN_KEY_LOCATION}"
+          -PjarSign.keyAlias="${SIGN_KEY_ALIAS}"
+          -PjarSign.storePass="${SIGN_STORE_PASS}"
+          -Dorg.gradle.s3.endpoint="${CLOUDFLARE_S3_ENDPOINT}"
+          assemble publishToMavenLocal publish publishMods registerVersion githubRelease
+        #  assemble publishToMavenLocal publish publishMods registerVersion githubRelease
+        env:
+          RELEASE_DEBUG: false
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CURSE_TOKEN: ${{ steps.get-secrets.outputs.curseforge_token }}
+          MODRINTH_TOKEN: ${{ steps.get-secrets.outputs.modrinth_token }}
+          CLOUDFLARE_S3_ENDPOINT: ${{ steps.get-secrets.outputs.cloudflare_s3_endpoint }}
+          R2_ACCESS_KEY: ${{ steps.get-secrets.outputs.cloudflare_access_key }}
+          R2_SECRET_KEY: ${{ steps.get-secrets.outputs.cloudflare_secret_key }}
+          VERSION_FUNCTION_ENDPOINT: ${{ secrets.GCP_VERSION_FUNCTION_ENDPOINT }}
+          SERVICE_ACCOUNT: ${{ secrets.GCP_FUNCTION_EXECUTION_ACCOUNT }}
+          MAVEN_USERNAME: ${{ steps.get-secrets.outputs.repolisite-publisher-name }}
+          MAVEN_PASSWORD: ${{ steps.get-secrets.outputs.repolisite-publisher-password }}
+          SIGNING_SECRET_KEY_RING_FILE: "${{ steps.tmp-dir.outputs.path }}/secring.gpg"
+          SIGNING_KEY_ID: ${{ steps.get-secrets.outputs.key_id }}
+          SIGNING_PASSWORD: ${{ steps.get-secrets.outputs.key_password }}
+          SIGN_KEY_LOCATION: "${{ steps.tmp-dir.outputs.path }}/kotori316_keystore.jks"
+          SIGN_KEY_ALIAS: "ko316"
+          SIGN_STORE_PASS: ${{ steps.get-secrets.outputs.jar_password }}
+      - name: Verify Build Files
+        run: |
+          find ./ -name "*.asc" | while IFS= read -r f; do
+            echo "::group::${f:0:-4}"
+            gpg --verify "$f" "${f:0:-4}"
+            echo "::endgroup::"
+          done
+      - name: Verify Main Jar
+        run: |
+          find . ! -name '*deobf.jar' ! -name '*sources.jar' ! -name '*common.jar' ! -name '*dev.jar' ! -path '*/common/*' -path '*/build/libs/*' -name '*.jar' | while IFS= read -r f; do
+          echo "::group::Jar sign ${f}"
+          jarsigner -verify -keystore "${SIGN_KEY_LOCATION}" "$f"
+          echo "::endgroup::"
+          done
+        env:
+          SIGN_KEY_LOCATION: "${{ steps.tmp-dir.outputs.path }}/kotori316_keystore.jks"
+      - name: Verify Maven Local
+        run: |
+          find ~/.m2 -name "*.asc" | while IFS= read -r f; do
+            echo "::group::${f:0:-4}"
+            gpg --verify "$f" "${f:0:-4}"
+            echo "::endgroup::"
+          done
+      - name: Get repository name
+        if: always()
+        id: repo-name
+        run:
+          echo "repo-name=$(basename "$REPO")" >> "$GITHUB_OUTPUT"
+        env:
+          REPO: ${{ github.repository }}
+      - name: Create Temporary Directory for build files
+        id: build-files-tmp-dir
+        run: |
+          TMP_DIR="$(mktemp -d)"
+          echo "path=${TMP_DIR}" >> "$GITHUB_OUTPUT"
+      - name: Check main files
+        id: main-files
+        run: |
+          find . ! -name '*deobf.jar' ! -name '*sources.jar' ! -name '*common.jar' ! -name '*dev.jar' ! -path '*/common/*' -path '*/build/libs/*' -name '*.jar' \
+            -exec mv -t "${BUILD_FILES_TMP_DIR}" {} +
+          ls "${BUILD_FILES_TMP_DIR}"
+        env:
+          BUILD_FILES_TMP_DIR: "${{ steps.build-files-tmp-dir.outputs.path }}"
+      - name: Attestation
+        if: ${{ github.event.repository.visibility == 'public' }}
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: '${{ steps.build-files-tmp-dir.outputs.path }}/*'
+          subject-name: ${{ steps.repo-name.outputs.repo-name }}-Release-${{ github.run_number }}
+      - name: Upload Artifacts
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ steps.repo-name.outputs.repo-name }}-Release-${{ github.run_number }}
+          retention-days: 7
+          path: |
+            **/build/*libs/
+      - name: Upload maven
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ steps.repo-name.outputs.repo-name }}-Maven-${{ github.run_number }}
+          retention-days: 1
+          include-hidden-files: true
+          path: ~/.m2
+      - name: Cleanup Temporary Directory
+        if: always()
+        run: |
+          rm -rf "${TMP_DIR}"
+          rm -rf "${BUILD_FILES_TMP_DIR}"
+        env:
+          TMP_DIR: "${{ steps.tmp-dir.outputs.path }}"
+          BUILD_FILES_TMP_DIR: "${{ steps.build-files-tmp-dir.outputs.path }}"

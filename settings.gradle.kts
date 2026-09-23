@@ -29,27 +29,29 @@ develocity {
     }
 }
 
+fun wanted(envName: String): Boolean = System.getenv(envName)?.toBoolean() ?: true
+
 includeBuild("build-logic")
 include("common")
 if (!System.getenv("DISABLE_FORGE").toBoolean()) {
-    include("forge-26.1.2")
-    include("forge-26.2.0")
-    include("forge-26.3.0")
+    if (wanted("INCLUDE_FORGE_26_1_2")) include("forge-26.1.2")
+    if (wanted("INCLUDE_FORGE_26_2_0")) include("forge-26.2.0")
+    if (wanted("INCLUDE_FORGE_26_3_0")) include("forge-26.3.0")
 }
 if (!System.getenv("DISABLE_NEO_FORGE").toBoolean()) {
-    include("neoforge-26.1.2")
-    include("neoforge-26.2.0")
-    include("neoforge-26.3.0")
+    if (wanted("INCLUDE_NEOFORGE_26_1_2")) include("neoforge-26.1.2")
+    if (wanted("INCLUDE_NEOFORGE_26_2_0")) include("neoforge-26.2.0")
+    if (wanted("INCLUDE_NEOFORGE_26_3_0")) include("neoforge-26.3.0")
 }
 if(!System.getenv("DISABLE_EXAMPLE").toBoolean()) {
     if (!System.getenv("DISABLE_FORGE").toBoolean()) {
-        include("example:26.1-forge")
-        include("example:26.2-forge")
-        include("example:26.3-forge")
+        if (wanted("INCLUDE_FORGE_26_1_2")) include("example:26.1-forge")
+        if (wanted("INCLUDE_FORGE_26_2_0")) include("example:26.2-forge")
+        if (wanted("INCLUDE_FORGE_26_3_0")) include("example:26.3-forge")
     }
     if (!System.getenv("DISABLE_NEO_FORGE").toBoolean()){
-         include("example:26.1-neoforge")
-        include("example:26.2-neoforge")
-        include("example:26.3-neoforge")
+        if (wanted("INCLUDE_NEOFORGE_26_1_2")) include("example:26.1-neoforge")
+        if (wanted("INCLUDE_NEOFORGE_26_2_0")) include("example:26.2-neoforge")
+        if (wanted("INCLUDE_NEOFORGE_26_3_0")) include("example:26.3-neoforge")
     }
 }
