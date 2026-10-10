@@ -6,7 +6,7 @@ neo262000 = "26.2.0.88"
 forge263000 = "26.3-66.0.9"
 neo263000 = "26.3.0.52-beta"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
-scala = "3.9.0"
+scala = "3.10.0"
 # https://mvnrepository.com/artifact/org.typelevel/cats-core
 cats = "2.13.0"
 # https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
