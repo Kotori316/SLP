@@ -52,5 +52,11 @@ publishing {
                 }
             }
         }
+        if (System.getenv("CI") == null && System.getenv("ENABLE_TEST_MAVEN").toBoolean()) {
+            maven {
+                name = "TestMaven"
+                url = uri("gcs://kotori316-maven-test-storage/maven/")
+            }
+        }
     }
 }
