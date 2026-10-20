@@ -3,7 +3,7 @@ forge260102="26.1.2-64.1.5"
 neo260102="26.1.2.122"
 forge262000 = "26.2-65.1.5"
 neo262000 = "26.2.0.93"
-forge263000 = "26.3-66.0.12"
+forge263000 = "26.3-66.0.13"
 neo263000 = "26.3.0.85"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
 scala = "3.9.0"
