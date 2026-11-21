@@ -4,7 +4,7 @@ neo260102="26.1.2.127"
 forge262000 = "26.2-65.1.6"
 neo262000 = "26.2.0.95"
 forge263000 = "26.3-66.1.8"
-neo263000 = "26.3.0.103"
+neo263000 = "26.3.0.113"
 # https://mvnrepository.com/artifact/org.scala-lang/scala-library
 scala = "3.10.1"
 # https://mvnrepository.com/artifact/org.typelevel/cats-core
