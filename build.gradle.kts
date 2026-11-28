@@ -5,7 +5,7 @@ plugins {
 
 tasks.named("wrapper", Wrapper::class) {
     distributionType = Wrapper.DistributionType.BIN
-    gradleVersion = "9.9.2"
+    gradleVersion = "9.9.3"
 }
 
 version = "${project.property("modVersion")}"
